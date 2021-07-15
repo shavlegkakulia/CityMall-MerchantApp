@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {ScrollView, StatusBar,StyleSheet,Text,View,} from 'react-native';
+import {ScrollView, StatusBar,StyleSheet,Text,View, TouchableOpacity} from 'react-native';
 import { getUniqueId, getManufacturer, getDevice, getDeviceName } from 'react-native-device-info';
+import AppInput from './Components/AppInput/AppInput';
 
 
 
@@ -8,43 +9,48 @@ import { getUniqueId, getManufacturer, getDevice, getDeviceName } from 'react-na
 
  const App = () => {
   
-  const [ deviceId, setDeviceId ] = useState('')
+  const [ deviceId, setDeviceId ] = useState('');
+  const [ cardBarcode, setCardBarCode ] = useState('');
+  const [ amount, setAmount ] = useState('');
 
   useEffect(() => {
     setDeviceId(getUniqueId())
-    tt();
   }, [])
   
-  const tt = () => {
-    getDeviceName().then(deviceName => {
-      console.log('getdevice ===============>' , deviceName)
-    })
-  }
+ 
   
    return (
-    <View>
+    <View style = {{flex: 1}}>
       <Text> device unique id: {deviceId}</Text>
+      <AppInput label = 'ბარათი' value = {cardBarcode} onChangeText = {(newVal: string) => setCardBarCode(newVal)}/>
+      
+      <AppInput label = 'თანხა' value = {amount} keyboardType = 'numeric' onChangeText = {(newVal: string) => setAmount(newVal)}/>
+      {/* <TouchableOpacity style={styles.sectionContainer}>
+        <Text>დაგროვება/დახარჯვა</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.sectionContainer}>
+        <Text>დღის დახურვა</Text>
+      </TouchableOpacity> */}
+     
+
     </View>
    );
  };
 
  const styles = StyleSheet.create({
    sectionContainer: {
-     marginTop: 32,
+     borderWidth: 1,
+     borderColor: 'black',
+     borderRadius: 7,
+     width: 300,
+     alignSelf: 'center',
+     display: 'flex',
+     alignItems: 'center',
+     justifyContent: 'center',
+     height: 40,
      paddingHorizontal: 24,
    },
-   sectionTitle: {
-     fontSize: 24,
-     fontWeight: '600',
-   },
-   sectionDescription: {
-     marginTop: 8,
-     fontSize: 18,
-     fontWeight: '400',
-   },
-   highlight: {
-     fontWeight: '700',
-   },
+ 
  });
 
  export default App;
