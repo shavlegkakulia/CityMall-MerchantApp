@@ -1,10 +1,11 @@
 import React from 'react';
 import {ScrollView, StatusBar,StyleSheet,Text,View, TouchableOpacity} from 'react-native';
+import BarCodeReader from '../BarCodeReader';
 
 const CollectPoints = () => {
     return (
-        <View>
-            
+             <View style = {{flex: 1}}>
+            <BarCodeReader/>
         </View>
     );
 };
