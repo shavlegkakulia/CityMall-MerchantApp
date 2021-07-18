@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import {ScrollView, StatusBar,StyleSheet,Text,View, Dimensions, Alert} from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import ScannerAnimation from './Components/ScannerAnimation';
+import ScannerAnimation from './ScannerAnimation';
 
 const {width} = Dimensions.get('screen')
 
-const BarCodeReader = () => {
+const BarCodeReader = (props: any) => {
     const cameraRef = useRef<any>({});
     const [ barCode, setBarCode ] = useState<string>('');
 
@@ -16,9 +16,8 @@ const BarCodeReader = () => {
     const { width } = Dimensions.get('screen')
 
     const handleBarCodeRead = (value: any) => {
-        if(value.data == barCode) return;
+        props.getValue(value.data)
         setBarCode(value.data.toString());
-        Alert.alert(value.data.toString())
       }
       
 

@@ -1,89 +1,94 @@
 import React, { useRef } from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
-import { Animated, Dimensions, Image, StyleSheet, TouchableOpacity, Text, View , Button } from 'react-native';
-import { RNCamera} from 'react-native-camera';
+import { Animated, Dimensions,  StyleSheet, View } from 'react-native';
 
+const { width } = Dimensions.get('screen');
 
-const {width} = Dimensions.get('screen')
+const ScannerAnimation = () => {
 
-console.log(width)
+    const [scanLine, setScanLine] = useState(new Animated.Value(0));
 
-
-const ScannerAnimation = (props: any) => {
-    const scanAnim = useRef(new Animated.Value(0)).current;
-
-    const scannLine = () => {
-        Animated.timing(scanAnim, {
+    const moveInterval = setInterval(() => {
+        if (moveInterval) clearInterval(moveInterval)
+        Animated.timing(scanLine, {
             toValue: 1,
-            duration: 2200,
-            useNativeDriver: true
-        }).start();
-        console.log('animation clicked')
-    }
+            duration: 2260,
+            useNativeDriver: false
+        }).start(() => setScanLine(new Animated.Value(0)));
+    }, 50)
 
     useEffect(() => {
-        scannLine();
-    })
+        moveInterval;
+        return () => clearInterval(moveInterval);
+    }, [])
 
+    return (
 
-        return (
-           
-                
-                
-                <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center',}]} >
-                
-                    {/*area of scanning place*/}
-                    <View style ={{width: width, height: width/2}}>
-                    <Animated.View style={{width: '100%', height: 5, backgroundColor: 'red'}}>
-                    
-                    </Animated.View>
-
-                        {/*borders*/}
-                            <View style={{flex: 1, flexDirection: 'row'}}>
-                                <View style={styles.topLeftCorner}/>
-                                <View style={{flex: 1}}/>
-                                <View style={styles.topRightCorner}/>
-                            </View>
-
-                            <View style={{flex: 1}}/>
-
-                            <View style={{flex: 1, flexDirection: 'row'}}>
-                                <View style={styles.bottomLeftCorner}/>
-                                <View style={{flex: 1}}/>
-                                <View style={styles.bottomRightCorner}/>
-                            </View>
-                    </View>
+        <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center'}]} >
+            {/*area of scanning place*/}
+            <View style={{ width: width, height: width / 2 }}>
+                {/*animated scan line*/}
+                <Animated.View style={{
+                    transform: [{
+                        translateY: scanLine.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0, width / 2]
+                        })
+                    }]
+                }}>
+                    <View style={styles.scanLine} />
+                </Animated.View>
+                {/*borders*/}
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={styles.topLeftCorner} />
+                    <View style={{ flex: 1 }} />
+                    <View style={styles.topRightCorner} />
                 </View>
+                <View style={{ flex: 1 }} />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={styles.bottomLeftCorner} />
+                    <View style={{ flex: 1 }} />
+                    <View style={styles.bottomRightCorner} />
+                </View>
+            </View>
+        </View>
 
-        
-        );
+
+    );
 }
 
 const styles = StyleSheet.create({
-    topLeftCorner : {
+    topLeftCorner: {
         flex: 1,
         borderLeftWidth: 3,
         borderTopWidth: 3,
         borderColor: 'white'
     },
-    bottomLeftCorner : {
+    bottomLeftCorner: {
         flex: 1,
         borderLeftWidth: 3,
         borderBottomWidth: 3,
         borderColor: 'white'
     },
-    topRightCorner : {
+    topRightCorner: {
         flex: 1,
         borderRightWidth: 3,
         borderTopWidth: 3,
         borderColor: 'white'
     },
-    bottomRightCorner : {
+    bottomRightCorner: {
         flex: 1,
         borderRightWidth: 3,
         borderBottomWidth: 3,
         borderColor: 'white'
+    },
+    scanLine: {
+        width: '100%', 
+        height: 2, 
+        backgroundColor: 'red'
     }
+
 })
 
 export default ScannerAnimation;

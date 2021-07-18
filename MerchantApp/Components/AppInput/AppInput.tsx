@@ -4,12 +4,17 @@ import {ScrollView, StatusBar,StyleSheet,Text,View, TextInput} from 'react-nativ
 const AppInput = (props: any) => {
     
     const [ isFocused, setIsFocused ] = useState<boolean>(false);
-   
+
+    useEffect(() => {
+        if(props.value !== '') {
+            setIsFocused(true);
+        }
+    }, [props.value]);
 
     return (
       
         <View  style = {{padding: 18}}>
-            <Text style = {isFocused? styles.labelFocused : styles.labelNotFocused}>{props.label} </Text>
+            <Text style = {isFocused ? styles.labelFocused : styles.labelNotFocused}>{props.label} </Text>
             <TextInput 
                 {...props}
                 onFocus = {() => setIsFocused(true)}
@@ -25,7 +30,7 @@ const styles = StyleSheet.create({
         color: '#000',
         position: 'absolute',
         top: 18,
-        left: 25
+        left: 30,
     },
     labelNotFocused: {
         fontSize: 20,
@@ -39,7 +44,10 @@ const styles = StyleSheet.create({
         color: '#000', 
         borderColor: '#777777ab', 
         borderWidth: 1, 
-        borderRadius: 10
+        borderRadius: 10,
+        paddingVertical: 15,
+
+        paddingLeft: 15
     }
 })
 
