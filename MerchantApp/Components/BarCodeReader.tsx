@@ -1,58 +1,37 @@
 import React, { useRef, useState } from 'react';
-import {ScrollView, StatusBar,StyleSheet,Text,View, Dimensions, Alert} from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, View, Dimensions, Alert } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import ScannerAnimation from './ScannerAnimation';
 
-const {width} = Dimensions.get('screen')
+const { width } = Dimensions.get('screen')
 
 const BarCodeReader = (props: any) => {
     const cameraRef = useRef<any>({});
-    const [ barCode, setBarCode ] = useState<string>('');
-
-    const { absoluteFill } = StyleSheet;
-
-    console.log(typeof absoluteFill)
-
-    const { width } = Dimensions.get('screen')
+    const [barCode, setBarCode] = useState<any>(null);
 
     const handleBarCodeRead = (value: any) => {
+        if (value.data == barCode) return;
+        console.log('value.data  ===>', value.data)
         props.getValue(value.data)
         setBarCode(value.data.toString());
-      }
-      
+    }
 
     return (
-        <View  style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-
-
-            {/*მეორე კონტეინერი*/}
-            <View style = {{width: width, height: width, }}>
-                <ScannerAnimation/>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ width: width, height: width, }}>
+                <ScannerAnimation />
                 <RNCamera
-                    onBarCodeRead = {handleBarCodeRead}
+                    onBarCodeRead={handleBarCodeRead}
                     ref={ref => cameraRef.current = ref}
+                    autoFocus={RNCamera.Constants.AutoFocus.on}
+                    flashMode={RNCamera.Constants.FlashMode.auto}
                     style={StyleSheet.absoluteFill}>
-                        <ScannerAnimation/>
-                    </RNCamera>
+                    <ScannerAnimation />
+                </RNCamera>
             </View>
-
-           
-
-
         </View>
     );
 };
-
-const styles =  StyleSheet.create({
-   fullScreen: {
-       position: 'absolute',
-       top: 0,
-       bottom: 0,
-       left: 0,
-       right: 0
-   }
-
-})
 
 export default BarCodeReader;
 

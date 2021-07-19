@@ -14,11 +14,24 @@ const AppNavigatior = (props: any) => {
     return(
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Dashboard">
-                <Stack.Screen name = 'Dashboard' component = {Dashboard} />
-                <Stack.Screen name = 'CollectPoints' component = {CollectPoints} />
-                <Stack.Screen name = 'PayWithPoints' component = {PayWithPoints} />
-                <Stack.Screen name = 'TransactionHistory' component = {TransactionHistory} />
-                <Stack.Screen name = 'ScannerAnimation' component = {ScannerAnimation} />
+                <Stack.Screen 
+                    name = 'Dashboard' 
+                    component = {Dashboard} 
+                    options={{ title: 'მთავარი' }} />
+                <Stack.Screen 
+                    name = 'CollectPoints' 
+                    component = {CollectPoints}
+                    options={{ title: 'ქულების დაგროვება' }}/>
+                <Stack.Screen 
+                    name = 'PayWithPoints' 
+                    component = {PayWithPoints} 
+                    options={{ title: 'ქულების დახარჯვა' }}/>
+                <Stack.Screen 
+                    name = 'TransactionHistory' 
+                    component = {TransactionHistory}
+                    options={{ title: 'ტრანზაქციების ისტორია' }} />
+                <Stack.Screen 
+                    name = 'ScannerAnimation' component = {ScannerAnimation} />
             </Stack.Navigator>
         </NavigationContainer>
     )

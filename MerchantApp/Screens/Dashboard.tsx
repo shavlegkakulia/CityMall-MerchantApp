@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Animated, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
+import AppModal from '../Components/AppModal';
 
 const Dashboard = (props: any) => {
     const [deviceId, setDeviceId] = useState<string>('');
+    const [showModal, setShowModal] = useState<boolean>(true);
     
 
     useEffect(() => {
@@ -11,7 +13,9 @@ const Dashboard = (props: any) => {
     }, [])
 
     return (
+        
         <View style={styles.container}>
+            {/* <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} /> */}
             <View style={styles.dashboardHeader}>
                 <Text>Device ID: {deviceId}</Text>
             </View>
@@ -22,7 +26,7 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
                 </TouchableOpacity>
                  <TouchableOpacity style = {styles.service} onPress = {() => props.navigation.navigate('PayWithPoints')}>
-                    <Text style={styles.serviceLabel}>ქულების დახარჯვა</Text>
+                    <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
                 </TouchableOpacity>
                  <TouchableOpacity style = {styles.service} onPress = {() => props.navigation.navigate('TransactionHistory')}>
                     <Text style={styles.serviceLabel}>ოპერაციებსი ისტორია</Text>
@@ -32,37 +36,6 @@ const Dashboard = (props: any) => {
                 </TouchableOpacity>
         </View>
 
-        // <View  style={{flex:1}}>
-
-        //     <View style={{flex: 1, backgroundColor: 'red'}}>
-        //         <Text >დაასკანერეთ შტრიხკოდი</Text>
-        //     </View>
-
-        //     <View style = {{flex: 2, backgroundColor: 'green', marginHorizontal: 30, alignItems: 'center', justifyContent: 'center'}}>
-        //          <View style={{ position: 'absolute', right: 0, bottom: 0, transform: [{rotateZ: '180deg'}] }}>
-        //              <View style={{ height: 5, width: 50, backgroundColor: 'white' }} />
-        //              <View style={{ height: 50, width: 5, backgroundColor: 'white' }} />
-        //          </View>
-        //          <View style={{ position: 'absolute', left: 0, bottom: 0, }}>
-        //              <View style={{ height: 50, width: 5, backgroundColor: 'white' }} />
-        //              <View style={{ height: 5, width: 50, backgroundColor: 'white' }} />
-        //          </View>
-        //          <View style={{ position: 'absolute', left: 3, top: -3,  transform: [{rotateZ: '90deg'}]}} >
-        //              <View style={{ height: 50, width: 5, backgroundColor: 'blue' }} />
-        //              <View style={{ height: 5, width: 50, backgroundColor: 'blue' }} />
-        //          </View>
-        //          <View style={{ position: 'absolute', right: 3, top: -3,  transform: [{rotateZ: '90deg'}]}} >
-        //              <View style={{ height: 5, width: 50, backgroundColor: 'blue' }} />
-        //              <View style={{ height: 50, width: 5, backgroundColor: 'blue' }} />
-        //          </View>
-        //     </View>
-
-        //     <View  style={{flex: 1, backgroundColor: 'yellow'}}>
-        //         <Text >Loading....</Text>
-        //     </View>
-                     
-
-        // </View>
     );
 };
 
