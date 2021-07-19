@@ -30,7 +30,7 @@ const PayWithPoints = (props: any) => {
     } else if (step === 1) {
         Content = (
             <View style={{marginHorizontal: 10}}>
-                <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} />
+                {/* <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} /> */}
                 <AppInput
                     label='ბარათი'
                     value={scannedCode}
@@ -46,11 +46,8 @@ const PayWithPoints = (props: any) => {
                 </View>
 
                 <View style={{marginTop: 60}}>
-                    <Text style={{marginBottom: 30}}>ბარათის სტატუსი : </Text>
-                    <Text>მფლობელი : </Text>
-                    <Text>ხელმისაწვდომი თანხა : </Text>
-                    <Text>ხელმისაწვდომი ქულა : </Text>
-                    <Text>ბარათის ტიპი : </Text>
+                    <Text style={styles.infoText}>დაგროვებითი ვაუჩერი </Text>
+                    
                 </View>
 
             </View>
@@ -72,7 +69,7 @@ const styles = StyleSheet.create({
     button: {
         width: '100%', 
         height: 60, 
-        backgroundColor: 'orange', 
+        backgroundColor: '#ffda02', 
         alignItems: 'center', 
         justifyContent: 'center',
         borderRadius: 7 
@@ -81,6 +78,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         color: 'white'
+    }, 
+    infoText: {
+        marginBottom: 30, 
+        fontWeight: '700', 
+        fontSize: 16,  
+        color:'#00a400' 
     }
 
 })

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import {ScrollView, StatusBar,StyleSheet,Text,View, TouchableOpacity} from 'react-native';
+import { getUniqueId } from 'react-native-device-info';
 import AppNavigatior from './navigation/AppNavigation';
-import Dashboard from './Screens/Dashboard';
 
 
- const App = () => {
-   
-   return (
-      <AppNavigatior/>
-   );
- };
+const App = () => {
+  const [deviceId, setDeviceId] = useState<string>('');
+
+  useEffect(() => {
+    setDeviceId(getUniqueId())
+  }, [])
+
+  return (
+    <AppNavigatior id={deviceId} />
+  );
+};
 
 
 
- export default App;
+export default App;

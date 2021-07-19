@@ -44,11 +44,11 @@ const CollectPoints = () => {
                 </View>
 
                 <View style={{marginTop: 60}}>
-                    <Text style={{marginBottom: 30}}>ბარათის სტატუსი : </Text>
-                    <Text>მფლობელი : </Text>
-                    <Text>ხელმისაწვდომი თანხა : </Text>
-                    <Text>ხელმისაწვდომი ქულა : </Text>
-                    <Text>ბარათის ტიპი : </Text>
+                    <Text style={[styles.infoText, {marginBottom: 30}]}>ბარათის სტატუსი : </Text>
+                    <Text style={styles.infoText}>მფლობელი: </Text>
+                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა : </Text>
+                    <Text style={styles.infoText}>ხელმისაწვდომი ქულა : </Text>
+                    <Text style={styles.infoText}>ბარათის ტიპი : </Text>
                 </View>
 
             </View>
@@ -79,6 +79,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         color: 'white'
+    },
+    infoText: {
+        fontWeight: '700', 
+        fontSize: 16,  
+        color:'#00a400' 
     }
 
 })
