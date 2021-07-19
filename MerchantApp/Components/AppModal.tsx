@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { Button, StyleSheet, Text, View, Modal, Pressable, Alert, TextInput } from 'react-native'
 import { color } from 'react-native-reanimated';
 import AppInput from './AppInput';
 
 const AppModal = (props: any) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-
+  const InputRef = useRef<any>();
+  
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={props.modalVisible}
+        onShow = {() => InputRef.current.focus()}
         onRequestClose={() => {
           props.closeModal;
         }}>
@@ -21,7 +24,7 @@ const AppModal = (props: any) => {
               <Text style={styles.modalText}>{'შეტყობინება'.toLocaleUpperCase()}:</Text>
               <Text style={styles.modalText}>{'შეიყვანეთ ბარათის მფლობელის მობილურის ნომერი'.toLocaleUpperCase()}</Text>
               <View style={{ width: '100%' }}>
-                <AppInput label='ტელეფონის ნომერი' autoFocus={ true } value={phoneNumber} onChangeText={(newValue: any) => setPhoneNumber(newValue)} />
+                <AppInput ref = {InputRef} label='ტელეფონის ნომერი' autoFocus={ true } value={phoneNumber} onChangeText={(newValue: any) => setPhoneNumber(newValue)} />
               </View>
             </View>
             <View style={styles.buttons}>

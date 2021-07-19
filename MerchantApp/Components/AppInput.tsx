@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput } from 'react-native';
 
 
 
 
 
-const AppInput = (props: any) => {
-
+const AppInput = ((props: any, ref: any) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
-
 
     return (
 
@@ -17,13 +15,14 @@ const AppInput = (props: any) => {
             <TextInput
                 style={styles.appInput}
                 {...props}
+                ref = {ref}
                 keyboardType="numeric"
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => { setIsFocused(false) }}
             />
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     labelFocused: {
@@ -52,4 +51,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AppInput;
+export default forwardRef(AppInput);
