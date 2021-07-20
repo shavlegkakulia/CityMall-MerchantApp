@@ -1,11 +1,14 @@
 import React from 'react';
-import { Animated, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import OtpBox from '../Components/OtpBox/OtpBox';
+
+
 
 const Dashboard = (props: any) => {
-    
 
 
-    
+
+
 
     return (
 

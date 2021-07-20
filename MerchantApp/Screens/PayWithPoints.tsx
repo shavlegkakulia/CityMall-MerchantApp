@@ -4,6 +4,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, TextInput, View, TouchableOpac
 import BarCodeReader from '../Components/BarCodeReader';
 import AppInput from '../Components/AppInput';
 import AppModal from '../Components/AppModal';
+import OtpBox from '../Components/OtpBox/OtpBox';
 
 
 
@@ -29,7 +30,7 @@ const PayWithPoints = (props: any) => {
         )
     } else if (step === 1) {
         Content = (
-            <View style={{marginHorizontal: 10}}>
+            <View style={{ marginHorizontal: 10 }}>
                 {/* <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} /> */}
                 <AppInput
                     label='ბარათი'
@@ -39,17 +40,19 @@ const PayWithPoints = (props: any) => {
                     label='თანხა'
                     value={amount}
                     onChangeText={(newValue: any) => setAmount(newValue)} />
-                <View >
-                    <TouchableOpacity onPress={() => { }} style={styles.button}>
-                        <Text style={styles.btntext}>ქულებით გადახდა</Text>
-                    </TouchableOpacity>
-                </View>
 
-                <View style={{marginTop: 60}}>
+
+                <View style={{ marginTop: 60 }}>
                     <Text style={styles.infoText}>დაგროვებითი ვაუჩერი </Text>
-                    
+
                 </View>
 
+            </View>
+        )
+    } else if (step === 2) {
+        Content = (
+            <View>
+                <OtpBox count={4} />
             </View>
         )
     }
@@ -60,6 +63,11 @@ const PayWithPoints = (props: any) => {
     return (
         <View style={{ flex: 1 }}>
             {Content}
+            {step !== 0 ? <View >
+                <TouchableOpacity onPress={() => { setStep(step + 1) }} style={styles.button}>
+                    <Text style={styles.btntext}>ქულებით გადახდა</Text>
+                </TouchableOpacity>
+            </View> : null}
         </View>
     );
 };
@@ -67,23 +75,23 @@ const PayWithPoints = (props: any) => {
 
 const styles = StyleSheet.create({
     button: {
-        width: '100%', 
-        height: 60, 
-        backgroundColor: '#ffda02', 
-        alignItems: 'center', 
+        width: '100%',
+        height: 60,
+        backgroundColor: '#ffda02',
+        alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 7 
+        borderRadius: 7
     },
     btntext: {
         fontSize: 16,
         fontWeight: '500',
         color: 'white'
-    }, 
+    },
     infoText: {
-        marginBottom: 30, 
-        fontWeight: '700', 
-        fontSize: 16,  
-        color:'#00a400' 
+        marginBottom: 30,
+        fontWeight: '700',
+        fontSize: 16,
+        color: '#00a400'
     }
 
 })
