@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Button } from 'react-native';
 
 
 const OtpBox = (props: any) => {
-    const [otp, setOtp] = useState(new Array(props.count).fill(''));
+    const [otp, setOtp] = useState<string[]>(new Array(props.count).fill(''));
+    const [error, setError] = useState<boolean>(false);
     const inputRef0 = useRef<TextInput>();
     const inputRef1 = useRef<TextInput>();
     const inputRef2 = useRef<TextInput>();
@@ -36,24 +37,34 @@ const OtpBox = (props: any) => {
             }
         }
     }
+    const tt = () => {
+        if(otp.some(e => e === '')) {
+            setError(true);
 
-    console.log('otp----->', otp,)
+        } else {
+            setError(false);
+        }
+    }
+    console.log('otp----->', otp, otp.some(e => e === ''))
 
     return (
         <View style={styles.otpBoxConteiner}>
             {otp.map((element, index) => (
                 <TextInput
                     ref={refs[index]}
-                    style={styles.otpBox}
+                    style={[styles.otpBox, {borderColor: error? 'red': '#8d949e'}]}
                     key={index}
                     maxLength={1}
                     selectTextOnFocus
                     keyboardType='numeric'
                     value={element}
+                    onFocus={() => setError(false)}
+                    onBlur = {() => setError(false)}
                     onChangeText={(newValue) => handleChangeText(newValue, index)}
                     onKeyPress={event => { handleFocusPrev(event, index) }}
                 />
             ))}
+            <Button title='test' onPress={tt}/>
         </View>);
 }
 
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderWidth: 1,
         borderRadius: 7,
-        borderColor: '#8d949e',
+        
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
@@ -81,3 +92,5 @@ const styles = StyleSheet.create({
 
 
 export default OtpBox;
+
+
