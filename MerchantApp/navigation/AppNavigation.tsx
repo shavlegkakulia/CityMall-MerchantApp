@@ -6,6 +6,8 @@ import Dashboard from '../Screens/Dashboard';
 import PayWithPoints from '../Screens/PayWithPoints';
 import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
+import AuthScreen from '../Screens/AuthScreen';
+import AuthService from '../services/AuthService';
 
 
 const Stack = createStackNavigator();
@@ -13,7 +15,14 @@ const Stack = createStackNavigator();
 const AppNavigatior = (props: any) => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Dashboard">
+            <Stack.Navigator initialRouteName="AuthScreen">
+
+                {AuthService.getToken() === null ? (<Stack.Screen
+                    name='AuthScreen'
+                    component={AuthScreen}
+                    options={{ title: '', headerShown: false }}
+                />) : (
+                    <>
                 <Stack.Screen
                     name='Dashboard'
                     component={Dashboard}
@@ -33,6 +42,7 @@ const AppNavigatior = (props: any) => {
                     name='CollectPoints'
                     component={CollectPoints}
                     options={{ title: 'ქულების დაგროვება' }} />
+                    
                 <Stack.Screen
                     name='PayWithPoints'
                     component={PayWithPoints}
@@ -42,7 +52,8 @@ const AppNavigatior = (props: any) => {
                     component={TransactionHistory}
                     options={{ title: 'ტრანზაქციების ისტორია' }} />
                 <Stack.Screen
-                    name='ScannerAnimation' component={ScannerAnimation} />
+                    name='ScannerAnimation' component={ScannerAnimation} /> 
+                    </>) }
             </Stack.Navigator>
         </NavigationContainer>
     )

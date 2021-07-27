@@ -14,11 +14,7 @@ const Dashboard = (props: any) => {
       setDeviceId(getUniqueId());
     }, []);
 
-    useEffect(() => {
-        Bonus.GetAccountInfo(card, deviceId).then(res => {
-            console.log('******************************',res)
-        }).catch(error =>{console.log(error)})
-    }, [deviceId])
+   
 
 
 
