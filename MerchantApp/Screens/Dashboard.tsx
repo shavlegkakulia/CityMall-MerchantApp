@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import Bonus from '../services/Bonus';
 import OtpBox from '../Components/OtpBox/OtpBox';
+import { getUniqueId } from 'react-native-device-info';
 
-
+// deviceId = bc410a9ca5485e94
 
 const Dashboard = (props: any) => {
 
+    const [deviceId, setDeviceId] = useState<string>('');
+    let card = '1199110599970303'
+    useEffect(() => {
+      setDeviceId(getUniqueId());
+    }, []);
 
+    useEffect(() => {
+        Bonus.GetAccountInfo(card, deviceId).then(res => {
+            console.log('******************************',res)
+        }).catch(error =>{console.log(error)})
+    }, [deviceId])
 
 
 
@@ -17,7 +29,7 @@ const Dashboard = (props: any) => {
             <View style={styles.merchantLogo}>
                 <Image source={require('../assets/images/zara-logo.png')} />
             </View>
-            <TouchableOpacity style={styles.service} onPress={() => props.navigation.navigate('CollectPoints')}>
+            <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints')}>
                 <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints')}>
@@ -26,7 +38,7 @@ const Dashboard = (props: any) => {
             <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                 <Text style={styles.serviceLabel}>ოპერაციებსი ისტორია</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.service} >
+            <TouchableOpacity style={[styles.service, styles.closeDay]} >
                 <Text style={styles.serviceLabel}>დღის დახურვა</Text>
             </TouchableOpacity>
         </View>
@@ -68,10 +80,16 @@ const styles = StyleSheet.create({
     },
 
     payWithPoints: {
-        backgroundColor: '#ffda02'
+        backgroundColor: '#FFC900'
+    },
+    collectPoints: {
+        backgroundColor: '#3269E5'
     },
     transactionHistory: {
-        backgroundColor: '#f79420'
+        backgroundColor: '#40ADEC'
+    },
+    closeDay: {
+        backgroundColor: '#E50B09'
     },
     serviceLabel: {
         fontSize: 24,

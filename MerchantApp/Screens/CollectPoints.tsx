@@ -9,7 +9,7 @@ const CollectPoints = () => {
 
     const [scannedCode, setScannedCode] = useState<string>('');
     const [amount, setAmount] = useState<string>('');
-    const [showModal, setShowModal] = useState<boolean>(true);
+    const [showModal, setShowModal] = useState<boolean>(false);
     const [step, setStep] = useState<number>(0);
     const [scannCode, setScannCode] = useState<boolean>(false)
 
@@ -24,9 +24,12 @@ const CollectPoints = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Button title='კოდის დასკანერება' onPress = {() => setScannCode(true)}/>
             {scannCode? <BarCodeReader getValue={getScannedValue} /> : null}
              <View style={{marginHorizontal: 10}}>
+             {!scannCode? 
+            <TouchableOpacity style={styles.button} onPress = {() => setScannCode(true)}>
+                <Text style={styles.btntext}>კოდის დასკანერება</Text>
+            </TouchableOpacity> : null}
                 <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} />
                 <AppInput
                     label='ბარათი'
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     button: {
         width: '100%', 
         height: 60, 
-        backgroundColor: 'green', 
+        backgroundColor: '#3269E5', 
         alignItems: 'center', 
         justifyContent: 'center',
         borderRadius: 7 

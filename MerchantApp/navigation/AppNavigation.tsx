@@ -20,7 +20,7 @@ const AppNavigatior = (props: any) => {
                     options={{
                         title: `Device Id: ${props.id}`,
                         headerStyle: {
-                            backgroundColor: '#cfcfcf',
+                            backgroundColor: '#3269E5',
                         },
                         headerTintColor: '#fff',
                         headerTitleStyle: {
