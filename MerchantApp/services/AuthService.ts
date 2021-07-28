@@ -53,6 +53,10 @@ class AuthService {
     return await storage.getItem('access_token');
   };
 
+  async getDeviceId(): Promise<string | null > {
+      return await storage.getItem('device_id');
+  }
+
   async getRefreshToken(): Promise<string | null> {
     return await storage.getItem('refresh_token');
   }
@@ -63,6 +67,14 @@ class AuthService {
       storage.setItem('refresh_token', refreshToken);
     };
   };
+
+  async setDeviceId(deviceId: string): Promise<void> {
+    await storage.setItem('device_id', deviceId);
+  }
+
+  // async removeDeviceId():Promise<void> {
+  //   await storage.removeItem('device_id');
+  // }
 
   async removeToken(): Promise<void> {
     await storage.removeItem('access_token');
@@ -106,10 +118,12 @@ class AuthService {
     const setAuthToken = async (config: AxiosRequestConfig) => {
       config.headers = config.headers || {};
       let token = await this.getToken();
+      let deviceId = await this.getDeviceId()
       if (token) {
         config.headers.Authorization = `Bearer ${token}`,
-          config.headers.device_id = 'bc410a9ca5485e94'
+          config.headers.device_id = deviceId;
       }
+      
     };
 
     const waitForRefresh = (config?: AxiosRequestConfig) => {

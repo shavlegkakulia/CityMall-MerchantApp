@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { getUniqueId } from 'react-native-device-info';
 import AppNavigatior from './navigation/AppNavigation';
 import axios from 'axios';
 import AuthService, { IInterceptop } from './services/AuthService';
+import AuthContext from './services/ContextService';
 
 
 
@@ -10,6 +11,12 @@ const App = () => {
   const [deviceId, setDeviceId] = useState<string>('');
   const [userToken, setUserToken] = useState<string>("");
   const AxiosInterceptor = useRef<IInterceptop[]>([]);
+
+  const {authenticated, setAuthenticated} = useContext(AuthContext);
+  const value = { 
+    authenticated: userToken? true: false,
+    setAuthenticated
+  };
 
   const RegisterCommonInterceptor = () => {
     let requestInterceptor = axios.interceptors.request.use((config) => {
@@ -33,6 +40,8 @@ const App = () => {
 
   }
 
+
+
   const signOut = useCallback(async () => {
     await AuthService.SignOut();
     setUserToken("");
@@ -41,12 +50,15 @@ const App = () => {
 
   useEffect(() => {
     setDeviceId(getUniqueId())
+    console.log(userToken)
   }, []);
+
+
   useEffect(() => {
     AuthService.getToken().then(data => {
       setUserToken(data || "");
     })
-
+    console.log('------------------- mounted', userToken)
   }, [userToken])
 
   useEffect(() => {
@@ -59,7 +71,9 @@ const App = () => {
   
 
   return (
-    <AppNavigatior id={deviceId} />
+    <AuthContext.Provider value={value}>
+      <AppNavigatior id={deviceId} />
+    </AuthContext.Provider>
   );
 };
 

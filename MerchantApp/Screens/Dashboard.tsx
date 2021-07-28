@@ -3,6 +3,7 @@ import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import Bonus from '../services/Bonus';
 import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
+import AuthService from '../services/AuthService';
 
 // deviceId = bc410a9ca5485e94
 
@@ -34,7 +35,7 @@ const Dashboard = (props: any) => {
             <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                 <Text style={styles.serviceLabel}>ოპერაციებსი ისტორია</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.closeDay]} >
+            <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={()=>AuthService.SignOut()} >
                 <Text style={styles.serviceLabel}>დღის დახურვა</Text>
             </TouchableOpacity>
         </View>

@@ -1,73 +1,105 @@
-import React from 'react';
-import { useState } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TextInput, View, TouchableOpacity, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import BarCodeReader from '../Components/BarCodeReader';
 import AppInput from '../Components/AppInput';
-import AppModal from '../Components/AppModal';
+import PointModal from '../Components/PointModal';
 import OtpBox from '../Components/OtpBox/OtpBox';
+import Bonus from '../services/Bonus';
 
 
 
 const PayWithPoints = (props: any) => {
 
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [scannCode, setScannCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
     const [amount, setAmount] = useState<string>('');
-    const [showModal, setShowModal] = useState<boolean>(true);
     const [step, setStep] = useState<number>(0);
+    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, fullName: '' });
+    const [acumulationInfo, setAcumulationIfno] = useState<any>({ fullName: '', bonus: 0, availableBonus: 0 });
 
     const getScannedValue = (value: any) => {
-        setScannedCode(value)
+        setScannedCode(value);
         if (value) {
-            setStep(1);
-        }
+            setScannCode(false);
+        };
+    };
+
+    useEffect(() => {
+        if (scannedCode.length === 16) getUserInfo();
+    }, [scannedCode]);
+
+    const getUserInfo = () => {
+        Bonus.GetAccountInfo(scannedCode).then(res => {
+            if (res.status === 200) {
+                console.log(res.status, '----------------', res.data)
+                setUserInfo({
+                    amount: res.data.amount,
+                    score: res.data.score,
+                    fullName: res.data.fullName
+                });
+            } else {
+                console.log('getAccountinfoResponse', res);
+            };
+        });
+    };
+
+
+
+    const onCloseModal = () => {
+        setUserInfo({ amount: 0, score: 0, fullName: '' });
+        setScannedCode('');
+        setAmount('');
+        setShowModal(false);
+        setAcumulationIfno({ fullName: '', bonus: 0, availableBonus: 0 });
     }
 
-    let Content = null;
+    let PayStep = null;
 
     if (step === 0) {
-        Content = (
-            <BarCodeReader getValue={getScannedValue} />
-        )
-    } else if (step === 1) {
-        Content = (
+        PayStep = (
             <View style={{ marginHorizontal: 10 }}>
-                {/* <AppModal modalVisible={showModal} closeModal={() => setShowModal(false)} /> */}
+                {!scannCode ?
+                    <TouchableOpacity style={styles.button} onPress={() => setScannCode(true)}>
+                        <Text style={styles.btntext}>კოდის დასკანერება</Text>
+                    </TouchableOpacity> : null}
+                <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} />
                 <AppInput
                     label='ბარათი'
                     value={scannedCode}
+                    error={!scannedCode ? true : false}
                     onChangeText={(newValue: any) => setScannedCode(newValue)} />
                 <AppInput
                     label='თანხა'
+                    error={!amount ? true : false}
                     value={amount}
                     onChangeText={(newValue: any) => setAmount(newValue)} />
-
+                <View >
+                    <TouchableOpacity onPress={() => setStep(step + 1)} style={styles.button}>
+                        <Text style={styles.btntext}>ქულების დახარჯვა</Text>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={{ marginTop: 60 }}>
-                    <Text style={styles.infoText}>დაგროვებითი ვაუჩერი </Text>
-
+                    <Text style={[styles.infoText, { marginBottom: 30 }]}>ბარათის სტატუსი : </Text>
+                    <Text style={styles.infoText}>მფლობელი: {userInfo.fullName} </Text>
+                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
+                    <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
+                    <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
                 </View>
 
             </View>
-        )
-    } else if (step === 2) {
-        Content = (
-            <View>
-                <OtpBox count={4} />
-            </View>
-        )
+        );
+    } else if (step === 1) {
+        PayStep = <OtpBox count = {4}/>
     }
-
 
 
 
     return (
         <View style={{ flex: 1 }}>
-            {Content}
-            {step !== 0 ? <View >
-                <TouchableOpacity onPress={() => { setStep(step + 1) }} style={styles.button}>
-                    <Text style={styles.btntext}>ქულებით გადახდა</Text>
-                </TouchableOpacity>
-            </View> : null}
+            {scannCode ? <BarCodeReader getValue={getScannedValue} /> : null}
+            {PayStep}
         </View>
     );
 };
@@ -88,7 +120,6 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     infoText: {
-        marginBottom: 30,
         fontWeight: '700',
         fontSize: 16,
         color: '#00a400'

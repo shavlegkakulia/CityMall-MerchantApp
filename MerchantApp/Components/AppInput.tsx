@@ -20,6 +20,7 @@ const AppInput = ((props: any, ref: any) => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => { setIsFocused(false) }}
             />
+            {props.error? <Text style ={styles.errorText}>გთხოვთ შეავსოთ ველი</Text> : null}
         </View>
     );
 });
@@ -48,6 +49,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         padding: 15
+    },
+    errorText: {
+        color: '#E50B09',
+        fontSize: 10,
+        marginTop: 5
     }
 })
 

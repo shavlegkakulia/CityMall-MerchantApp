@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, TextInput, StyleSheet, Button } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 
 
 const OtpBox = (props: any) => {
@@ -37,34 +37,39 @@ const OtpBox = (props: any) => {
             }
         }
     }
-    const tt = () => {
-        if(otp.some(e => e === '')) {
+    const submitOtp = () => {
+        if (otp.some(e => e === '')) {
             setError(true);
-
-        } else {
-            setError(false);
+            return;
         }
+
+
     }
     console.log('otp----->', otp, otp.some(e => e === ''))
 
     return (
-        <View style={styles.otpBoxConteiner}>
-            {otp.map((element, index) => (
-                <TextInput
-                    ref={refs[index]}
-                    style={[styles.otpBox, {borderColor: error? 'red': '#8d949e'}]}
-                    key={index}
-                    maxLength={1}
-                    selectTextOnFocus
-                    keyboardType='numeric'
-                    value={element}
-                    onFocus={() => setError(false)}
-                    onBlur = {() => setError(false)}
-                    onChangeText={(newValue) => handleChangeText(newValue, index)}
-                    onKeyPress={event => { handleFocusPrev(event, index) }}
-                />
-            ))}
-            <Button title='test' onPress={tt}/>
+        <View style={{ flex: 1, marginHorizontal: 20 }}>
+            <View style={styles.otpBoxConteiner}>
+                {otp.map((element, index) => (
+                    <TextInput
+                        ref={refs[index]}
+                        style={[styles.otpBox, { borderColor: error ? 'red' : '#8d949e' }]}
+                        key={index}
+                        maxLength={1}
+                        selectTextOnFocus
+                        keyboardType='numeric'
+                        value={element}
+                        onFocus={() => setError(false)}
+                        onBlur={() => setError(false)}
+                        onChangeText={(newValue) => handleChangeText(newValue, index)}
+                        onKeyPress={event => { handleFocusPrev(event, index) }}
+                    />
+                ))}
+
+            </View>
+            <Pressable style={styles.button} onPress={submitOtp}>
+                <Text style={styles.btntext}>დადასტურება</Text>
+            </Pressable>
         </View>);
 }
 
@@ -80,14 +85,28 @@ const styles = StyleSheet.create({
         height: 50,
         borderWidth: 1,
         borderRadius: 7,
-        
+
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
         marginVertical: 20,
         textAlign: 'center',
         fontSize: 20
-    }
+    },
+    button: {
+        width: '100%',
+        height: 60,
+        marginTop: 20,
+        backgroundColor: '#ffda02',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 7
+    },
+    btntext: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: 'white'
+    },
 })
 
 
