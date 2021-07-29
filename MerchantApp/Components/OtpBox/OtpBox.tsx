@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
+import Bonus from '../../services/Bonus';
 
 
 const OtpBox = (props: any) => {
@@ -19,6 +20,7 @@ const OtpBox = (props: any) => {
 
     useEffect(() => {
         inputRef0.current?.focus();
+        sendOtp();
     }, [])
 
     const handleChangeText = (value: any, index: any) => {
@@ -41,11 +43,21 @@ const OtpBox = (props: any) => {
         if (otp.some(e => e === '')) {
             setError(true);
             return;
+        } else {
+            let value = otp.join('');
+            props.makePayment(value);
         }
-
-
     }
-    console.log('otp----->', otp, otp.some(e => e === ''))
+
+    const sendOtp = () => {
+        let data = {
+            card: props.card
+        }
+        Bonus.SendOtp(data).then(res => {
+            console.log('OTP---------------->',res.data,  'sssssssssssssssssssssss',data)
+        })
+    }
+
 
     return (
         <View style={{ flex: 1, marginHorizontal: 20 }}>

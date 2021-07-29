@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CollectPoints from '../Screens/CollectPoints';
 import Dashboard from '../Screens/Dashboard';
-import PayWithPoints from '../Screens/PayWithPoints';
 import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
 import AuthScreen from '../Screens/AuthScreen';
@@ -17,12 +16,11 @@ const AppNavigatior = (props: any) => {
     const { authenticated } = useContext(AuthContext);
 
     
-    useEffect(() => {
-        console.log('AUTHENTICATED USEFFECT ----->', authenticated)
-    }, [authenticated])
+
     return (
         <NavigationContainer>
             {/* <AuthContext.Consumer>
+
                 {(context) => */}
                     <Stack.Navigator initialRouteName="AuthScreen">
 
@@ -54,7 +52,7 @@ const AppNavigatior = (props: any) => {
 
                                 <Stack.Screen
                                     name='PayWithPoints'
-                                    component={PayWithPoints}
+                                    component={CollectPoints}
                                     options={{ title: 'ქულების დახარჯვა' }} />
                                 <Stack.Screen
                                     name='TransactionHistory'

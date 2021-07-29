@@ -58,7 +58,6 @@ const App = () => {
     AuthService.getToken().then(data => {
       setUserToken(data || "");
     })
-    console.log('------------------- mounted', userToken)
   }, [userToken])
 
   useEffect(() => {

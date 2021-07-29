@@ -26,7 +26,6 @@ const AuthScreen = (props: any) => {
             if (res.status === 200) {
                 AuthService.setToken(res.data.access_token, res.data.refresh_token);
                 AuthService.setDeviceId(getUniqueId());
-                
                 setAuthenticated(true);
             }
         }).catch(error => console.log(error))

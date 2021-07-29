@@ -12,7 +12,6 @@ const BarCodeReader = (props: any) => {
     const DESIRED_RATIO = "16:9";
     const handleBarCodeRead = (value: any) => {
         if (value.data == barCode) return;
-        console.log('value.data  ===>', value.data)
         props.getValue(value.data)
         setBarCode(value.data.toString());
     }

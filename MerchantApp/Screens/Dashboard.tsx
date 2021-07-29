@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
-import Bonus from '../services/Bonus';
-import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
 
 // deviceId = bc410a9ca5485e94
 
 const Dashboard = (props: any) => {
-
-    const [deviceId, setDeviceId] = useState<string>('');
-    let card = '1199110599970303'
-    useEffect(() => {
-      setDeviceId(getUniqueId());
-    }, []);
-
-   
-
-
 
     return (
 
@@ -26,10 +14,10 @@ const Dashboard = (props: any) => {
             <View style={styles.merchantLogo}>
                 <Image source={require('../assets/images/zara-logo.png')} />
             </View>
-            <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints')}>
+            <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', {type: 'Collect' })}>
                 <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints')}>
+            <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', {type: 'Pay'})}>
                 <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>

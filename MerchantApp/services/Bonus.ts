@@ -31,27 +31,29 @@ export interface IICollectPointsResponse {
 
 export interface IPayWithPointsRequest {
     card: string,
-    amount: number,
+    amount: number | string,
     batchId: string,
     deviceTranId: string,
     otp: string
 }
 
 export interface IPayWithPointsResponse {
-    userId: number,
-    firstName: string,
-    lastName: string,
-    userRole: number,
-    userName: string,
-    phoneNumber: string,
-    secondaryPhoneNumber: string,
-    email: string,
-    merchantId: string,
-    address: string,
-    personCode: string,
-    birthDate: string,
-    sex: number,
-    operUserId: number
+  spentBonus: number,
+  orgName: string,
+  terminalId: string,
+  address: string,
+  receiptId: string,
+  tranType: string,
+  accumBonus: number,
+  status: string,
+  bonus: number,
+  amount: number,
+  card: string,
+  tranDate: string,
+  merchantName: string,
+  stan: string,
+  availableScore: number,
+  availableAmount: number
 }
 
 
@@ -88,6 +90,7 @@ export interface IGetAccountInfroResponse {
     errorCode?: number,
     errorDesc?: string,
     fullName?: string,
+    initials?: string
     score?: number
 }
 
@@ -96,7 +99,8 @@ export interface ISendOtpRequest {
 }
 
 export interface ISendOtpResponse {
-
+    errorDesc: string,
+    errorCode: number
 }
 
 class Bonus {
@@ -106,7 +110,7 @@ class Bonus {
     }
 
     PayWithPoints = async (data: IPayWithPointsRequest) => {
-        return await axios.post<IPayWithPointsResponse>(`${env.API_URL}/api​/Bonus​/MakePayment`, data);
+        return await axios.post<IPayWithPointsResponse>(`${env.API_URL}/api/Bonus/MakePayment`, data);
     }
 
     CloseDay = async (data: ICloseDayRequest) => {
@@ -118,7 +122,7 @@ class Bonus {
     }
 
     SendOtp = async (data: ISendOtpRequest) => {
-        return await axios.post(`${env.API_URL}/api/Bonus/SendOtp`,)
+        return await axios.post(`${env.API_URL}/api/Bonus/SendOtp`, data)
     }
 }
 

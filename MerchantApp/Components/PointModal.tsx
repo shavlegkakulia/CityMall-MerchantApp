@@ -4,7 +4,7 @@ import {StyleSheet, Text, View, Modal, Pressable, Image,  } from 'react-native'
 
 
 const PointModal = (props: any) => {
- const {collectInfo, modalVisible, closeModal} = props;
+ const {collectInfo, modalVisible, closeModal, type} = props;
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -21,12 +21,16 @@ const PointModal = (props: any) => {
                   <Image style={{width: 60, height: 60}} source ={require('../assets/images/success_mark.png')} />
               </View>
             <View style={styles.modalContent}>
-              <Text style={styles.modalText}>ბარათის მფლობელი: {collectInfo.fullName}</Text>
-              <Text style={styles.modalText}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
-              <Text style={styles.modalText}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
-              <Text style={styles.modalText}>კლიენტის სტატუსი: </Text>
+              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>ბარათის მფლობელი: {collectInfo.initials}</Text>
+              {type === 'Pay'? 
+                <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დახარჯული ქულა: {collectInfo.bonus}</Text> : 
+                <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
+              }
+              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
+              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
+              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>კლიენტის სტატუსი: </Text>
             </View>
-              <Pressable style={styles.button} onPress={closeModal}>
+              <Pressable style={[styles.button,  type === 'Pay'? styles.buttonPay: styles.buttonCollect]} onPress={closeModal}>
                 <Text style={styles.btnText}>დახურვა</Text>
               </Pressable>
           </View>
@@ -75,10 +79,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'green',
+   
     borderRadius: 7,
     marginBottom: 40
     
+  },
+
+  buttonCollect: {
+    backgroundColor: 'green',
+  },
+  buttonPay: {
+    backgroundColor: '#ffda02'
   },
   
   btnText: {
@@ -91,7 +102,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     fontWeight: '700',
-    color: 'green'
+  },
+
+  modalTextCollect: {
+    color: 'green', 
+  },
+  modalTextPay: {
+    color: '#ffda02'
   }
 });
 
