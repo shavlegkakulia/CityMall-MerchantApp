@@ -5,6 +5,8 @@ import BarCodeReader from '../Components/BarCodeReader';
 import Bonus from '../services/Bonus';
 import PointModal from '../Components/PointModal';
 import OtpBox from '../Components/OtpBox/OtpBox';
+import { getUniqueId } from 'react-native-device-info';
+import { getTransactions, addTransaction, ITransaction, clearTransactions } from '../services/TransactionService';
 
 const CollectPoints = (props: any) => {
 
@@ -17,6 +19,7 @@ const CollectPoints = (props: any) => {
     const [amount, setAmount] = useState<string>('');
     const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '' });
     const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0 });
+    const [stan, setStan] = useState<any>('')
 
 
     console.log('route params', type)
@@ -34,6 +37,7 @@ const CollectPoints = (props: any) => {
 
     const GetUserInfo = () => {
         Bonus.GetAccountInfo(scannedCode).then(res => {
+            console.log('+++++++++++++++++++++++', res)
             if (res.status === 200) {
                 console.log(res.status, '----------------', res.data)
                 setUserInfo({
@@ -48,7 +52,6 @@ const CollectPoints = (props: any) => {
     };
 
     const collectPoints = () => {
-        console.log('clicked', amount, scannCode)
         if (!scannedCode || !amount) return;
         console.log('clicked')
         let data = {
@@ -57,12 +60,24 @@ const CollectPoints = (props: any) => {
             batchId: "1",
             productId: 1
         }
-        
+
         Bonus.CollectPoints(data).then(res => {
             if (res.status === 200) {
+                let transaction: ITransaction = {
+                    tranAmount: Number(amount),
+                    batchId: '1',
+                    card: scannedCode,
+                    deviceId: getUniqueId(),
+                    respCode: '000',
+                    stan: res.data.stan,
+                    tranDate: Date.now(),
+                    tranType: res.data.tranType,
+                    reversed: false
+                }
+                addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
-                    bonus: res.data.bonus,
+                    bonus: res.data.accumBonus,
                     availableBonus: res.data.availableScore
                 });
                 setShowModal(true);
@@ -85,6 +100,18 @@ const CollectPoints = (props: any) => {
         }
         Bonus.PayWithPoints(data).then(res => {
             if (res.status === 200) {
+                let transaction: ITransaction = {
+                    tranAmount: Number(amount),
+                    batchId: '1',
+                    card: scannedCode,
+                    deviceId: getUniqueId(),
+                    respCode: '000',
+                    stan: res.data.stan,
+                    tranDate: Date.now(),
+                    tranType: res.data.tranType,
+                    reversed: false
+                }
+                addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
                     bonus: res.data.spentBonus,
@@ -103,8 +130,15 @@ const CollectPoints = (props: any) => {
         setAmount('');
         setShowModal(false);
         setAcumulationIfno({ initials: '', bonus: 0, availableBonus: 0 });
+        console.log('transactions from storage =========>', getTransactions());
     }
 
+
+    const tt = () => {
+        Bonus.ReverseTransaction(1, stan).then(res => {
+            console.log(res)
+        })
+    }
 
 
 
@@ -147,7 +181,7 @@ const CollectPoints = (props: any) => {
                 </View>
             </View>
         );
-    }else if (step === 1) {
+    } else if (step === 1) {
         PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} />
     };
 

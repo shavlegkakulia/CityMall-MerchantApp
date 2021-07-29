@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
-
+import { clearTransactions } from '../services/TransactionService';
+clearTransactions
 // deviceId = bc410a9ca5485e94
 
 const Dashboard = (props: any) => {
@@ -23,7 +24,9 @@ const Dashboard = (props: any) => {
             <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                 <Text style={styles.serviceLabel}>ოპერაციებსი ისტორია</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={()=>AuthService.SignOut()} >
+            <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={()=>{
+                clearTransactions();
+                AuthService.SignOut()}} >
                 <Text style={styles.serviceLabel}>დღის დახურვა</Text>
             </TouchableOpacity>
         </View>

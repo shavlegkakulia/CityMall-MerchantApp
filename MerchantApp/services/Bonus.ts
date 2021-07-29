@@ -113,6 +113,9 @@ class Bonus {
         return await axios.post<IPayWithPointsResponse>(`${env.API_URL}/api/Bonus/MakePayment`, data);
     }
 
+    ReverseTransaction = async(type:number, data:any) => {
+        return await axios.post(`${env.API_URL}/api/Bonus/ReverseTransaction?transactionType=${type}`, data);
+    }
     CloseDay = async (data: ICloseDayRequest) => {
         return await axios.post<ICloseDayResponse>(`${env.API_URL}/api/Bonus/CloseDay`, data);
     }
