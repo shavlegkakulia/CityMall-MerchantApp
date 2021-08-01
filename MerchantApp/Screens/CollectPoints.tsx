@@ -17,12 +17,9 @@ const CollectPoints = (props: any) => {
     const [scannCode, setScannCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
     const [amount, setAmount] = useState<string>('');
-    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '' });
+    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
     const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0 });
-    const [stan, setStan] = useState<any>('')
 
-
-    console.log('route params', type)
 
     const getScannedValue = (value: any) => {
         setScannedCode(value);
@@ -37,13 +34,13 @@ const CollectPoints = (props: any) => {
 
     const GetUserInfo = () => {
         Bonus.GetAccountInfo(scannedCode).then(res => {
-            console.log('+++++++++++++++++++++++', res)
+            console.log('+++++++++++++++++++++++', res.data )
             if (res.status === 200) {
-                console.log(res.status, '----------------', res.data)
                 setUserInfo({
                     amount: res.data.amount,
                     score: res.data.score,
-                    initials: res.data.initials
+                    initials: res.data.initials,
+                    clientStatus: res.data.clientStatus
                 });
             } else {
                 console.log('getAccountinfoResponse', res);
@@ -59,7 +56,7 @@ const CollectPoints = (props: any) => {
             amount: amount,
             batchId: "1",
             productId: 1
-        }
+        };
 
         Bonus.CollectPoints(data).then(res => {
             if (res.status === 200) {
@@ -73,7 +70,7 @@ const CollectPoints = (props: any) => {
                     tranDate: Date.now(),
                     tranType: res.data.tranType,
                     reversed: false
-                }
+                };
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
@@ -81,14 +78,14 @@ const CollectPoints = (props: any) => {
                     availableBonus: res.data.availableScore
                 });
                 setShowModal(true);
-            }
+            };
         });
     };
 
     const sendOtp = () => {
         if (!scannedCode || !amount) return;
         setStep(step + 1);
-    }
+    };
 
     const PayWithPoints = (otp: string) => {
         let data = {
@@ -97,7 +94,7 @@ const CollectPoints = (props: any) => {
             batchId: "1",
             otp: otp,
             deviceTranId: "1"
-        }
+        };
         Bonus.PayWithPoints(data).then(res => {
             if (res.status === 200) {
                 let transaction: ITransaction = {
@@ -110,19 +107,20 @@ const CollectPoints = (props: any) => {
                     tranDate: Date.now(),
                     tranType: res.data.tranType,
                     reversed: false
-                }
+                };
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
+                    clientStatis: userInfo.clientStatus,
                     bonus: res.data.spentBonus,
                     availableBonus: res.data.availableScore
                 });
-            }
+            };
             setStep(0);
             setShowModal(true);
-            console.log('++++++++++++++++++++++++ Pay With Point', res.data)
-        })
-    }
+
+        });
+    };
 
     const onCloseModal = () => {
         setUserInfo({ amount: 0, score: 0, initials: '' });
@@ -130,20 +128,10 @@ const CollectPoints = (props: any) => {
         setAmount('');
         setShowModal(false);
         setAcumulationIfno({ initials: '', bonus: 0, availableBonus: 0 });
-        console.log('transactions from storage =========>', getTransactions());
-    }
+    };
 
 
-    const tt = () => {
-        Bonus.ReverseTransaction(1, stan).then(res => {
-            console.log(res)
-        })
-    }
-
-
-
-
-    let PayStep = null
+    let PayStep = null;
     if (step === 0) {
         PayStep = (
             <View style={{ marginHorizontal: 10 }}>
@@ -171,13 +159,13 @@ const CollectPoints = (props: any) => {
                             <Text style={styles.btntext}>ქულების დაგროვება</Text>
                         </TouchableOpacity>}
                 </View>
-                
+
                 <View style={{ marginTop: 60 }}>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect, { marginBottom: 30 }]}>ბარათის სტატუსი : </Text>
+                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect, { marginBottom: 30 }]}>ბარათის სტატუსი : აქტიური</Text>
                     <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>მფლობელი: {userInfo.initials} </Text>
                     <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
                     <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>კლიენტის სტატუსი: </Text>
+                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
                 </View>
             </View>
         );

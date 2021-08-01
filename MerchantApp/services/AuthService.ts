@@ -94,11 +94,11 @@ class AuthService {
     const loginObj = new URLSearchParams();
     loginObj.append('username', data.username || '');
     loginObj.append('password', data.password);
-    loginObj.append('scope', 'MerchantApi');
+    loginObj.append('scope', 'MerchantApi offline_access');
     loginObj.append('client_id', 'MerchantApi');
     loginObj.append('client_secret', 'secret');
     loginObj.append('grant_type', 'password');
-    return await axios.post(`${envs.CONNECT_URL}/connect/token`, loginObj, config);
+    return await axios.post(`http://109.238.238.195:17411/connect/token`, loginObj, config);
   };
 
 
@@ -161,7 +161,7 @@ class AuthService {
         return response;
       },
       async (error: any) => {
-       // console.log('+++++++++error in auth interceptor++++++++++', JSON.stringify(error.response), JSON.parse(JSON.stringify(error.response)).data.error)
+        console.log('+++++++++error in auth interceptor++++++++++', JSON.stringify(error.response), JSON.parse(JSON.stringify(error.response)).data.error)
         error.response = error.response || {};
 
         //Reject promise if usual error
@@ -198,14 +198,16 @@ class AuthService {
         }
 
         const refreshObj = new URLSearchParams();
-        refreshObj.append('scope', 'MerchantApi');
+        refreshObj.append('scope', 'MerchantApi offline_access');
         refreshObj.append('client_id', 'MerchantApi');
         refreshObj.append('client_secret', 'secret');
         refreshObj.append('grant_type', 'refresh_token');
         refreshObj.append('refresh_token', await this.getRefreshToken() || '');
+       
         return axios
-          .post<IAuthResponse>(`${envs.CONNECT_URL}connect/token`, refreshObj, config)
+          .post<IAuthResponse>(`http://109.238.238.195:17411/connect/token`, refreshObj, config)
           .then(async response => {
+           console.log('aqane ====================================')
             if (!response.data.access_token) throw response;
             await this.setToken(
               response.data.access_token,

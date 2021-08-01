@@ -91,7 +91,8 @@ export interface IGetAccountInfroResponse {
     errorDesc?: string,
     fullName?: string,
     initials?: string
-    score?: number
+    score?: number,
+    clientStatus?: string
 }
 
 export interface ISendOtpRequest {

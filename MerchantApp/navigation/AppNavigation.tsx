@@ -6,25 +6,22 @@ import Dashboard from '../Screens/Dashboard';
 import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
 import AuthScreen from '../Screens/AuthScreen';
-import AuthService from '../services/AuthService';
-import AuthContext from '../services/ContextService';
+import {AppContext} from '../services/ContextService';
 
 
 const Stack = createStackNavigator();
 
 const AppNavigatior = (props: any) => {
-    const { authenticated } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AppContext);
 
     
 
     return (
         <NavigationContainer>
-            {/* <AuthContext.Consumer>
 
-                {(context) => */}
                     <Stack.Navigator initialRouteName="AuthScreen">
 
-                        {authenticated === false ? (<Stack.Screen
+                        {isAuthenticated === false ? (<Stack.Screen
                             name='AuthScreen'
                             component={AuthScreen}
                             options={{ title: '', headerShown: false }}
@@ -63,7 +60,6 @@ const AppNavigatior = (props: any) => {
                             </>)}
                     </Stack.Navigator>
                     
-            {/* </AuthContext.Consumer> */}
         </NavigationContainer>
     )
 }

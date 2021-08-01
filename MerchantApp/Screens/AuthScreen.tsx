@@ -4,7 +4,7 @@ import Bonus from '../services/Bonus';
 import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
-import AuthContext from '../services/ContextService';
+import {AppContext} from '../services/ContextService';
 
 // deviceId = bc410a9ca5485e94
 
@@ -13,7 +13,7 @@ const AuthScreen = (props: any) => {
     const [password, setPassword] = useState<string>('123123');
 
 
-    const {setAuthenticated} = useContext(AuthContext);
+    const {signIn} = useContext(AppContext);
 
 
 
@@ -24,9 +24,10 @@ const AuthScreen = (props: any) => {
         }
         AuthService.SignIn(data).then(res => {
             if (res.status === 200) {
+                console.log(res.data)
                 AuthService.setToken(res.data.access_token, res.data.refresh_token);
                 AuthService.setDeviceId(getUniqueId());
-                setAuthenticated(true);
+                signIn();
             }
         }).catch(error => console.log(error))
     }

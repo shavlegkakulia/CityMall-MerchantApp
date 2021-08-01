@@ -1,61 +1,100 @@
-import React, {useState, useEffect} from 'react';
-import {ScrollView, StatusBar,StyleSheet,Text,View, TouchableOpacity, Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, StatusBar, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Bonus from '../services/Bonus';
 import { getTransactions, updateTransactions } from '../services/TransactionService';
+import ConfirmationModal from '../Components/ConfirmationModal';
 
 const TransactionHistory = () => {
 
     const [transactions, setTransactions] = useState([]);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [selectedTran, setSelectedTran] = useState<any>();
+
+    const formatDate = (dateString: string) => {
+        if (!dateString) return "";
+        let dateObj = new Date(dateString);
+        let month = dateObj.getUTCMonth() + 1; //months from 1-12
+        let day = dateObj.getUTCDate();
+        let year = dateObj.getUTCFullYear();
+        let minutes = dateObj.getMinutes();
+        let hour = dateObj.getHours();
+        let newdate =
+            ("0" + day).slice(-2) +
+            "." +
+            ("0" + month).slice(-2) +
+            "." +
+            year +
+            " " +
+            ("0" + hour).slice(-2) +
+            ":" +
+            ("0" + minutes).slice(-2);
+        return newdate;
+    }
 
     useEffect(() => {
-        initialize();
-    }, [])
+        loadTransactions();
+    }, []);
 
-    const initialize = () => {
+    const loadTransactions = () => {
         getTransactions().then(res => {
-            setTransactions(res)
+            setTransactions(res);
         });
     }
 
-    const reverseTransaction = async(tran: any) => {
-        let type = tran.tranType === 'Payment'? 2: 1;
+    const reverseTransaction = async () => {
+        console.log('reverse action --------------->', selectedTran)
+        let type = selectedTran.tranType === 'Payment' ? 2 : 1;
         let reverseData = {
-            card: tran.card,
-            amount: tran.tranAmount,
-            deviceId: tran.deviceId,
-            stan: tran.stan
-        }
-        console.log(type,reverseData )
+            card: selectedTran.card,
+            amount: selectedTran.tranAmount,
+            deviceId: selectedTran.deviceId,
+            stan: selectedTran.stan
+        };
         Bonus.ReverseTransaction(type, reverseData).then(res => {
-            console.log('*******************************', res)
-            if(res.status === 200) {
-              updateTransactions(tran.stan).then(()=> {
-                initialize();
-              });
+            console.log('ssssssssssssssssssssssssssss', res.data)
+            if (res.status === 200) {
+                updateTransactions(selectedTran.stan).then(() => {
+                    loadTransactions();
+                    setShowModal(false);
+                });
+            } else {
+                console.log('****************', res.data)
+            };
+            
+        }).catch(e => console.log(JSON.stringify(e)));
+    };
 
-
-            }
-        }).catch(e =>console.log('88888888888888888888888888888', JSON.stringify(e)))
+    const confirmReverse = (tran: any) => {
+        setSelectedTran(tran);
+        setShowModal(true);
+        return;
     }
-    const Transaction =(props: any)=> {
-        const {card, reversed, tranAmount, tranDate, tranType} = props.transaction;
+
+    const Transaction = (props: any) => {
+        const { card, reversed, tranAmount, tranDate, tranType } = props.transaction;
         return (
-            <View style = {[styles.tranWrap, tranType === 'Payment'? styles.tranWrapPay : styles.tranWrapCollect]} pointerEvents = {reversed? 'none' : 'auto'}>
+            <View
+                style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect]}
+                pointerEvents={reversed ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
                     <Text>თანხა: {tranAmount}</Text>
-                    <Text>თარიღი: {tranDate}</Text>
+                    <Text>თარიღი: {formatDate(tranDate)}</Text>
                 </View>
-                <TouchableOpacity onPress={()=>{reverseTransaction(props.transaction)}}>
-                    <Image style={[styles.reversalImg, reversed? styles.reversed: {}]} source = {require('../assets/images/reversal.png')}/>
+                <TouchableOpacity onPress={() => confirmReverse(props.transaction)}>
+                    <Image style={[styles.reversalImg, reversed ? styles.reversed : {}]} source={require('../assets/images/reversal.png')} />
                 </TouchableOpacity>
             </View>
         )
     }
-    
+
     return (
         <ScrollView style={styles.mainContainer}>
-            {transactions?.map((tran, index) => (<Transaction key= {index} transaction = {tran} />))}
+            <ConfirmationModal
+                modalVisible={showModal}
+                closeModal={() => setShowModal(false)}
+                onReverseTransaction={reverseTransaction} />
+            {transactions?.map((tran, index) => (<Transaction key={index} transaction={tran} />))}
         </ScrollView>
     );
 };
@@ -90,7 +129,7 @@ const styles = StyleSheet.create({
         height: 30,
     },
 
-    reversed : {
+    reversed: {
         opacity: 0.3,
     }
 })

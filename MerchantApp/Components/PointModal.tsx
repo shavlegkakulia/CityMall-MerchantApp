@@ -26,7 +26,6 @@ const PointModal = (props: any) => {
                 <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დახარჯული ქულა: {collectInfo.bonus}</Text> : 
                 <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
               }
-              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
               <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
               <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>კლიენტის სტატუსი: </Text>
             </View>
