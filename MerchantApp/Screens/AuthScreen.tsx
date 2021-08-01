@@ -1,23 +1,28 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button } from 'react-native';
-import Bonus from '../services/Bonus';
-import OtpBox from '../Components/OtpBox/OtpBox';
+import React, { useState, useContext } from 'react';
+import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, ActivityIndicatorBase, ActivityIndicator } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
-import {AppContext} from '../services/ContextService';
+import { AppContext } from '../services/ContextService';
+import AppButton from '../Components/AppButton';
 
+const deviceHeight = Dimensions.get('screen').height;
+const deviceWidth = Dimensions.get('screen').width;
 // deviceId = bc410a9ca5485e94
 
 const AuthScreen = (props: any) => {
     const [userName, setUserName] = useState<string>('ggggg');
     const [password, setPassword] = useState<string>('123123');
+    const [btnLoading, setBtnLoading] = useState<boolean>(false)
 
 
-    const {setIsAuth} = useContext(AppContext);
+    const { setIsAuth } = useContext(AppContext);
+
+    console.log('height ----> ', Dimensions.get('screen').height)
 
 
 
     const login = () => {
+        setBtnLoading(true);
         let data = {
             username: userName,
             password: password
@@ -27,34 +32,37 @@ const AuthScreen = (props: any) => {
                 AuthService.setToken(res.data.access_token, res.data.refresh_token);
                 AuthService.setDeviceId(getUniqueId());
                 setIsAuth(true);
+                setBtnLoading(false);
+            } else {
+                setBtnLoading(false);
             }
-        }).catch(error => console.log(error))
+        }).catch(error => {console.log(error); setBtnLoading(false)})
     }
 
-    
+
 
     return (
-            <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <View style={styles.imageWrap}>
-                    <Image style={styles.image} source={require('../assets/images/Arrow-topLeft.png')} />
-                    <Image style={styles.image} source={require('../assets/images/Arrow-topRight.png')} />
-                </View>
-                <View style={styles.middleContent}>
-                    <Text style={{ textAlign: 'center', fontSize: 26 }}>ავტორიზაცია</Text>
-                    <View>
-                        <TextInput style={styles.authInput} value={userName} onChangeText={(val) => setUserName(val)} />
-                        <TextInput style={styles.authInput} value={password} onChangeText={(val) => setPassword(val)} />
-                    </View>
-
-                    <TouchableOpacity style={{ width: 300, height: 60, backgroundColor: 'blue', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', borderRadius: 10 }} onPress={login}>
-                        <Text style={{ fontSize: 20, color: 'white' }}>ავტორიზაცია</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.imageWrap}>
-                    <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
-                    <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
-                </View>
+        <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View style={[styles.imageWrap, {alignItems: 'flex-start'}]}>
+                <Image style={styles.image} source={require('../assets/images/Arrow-topLeft.png')} />
+                <Image style={styles.image} source={require('../assets/images/Arrow-topRight.png')} />
             </View>
+            <View style={styles.middleContent}>
+                <View>
+                    <TextInput style={styles.authInput} value={userName} onChangeText={(val) => setUserName(val)} />
+                    <TextInput style={styles.authInput} value={password} onChangeText={(val) => setPassword(val)} />
+                </View>
+                <AppButton 
+                    btnStyle = {styles.authButton} 
+                    buttonTitle = 'ავტორიზაცია' 
+                    titleStylee ={{fontSize: 20, color: 'white'}} 
+                    onPress={login} isLoading = {btnLoading}/>
+            </View>
+            <View style={[styles.imageWrap, {alignItems: 'flex-end'}]}>
+                <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
+                <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
+            </View>
+        </View>
     )
 
 }
@@ -66,20 +74,33 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     image: {
-        width: 115,
-        height: 115,
+        width: (deviceHeight / 12) * 2,
+        height: (deviceHeight / 12) * 2,
+        opacity: 0.5
     },
     middleContent: {
         flex: 8,
         alignSelf: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
     },
     authInput: {
-        width: 325,
-        height: 66,
+        width: deviceWidth - 80,
+        height: deviceHeight / 12,
         backgroundColor: '#E6E7E8',
         borderRadius: 10,
-        marginBottom: 20
+        marginBottom: 20,
+        paddingLeft: 20
+    },
+    authButton: {
+        width: deviceWidth - 80,
+        height: deviceHeight / 12,
+        backgroundColor: 'blue',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: 10
+
+
     }
 
 })

@@ -7,6 +7,7 @@ import PointModal from '../Components/PointModal';
 import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import { getTransactions, addTransaction, ITransaction, clearTransactions } from '../services/TransactionService';
+import AppButton from '../Components/AppButton';
 
 const ManagePoints = (props: any) => {
 
@@ -16,6 +17,7 @@ const ManagePoints = (props: any) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [scannCode, setScannCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
+    const [btnLoading, setBtnLoading] = useState<boolean>(false)
     const [amount, setAmount] = useState<string>('');
     const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
     const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0 });
@@ -33,6 +35,7 @@ const ManagePoints = (props: any) => {
     }, [scannedCode]);
 
     const GetUserInfo = () => {
+        setBtnLoading(true);
         Bonus.GetAccountInfo(scannedCode).then(res => {
             if (res.status === 200) {
                 setUserInfo({
@@ -41,13 +44,16 @@ const ManagePoints = (props: any) => {
                     initials: res.data.initials,
                     clientStatus: res.data.clientStatus
                 });
+                setBtnLoading(false)
             } else {
+                setBtnLoading(false)
                 console.log('getAccountinfoResponse', res);
             };
         });
     };
 
     const collectPoints = () => {
+        setBtnLoading(true)
         if (!scannedCode || !amount) return;
         let data = {
             card: scannedCode,
@@ -72,12 +78,15 @@ const ManagePoints = (props: any) => {
                 };
                 addTransaction(transaction);
                 setAcumulationIfno({
-                    initials: userInfo.initials, 
-                    
+                    initials: userInfo.initials,
+
                     bonus: res.data.accumulatedBonus,
                     availableBonus: res.data.availableScore
                 });
                 setShowModal(true);
+                setBtnLoading(false);
+            } else {
+                setBtnLoading(false)
             };
         });
     };
@@ -88,6 +97,7 @@ const ManagePoints = (props: any) => {
     };
 
     const PayWithPoints = (otp: string) => {
+        setBtnLoading(true);
         let data = {
             card: scannedCode,
             amount: Number(amount),
@@ -115,6 +125,9 @@ const ManagePoints = (props: any) => {
                     bonus: res.data.spentBonus,
                     availableBonus: res.data.availableScore
                 });
+                setBtnLoading(false);
+            } else {
+                setBtnLoading(false);
             };
             setStep(0);
             setShowModal(true);
@@ -152,12 +165,19 @@ const ManagePoints = (props: any) => {
                     onChangeText={(newValue: any) => setAmount(newValue)} />
                 <View >
                     {type === 'Pay' ?
-                        <TouchableOpacity onPress={sendOtp} style={[styles.button, styles.buttonPay]}>
-                            <Text style={styles.btntext}>ქულებით გადახდა</Text>
-                        </TouchableOpacity> :
-                        <TouchableOpacity onPress={collectPoints} style={[styles.button, styles.buttonCollect]}>
-                            <Text style={styles.btntext}>ქულების დაგროვება</Text>
-                        </TouchableOpacity>}
+                        <AppButton
+                            btnStyle={[styles.button, styles.buttonPay]}
+                            buttonTitle='ქულებით გადახდა'
+                            titleStylee={styles.btntext}
+                            onPress={sendOtp}
+                            isLoading={btnLoading} />
+                        :
+                        <AppButton
+                            btnStyle={[styles.button, styles.buttonCollect]}
+                            buttonTitle='ქულების დაგროვება'
+                            titleStylee={styles.btntext}
+                            onPress={collectPoints}
+                            isLoading={false} />}
                 </View>
 
                 <View style={{ marginTop: 60 }}>
