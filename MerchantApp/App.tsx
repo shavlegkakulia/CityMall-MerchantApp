@@ -3,7 +3,7 @@ import { getUniqueId } from 'react-native-device-info';
 import AppNavigatior from './navigation/AppNavigation';
 import axios from 'axios';
 import AuthService, { IInterceptop } from './services/AuthService';
-import AuthProvider, {AppContext} from './services/ContextService';
+import AuthProvider, { AppContext } from './services/ContextService';
 
 
 
@@ -12,8 +12,8 @@ const App = () => {
   const [userToken, setUserToken] = useState<string>("");
   const AxiosInterceptor = useRef<IInterceptop[]>([]);
 
-  const {signOut} = useContext(AppContext)
- 
+  const { setIsAuth } = useContext(AppContext)
+
 
   const RegisterCommonInterceptor = () => {
     let requestInterceptor = axios.interceptors.request.use((config) => {
@@ -42,19 +42,21 @@ const App = () => {
   const logOut = useCallback(async () => {
     await AuthService.SignOut();
     setUserToken("");
-    signOut();
+    setIsAuth(false);
   }, [userToken])
- 
+
 
   useEffect(() => {
     setDeviceId(getUniqueId())
-    console.log(userToken)
   }, []);
 
 
   useEffect(() => {
     AuthService.getToken().then(data => {
+      console.log( 'aqane', data, 'aqane')
+      if(data) setIsAuth(true);
       setUserToken(data || "");
+      
     })
   }, [userToken])
 
@@ -65,7 +67,7 @@ const App = () => {
       AxiosInterceptor.current.forEach(sub => sub.unsubscribe());
     }
   }, [])
-  
+
 
   return (
     <AuthProvider>

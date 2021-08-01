@@ -8,7 +8,7 @@ import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import { getTransactions, addTransaction, ITransaction, clearTransactions } from '../services/TransactionService';
 
-const CollectPoints = (props: any) => {
+const ManagePoints = (props: any) => {
 
     const { type } = props.route.params;
 
@@ -34,7 +34,6 @@ const CollectPoints = (props: any) => {
 
     const GetUserInfo = () => {
         Bonus.GetAccountInfo(scannedCode).then(res => {
-            console.log('+++++++++++++++++++++++', res.data )
             if (res.status === 200) {
                 setUserInfo({
                     amount: res.data.amount,
@@ -50,7 +49,6 @@ const CollectPoints = (props: any) => {
 
     const collectPoints = () => {
         if (!scannedCode || !amount) return;
-        console.log('clicked')
         let data = {
             card: scannedCode,
             amount: amount,
@@ -59,9 +57,10 @@ const CollectPoints = (props: any) => {
         };
 
         Bonus.CollectPoints(data).then(res => {
+            console.log('pppppppppppppppppp', res.data)
             if (res.status === 200) {
                 let transaction: ITransaction = {
-                    tranAmount: Number(amount),
+                    tranAmount: res.data.accumulatedBonus,
                     batchId: '1',
                     card: scannedCode,
                     deviceId: getUniqueId(),
@@ -73,8 +72,9 @@ const CollectPoints = (props: any) => {
                 };
                 addTransaction(transaction);
                 setAcumulationIfno({
-                    initials: userInfo.initials,
-                    bonus: res.data.accumBonus,
+                    initials: userInfo.initials, 
+                    
+                    bonus: res.data.accumulatedBonus,
                     availableBonus: res.data.availableScore
                 });
                 setShowModal(true);
@@ -98,7 +98,7 @@ const CollectPoints = (props: any) => {
         Bonus.PayWithPoints(data).then(res => {
             if (res.status === 200) {
                 let transaction: ITransaction = {
-                    tranAmount: Number(amount),
+                    tranAmount: res.data.spentBonus,
                     batchId: '1',
                     card: scannedCode,
                     deviceId: getUniqueId(),
@@ -221,4 +221,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default CollectPoints;
+export default ManagePoints;

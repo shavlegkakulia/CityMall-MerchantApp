@@ -1,7 +1,7 @@
 import React, { useEffect,  useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import CollectPoints from '../Screens/CollectPoints';
+import ManagePoints from '../Screens/ManagePoints';
 import Dashboard from '../Screens/Dashboard';
 import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
@@ -44,12 +44,12 @@ const AppNavigatior = (props: any) => {
                                     }} />
                                 <Stack.Screen
                                     name='CollectPoints'
-                                    component={CollectPoints}
+                                    component={ManagePoints}
                                     options={{ title: 'ქულების დაგროვება' }} />
 
                                 <Stack.Screen
                                     name='PayWithPoints'
-                                    component={CollectPoints}
+                                    component={ManagePoints}
                                     options={{ title: 'ქულების დახარჯვა' }} />
                                 <Stack.Screen
                                     name='TransactionHistory'

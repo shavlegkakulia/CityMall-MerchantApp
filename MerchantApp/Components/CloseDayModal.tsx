@@ -7,7 +7,6 @@ const CloseDayModal = (props: any) => {
     const { modalVisible, closeModal, data } = props;
     const { accumulationSum, accumulationReversalSum, accumulationCount, paymentSum, paymentReversalSum, paymentCount } = data;
 
-
     return (
         <View style={styles.centeredView}>
             <Modal
@@ -26,11 +25,11 @@ const CloseDayModal = (props: any) => {
                         </View>
                         <View style={styles.modalContent}>
                             <Text style={styles.sampleStyle}>დაგროვების ტრანზაქციები: </Text>
-                            <Text>ტრანზაქციების რაოდებონა: {accumulationCount}</Text>
+                            <Text>ტრანზაქციების რაოდებონა: {accumulationCount.length}</Text>
                             <Text>დაგროვებული ქულა: {accumulationSum}</Text>
                             <Text style={{ marginBottom: 10 }}>დარევერსებული ქულა: {accumulationReversalSum}</Text>
                             <Text style={styles.sampleStyle}>გადახდის ტრანზაქციები:</Text>
-                            <Text>ტრანზაქციების რაოდებონა: {paymentCount}</Text>
+                            <Text>ტრანზაქციების რაოდებონა: {paymentCount.length}</Text>
                             <Text>დახარჯული ქულა: {paymentSum}</Text>
                             <Text>დარევერსებული ქულა: {paymentReversalSum}</Text>
                         </View>

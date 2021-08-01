@@ -42,7 +42,6 @@ const TransactionHistory = () => {
     }
 
     const reverseTransaction = async () => {
-        console.log('reverse action --------------->', selectedTran)
         let type = selectedTran.tranType === 'Payment' ? 2 : 1;
         let reverseData = {
             card: selectedTran.card,
@@ -51,17 +50,17 @@ const TransactionHistory = () => {
             stan: selectedTran.stan
         };
         Bonus.ReverseTransaction(type, reverseData).then(res => {
-            console.log('ssssssssssssssssssssssssssss', res.data)
+            console.log('--------ReverseTransaction-------', res.data)
             if (res.status === 200) {
                 updateTransactions(selectedTran.stan).then(() => {
                     loadTransactions();
                     setShowModal(false);
                 });
             } else {
-                console.log('****************', res.data)
+                console.log('*****ReverseTransaction*****', res.data)
             };
             
-        }).catch(e => console.log(JSON.stringify(e)));
+        }).catch(e => console.log(e));
     };
 
     const confirmReverse = (tran: any) => {

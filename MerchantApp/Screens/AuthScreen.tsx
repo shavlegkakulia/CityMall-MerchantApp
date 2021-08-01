@@ -13,7 +13,7 @@ const AuthScreen = (props: any) => {
     const [password, setPassword] = useState<string>('123123');
 
 
-    const {signIn} = useContext(AppContext);
+    const {setIsAuth} = useContext(AppContext);
 
 
 
@@ -24,10 +24,9 @@ const AuthScreen = (props: any) => {
         }
         AuthService.SignIn(data).then(res => {
             if (res.status === 200) {
-                console.log(res.data)
                 AuthService.setToken(res.data.access_token, res.data.refresh_token);
                 AuthService.setDeviceId(getUniqueId());
-                signIn();
+                setIsAuth(true);
             }
         }).catch(error => console.log(error))
     }

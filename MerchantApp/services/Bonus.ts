@@ -17,7 +17,7 @@ export interface IICollectPointsResponse {
   address?: string,
   receiptId?: string,
   tranType?: string,
-  accumBonus?: number,
+  accumulatedBonus?: number,
   status?: string,
   bonus?: number,
   availableScore?: number
@@ -65,9 +65,7 @@ export interface ICloseDayRequest {
     payTranCount: number,
     payAmount: number,
     payAmountRevers: number,
-    payTranCountGc: number,
-    payAmountGc: number,
-    payReversGc: number
+
 }
 
 export interface ICloseDayResponse {

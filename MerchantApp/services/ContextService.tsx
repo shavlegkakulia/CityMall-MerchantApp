@@ -3,14 +3,12 @@ import React, { createContext, useState } from "react";
 
 export interface IAuth {
     isAuthenticated: boolean,
-    signIn: () => void,
-    signOut: () => void;
+    setIsAuth: (value: boolean) => void,
 }
 
 const AuthState: IAuth = {
     isAuthenticated: false,
-    signIn: () => { },
-    signOut: () => { },
+    setIsAuth: (value) => { },
 }
 
 
@@ -18,14 +16,14 @@ export const AppContext = createContext<IAuth>(AuthState)
 
 const AuthProvider: React.FC =({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(AuthState.isAuthenticated);
-    const signIn = () => setIsAuthenticated(true);
-    const signOut = () => setIsAuthenticated(false);
+    const setIsAuth = (value: boolean) => setIsAuthenticated(value);
 
+
+    console.log('context ----------->', isAuthenticated)
     return (
         <AppContext.Provider value = {{
             isAuthenticated,
-            signIn,
-            signOut
+            setIsAuth,
         }}>
             {children}
         </AppContext.Provider>
