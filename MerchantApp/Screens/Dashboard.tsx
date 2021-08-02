@@ -6,6 +6,7 @@ import { getTransactions, clearTransactions } from '../services/TransactionServi
 import CloseDayModal from '../Components/CloseDayModal';
 import { AppContext } from '../services/ContextService';
 import Bonus from '../services/Bonus';
+import { useEffect } from 'react';
 // deviceId = bc410a9ca5485e94
 
 const Dashboard = (props: any) => {
@@ -21,8 +22,11 @@ const Dashboard = (props: any) => {
 
     });
 
-    const { setIsAuth } = useContext(AppContext);
+    const { isAuthenticated } = useContext(AppContext);
 
+    useEffect(() => {
+        console.log('----------Signed In ----------' ,isAuthenticated)
+    }, [isAuthenticated])
 
     const startCloseDay = () => {
         getTransactions().then(data => {
@@ -83,7 +87,6 @@ const Dashboard = (props: any) => {
             payAmountRevers: closeDayData.paymentReversalSum,
         }
             Bonus.CloseDay(data).then(res => {
-                console.log('------CloseDay Response------', res)
             })
     }
 
@@ -106,9 +109,8 @@ const Dashboard = (props: any) => {
                 <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={() => {
-                // startCloseDay();
-                AuthService.SignOut();
-                setIsAuth(false);
+                startCloseDay();
+               
             }} >
                 <Text style={styles.serviceLabel}>დღის დახურვა</Text>
             </TouchableOpacity>

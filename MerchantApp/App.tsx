@@ -53,10 +53,7 @@ const App = () => {
 
   useEffect(() => {
     AuthService.getToken().then(data => {
-      console.log( 'aqane', data, 'aqane')
-      if(data) setIsAuth(true);
       setUserToken(data || "");
-      
     })
   }, [userToken])
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 import Bonus from '../../services/Bonus';
+import AppButton from '../AppButton';
 
 
 const OtpBox = (props: any) => {
@@ -54,7 +55,6 @@ const OtpBox = (props: any) => {
             card: props.card
         }
         Bonus.SendOtp(data).then(res => {
-            console.log('OTP---------------->',res.data,  'sssssssssssssssssssssss',data)
         })
     }
 
@@ -79,9 +79,12 @@ const OtpBox = (props: any) => {
                 ))}
 
             </View>
-            <Pressable style={styles.button} onPress={submitOtp}>
-                <Text style={styles.btntext}>დადასტურება</Text>
-            </Pressable>
+            <AppButton
+                            btnStyle={styles.button}
+                            buttonTitle='დადასტურება'
+                            titleStylee={styles.btntext}
+                            onPress={submitOtp}
+                            isLoading={props.btnLoading} />
         </View>);
 }
 

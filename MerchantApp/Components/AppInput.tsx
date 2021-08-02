@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput, Image, Touchable, TouchableOpacityBase, TouchableOpacity } from 'react-native';
 
 
 
@@ -7,7 +7,9 @@ import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput } from 'react-
 
 const AppInput = ((props: any, ref: any) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
-
+    // useEffect(() => {
+    //     props.callBack(isFocused)
+    // }, [isFocused])
     return (
 
         <View style={{ marginVertical: 10 }}>
@@ -15,12 +17,14 @@ const AppInput = ((props: any, ref: any) => {
             <TextInput
                 style={styles.appInput}
                 {...props}
-                ref = {ref}
-                keyboardType="numeric"
+                ref={ref}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => { setIsFocused(false) }}
             />
-            {props.error? <Text style ={styles.errorText}>გთხოვთ შეავსოთ ველი</Text> : null}
+            {props.isPasswordInput ? <TouchableOpacity style={styles.passwordEye} onPress={props.onPasswordSecure}>
+                <Image style={styles.passwordEyeImg} source={require('../assets/images/password-eye.png')} />
+            </TouchableOpacity> : null}
+            {props.error ? <Text style={styles.errorText}>გთხოვთ შეავსოთ ველი</Text> : null}
         </View>
     );
 });
@@ -49,6 +53,20 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         padding: 15
+    },
+    passwordEye: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 50,
+        height: 60,
+        position: 'absolute',
+        right: 0,
+        top: 0
+    },
+    passwordEyeImg: {
+        width: 22,
+        height: 13,
+
     },
     errorText: {
         color: '#E50B09',

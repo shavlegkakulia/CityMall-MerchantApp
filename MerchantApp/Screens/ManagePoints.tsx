@@ -53,17 +53,16 @@ const ManagePoints = (props: any) => {
     };
 
     const collectPoints = () => {
-        setBtnLoading(true)
+        
         if (!scannedCode || !amount) return;
+        setBtnLoading(true);
         let data = {
             card: scannedCode,
             amount: amount,
             batchId: "1",
             productId: 1
         };
-
         Bonus.CollectPoints(data).then(res => {
-            console.log('pppppppppppppppppp', res.data)
             if (res.status === 200) {
                 let transaction: ITransaction = {
                     tranAmount: res.data.accumulatedBonus,
@@ -88,7 +87,7 @@ const ManagePoints = (props: any) => {
             } else {
                 setBtnLoading(false)
             };
-        });
+        }).catch(e => setBtnLoading(false));
     };
 
     const sendOtp = () => {
@@ -190,7 +189,7 @@ const ManagePoints = (props: any) => {
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} />
+        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading = {btnLoading} />
     };
 
     return (

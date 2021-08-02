@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, ActivityIndicatorBase, ActivityIndicator } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, Keyboard, ActivityIndicator } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
 import { AppContext } from '../services/ContextService';
 import AppButton from '../Components/AppButton';
+import AppInput from '../Components/AppInput';
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -12,12 +13,30 @@ const deviceWidth = Dimensions.get('screen').width;
 const AuthScreen = (props: any) => {
     const [userName, setUserName] = useState<string>('ggggg');
     const [password, setPassword] = useState<string>('123123');
-    const [btnLoading, setBtnLoading] = useState<boolean>(false)
+    const [btnLoading, setBtnLoading] = useState<boolean>(false);
+    const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+
+    useEffect(() => {
+        Keyboard.addListener("keyboardDidShow", keyboardDidShow);
+        Keyboard.addListener("keyboardDidHide", keyboardDidHide);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", keyboardDidShow);
+            Keyboard.removeListener("keyboardDidHide", keyboardDidHide);
+        };
+    }, []);
+
+    const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
+    const keyboardDidShow = () => setKeyboardStatus(true);
+    const keyboardDidHide = () => setKeyboardStatus(false);
+
+
 
 
     const { setIsAuth } = useContext(AppContext);
 
-    console.log('height ----> ', Dimensions.get('screen').height)
 
 
 
@@ -36,32 +55,46 @@ const AuthScreen = (props: any) => {
             } else {
                 setBtnLoading(false);
             }
-        }).catch(error => {console.log(error); setBtnLoading(false)})
+        }).catch(error => { console.log(error); setBtnLoading(false) })
     }
 
 
 
     return (
         <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            <View style={[styles.imageWrap, {alignItems: 'flex-start'}]}>
+            {!keyboardStatus && <View style={[styles.imageWrap, { alignItems: 'flex-start' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-topLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-topRight.png')} />
-            </View>
+            </View>}
             <View style={styles.middleContent}>
                 <View>
-                    <TextInput style={styles.authInput} value={userName} onChangeText={(val) => setUserName(val)} />
-                    <TextInput style={styles.authInput} value={password} onChangeText={(val) => setPassword(val)} />
+                    {/* <TextInput style={styles.authInput} value={userName} onChangeText={(val) => setUserName(val)} /> */}
+                    <AppInput 
+                        label='მომხმარებელი'
+                        value={userName}
+                        onChangeText={(newValue: any) => setUserName(newValue)}
+                    
+                    />
+                    <AppInput
+                        label='პაროლი'
+                        value={password}
+                        onChangeText={(newValue: any) => setPassword(newValue)}
+                        secureTextEntry={passwordSecure} 
+                        onPasswordSecure = {() => setPasswordSecure(!passwordSecure)}
+                        isPasswordInput
+                    />
                 </View>
-                <AppButton 
-                    btnStyle = {styles.authButton} 
-                    buttonTitle = 'ავტორიზაცია' 
-                    titleStylee ={{fontSize: 20, color: 'white'}} 
-                    onPress={login} isLoading = {btnLoading}/>
+                <AppButton
+                    btnStyle={styles.authButton}
+                    buttonTitle='ავტორიზაცია'
+                    titleStylee={{ fontSize: 20, color: 'white' }}
+                    onPress={login}
+                    isLoading={btnLoading} />
             </View>
-            <View style={[styles.imageWrap, {alignItems: 'flex-end'}]}>
+            {!keyboardStatus && <View style={[styles.imageWrap, { alignItems: 'flex-end' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
-            </View>
+            </View>}
         </View>
     )
 

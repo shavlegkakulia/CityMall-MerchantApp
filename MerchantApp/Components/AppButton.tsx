@@ -12,8 +12,8 @@ export interface IAppButton {
 
 const AppButton = (props: IAppButton) => {
     return (
-        <TouchableOpacity style={[props.btnStyle, { opacity: props.isLoading ? 0.4 : 1 }]} onPress={props.onPress}>
-            {props.isLoading ? <ActivityIndicator animating={true} size="small" color="#FFFFFF" /> :
+        <TouchableOpacity style={[props.btnStyle, { opacity: props.isLoading ? 0.4 : 1 }]} onPress={props.onPress} disabled = {props.isLoading}>
+            {props.isLoading ? <ActivityIndicator animating={true} size={40} color="#FFFFFF" /> :
                 <Text style={props.titleStylee}>{props.buttonTitle}</Text>
             }
         </TouchableOpacity>

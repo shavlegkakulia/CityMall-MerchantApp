@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ManagePoints from '../Screens/ManagePoints';
@@ -14,6 +14,12 @@ import AuthService from '../services/AuthService';
 const Stack = createStackNavigator();
 
 const AppNavigatior = (props: any) => {
+    useEffect(() => {
+        AuthService.isAuthenticated().then(data => setIsAuth(data));
+    }, [])
+   
+    
+
     const { isAuthenticated, setIsAuth } = useContext(AppContext);
 
     return (

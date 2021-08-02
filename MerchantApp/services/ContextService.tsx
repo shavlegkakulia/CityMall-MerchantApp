@@ -3,23 +3,25 @@ import React, { createContext, useState } from "react";
 
 export interface IAuth {
     isAuthenticated: boolean,
-    setIsAuth: (value: boolean) => void,
+    setIsAuth: (value: boolean | null) => void,
 }
 
 const AuthState: IAuth = {
     isAuthenticated: false,
-    setIsAuth: (value) => { },
+    setIsAuth: (value: boolean | null) => { },
 }
 
 
 export const AppContext = createContext<IAuth>(AuthState)
 
 const AuthProvider: React.FC =({children}) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(AuthState.isAuthenticated);
-    const setIsAuth = (value: boolean) => setIsAuthenticated(value);
+    const [isAuthenticated, setIsAuthenticated] = useState<any>(AuthState.isAuthenticated);
+    const setIsAuth = (value: boolean | null) => {
+        console.log('contexed passed value ------------>', value)
+        setIsAuthenticated(value);
+    }
 
 
-    console.log('context ----------->', isAuthenticated)
     return (
         <AppContext.Provider value = {{
             isAuthenticated,

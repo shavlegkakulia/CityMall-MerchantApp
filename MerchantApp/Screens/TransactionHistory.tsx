@@ -50,7 +50,6 @@ const TransactionHistory = () => {
             stan: selectedTran.stan
         };
         Bonus.ReverseTransaction(type, reverseData).then(res => {
-            console.log('--------ReverseTransaction-------', res.data)
             if (res.status === 200) {
                 updateTransactions(selectedTran.stan).then(() => {
                     loadTransactions();
@@ -77,7 +76,7 @@ const TransactionHistory = () => {
                 pointerEvents={reversed ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
-                    <Text>თანხა: {tranAmount}</Text>
+                    <Text>ქულა: {tranAmount}</Text>
                     <Text>თარიღი: {formatDate(tranDate)}</Text>
                 </View>
                 <TouchableOpacity onPress={() => confirmReverse(props.transaction)}>
