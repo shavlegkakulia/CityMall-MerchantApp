@@ -207,6 +207,7 @@ class AuthService {
         return axios
           .post<IAuthResponse>(`http://109.238.238.195:17411/connect/token`, refreshObj, config)
           .then(async response => {
+            console.log('ssssssssssssssssssssssssssssssssss', response)
             if (!response.data.access_token) throw response;
             await this.setToken(
               response.data.access_token,

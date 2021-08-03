@@ -1,31 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 
-const LogoutButton = (props: any) => {
-    return (
-        <TouchableOpacity style={styles.logoutBtn} onPress={props.onPress}>
-            <Text style={styles.btnTitle}>გამოსვლა</Text>
-        </TouchableOpacity>
-    );
-};
-
-
-const styles = StyleSheet.create({
-    logoutBtn: {
-        backgroundColor: '#E50B09',
-        marginRight: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    btnTitle: {
-        color: '#FFFFFF',
-        padding: 10,
-        textAlign: 'center'
-    }
-})
-
-
+const LogoutButton = (props: any) => (
+    <TouchableOpacity onPress={props.onPress} >
+        <Image style={{ width: 90, height: 40 }} source={require('../assets/images/Exit-Button.png')} />
+    </TouchableOpacity>
+);
 
 export default LogoutButton;

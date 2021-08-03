@@ -13,7 +13,6 @@ const CloseDayModal = (props: any) => {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-
                 onRequestClose={() => {
                     closeModal;
                 }}>
@@ -48,14 +47,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#000000a3'
+        backgroundColor: '#000000a3',
     },
 
     modalView: {
-        width: '100%',
+        width: '90%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: 400,
         backgroundColor: "white",
         borderRadius: 7,
         shadowColor: "#000",
@@ -65,19 +63,16 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+
     },
 
     modalContent: {
-        paddingHorizontal: 20,
+        padding: 20,
     },
 
-    buttons: {
-        width: '100%',
-        alignItems: 'center'
-    },
     button: {
-        width: '50%',
+        paddingHorizontal: 20,
         height: 45,
         alignSelf: 'center',
         alignItems: 'center',
@@ -85,7 +80,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         borderRadius: 7,
         marginBottom: 40
-
     },
 
     buttonCollect: {
@@ -110,9 +104,11 @@ const styles = StyleSheet.create({
     modalTextCollect: {
         color: 'green',
     },
+
     modalTextPay: {
         color: '#ffda02'
     },
+
     sampleStyle: {
         fontSize: 16,
         fontWeight: '700',

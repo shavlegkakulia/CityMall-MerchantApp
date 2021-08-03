@@ -7,14 +7,14 @@ import AppInput from './AppInput';
 const AppModal = (props: any) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const InputRef = useRef<any>();
-  
+
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={props.modalVisible}
-        onShow = {() => InputRef.current.focus()}
+        onShow={() => InputRef.current.focus()}
         onRequestClose={() => {
           props.closeModal;
         }}>
@@ -24,7 +24,7 @@ const AppModal = (props: any) => {
               <Text style={styles.modalText}>{'შეტყობინება'.toLocaleUpperCase()}:</Text>
               <Text style={styles.modalText}>{'შეიყვანეთ ბარათის მფლობელის მობილურის ნომერი'.toLocaleUpperCase()}</Text>
               <View style={{ width: '100%' }}>
-                <AppInput ref = {InputRef} label='ტელეფონის ნომერი' autoFocus={ true } value={phoneNumber} onChangeText={(newValue: any) => setPhoneNumber(newValue)} />
+                <AppInput ref={InputRef} label='ტელეფონის ნომერი' autoFocus={true} value={phoneNumber} onChangeText={(newValue: any) => setPhoneNumber(newValue)} />
               </View>
             </View>
             <View style={styles.buttons}>
@@ -36,9 +36,8 @@ const AppModal = (props: any) => {
               </Pressable>
             </View>
           </View>
-
         </View>
-        <TextInput autoFocus={true} placeholder="Autofocus to keep the keyboard" style={{display: 'none'}} />
+        <TextInput autoFocus={true} placeholder="Autofocus to keep the keyboard" style={{ display: 'none' }} />
       </Modal>
     </View>
   );
@@ -51,11 +50,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: '#000000a3'
   },
+
   modalView: {
-    width: '100%',
+    width: '90%',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: 300,
     backgroundColor: "white",
     borderRadius: 7,
     shadowColor: "#000",
@@ -67,37 +66,39 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
+
   modalContent: {
-    paddingHorizontal: 20,
-    paddingTop: 10
-  
+    padding: 20,
   },
 
   buttons: {
     width: '100%',
     flexDirection: 'row'
-
   },
+
   button: {
     width: '50%',
     height: 60,
-    
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   btnGreen: {
     backgroundColor: 'green',
     borderBottomRightRadius: 7,
   },
+
   btnDanger: {
     backgroundColor: 'red',
     borderBottomLeftRadius: 7,
   },
+
   btnText: {
     color: 'white',
     fontSize: 14,
     fontWeight: '500'
   },
+
   modalText: {
     fontSize: 16,
     marginBottom: 20

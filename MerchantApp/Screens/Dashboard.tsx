@@ -24,9 +24,6 @@ const Dashboard = (props: any) => {
 
     const { isAuthenticated } = useContext(AppContext);
 
-    useEffect(() => {
-        console.log('----------Signed In ----------' ,isAuthenticated)
-    }, [isAuthenticated])
 
     const startCloseDay = () => {
         getTransactions().then(data => {
@@ -86,8 +83,11 @@ const Dashboard = (props: any) => {
             payAmount: closeDayData.paymentSum,
             payAmountRevers: closeDayData.paymentReversalSum,
         }
-            Bonus.CloseDay(data).then(res => {
-            })
+        Bonus.CloseDay(data).then(res => {
+            if(res.status === 200) {
+                setShowModal(false);
+            }
+        })
     }
 
 
@@ -96,24 +96,29 @@ const Dashboard = (props: any) => {
 
         <View style={styles.container}>
             {showModal && <CloseDayModal modalVisible={showModal} closeModal={CloseDay} data={closeDayData} />}
-            <View style={styles.merchantLogo}>
-                <Image source={require('../assets/images/zara-logo.png')} />
+            <View style={{flex: 4, alignItems: 'center', marginVertical: 15}}>
+                <Image style={styles.merchantLogo} source={require('../assets/images/miniso-logo.png')} />
             </View>
-            <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
-                <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
-                <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
-                <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={() => {
-                startCloseDay();
-               
-            }} >
-                <Text style={styles.serviceLabel}>დღის დახურვა</Text>
-            </TouchableOpacity>
+            <View style={{flex: 2, marginHorizontal: 10}}>
+                <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
+                    <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{flex: 2,  marginHorizontal: 10}}>
+                <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
+                    <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{flex: 2,  marginHorizontal: 10}}>
+                <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
+                    <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{flex: 2,  marginHorizontal: 10}}>
+                <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={() => startCloseDay()} >
+                    <Text style={styles.serviceLabel}>დღის დახურვა</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -137,18 +142,19 @@ const styles = StyleSheet.create({
         color: '#000'
     },
     merchantLogo: {
-        height: 180,
+        width: '100%',
+        height: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },
     service: {
         width: '100%',
-        height: 80,
+        height: '100%',
+        maxHeight: 80,
         borderRadius: 10,
         backgroundColor: '#94dd34',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
     },
 
     payWithPoints: {

@@ -86,7 +86,9 @@ export interface ICloseDayResponse {
 export interface IGetAccountInfroResponse {
     amount?: number,
     errorCode?: number,
+    ErrorCode?: string
     errorDesc?: string,
+    ErrorMessage?: string,
     fullName?: string,
     initials?: string
     score?: number,

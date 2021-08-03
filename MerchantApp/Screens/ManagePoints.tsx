@@ -6,7 +6,7 @@ import Bonus from '../services/Bonus';
 import PointModal from '../Components/PointModal';
 import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
-import { getTransactions, addTransaction, ITransaction, clearTransactions } from '../services/TransactionService';
+import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
 
 const ManagePoints = (props: any) => {
@@ -17,9 +17,10 @@ const ManagePoints = (props: any) => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [scannCode, setScannCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
-    const [btnLoading, setBtnLoading] = useState<boolean>(false)
+    const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>('');
     const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
+    const [userNotFound, setUserNotFound] = useState<string | undefined>('')
     const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0 });
 
 
@@ -37,24 +38,29 @@ const ManagePoints = (props: any) => {
     const GetUserInfo = () => {
         setBtnLoading(true);
         Bonus.GetAccountInfo(scannedCode).then(res => {
+            console.log('----accountInfoRes---', res.data)
             if (res.status === 200) {
-                setUserInfo({
-                    amount: res.data.amount,
-                    score: res.data.score,
-                    initials: res.data.initials,
-                    clientStatus: res.data.clientStatus
-                });
-                setBtnLoading(false)
+                
+                if (res.data.errorDesc !== '') {
+                    setUserNotFound(res.data.ErrorMessage)
+                } else {
+                    setUserInfo({
+                        amount: res.data.amount,
+                        score: res.data.score,
+                        initials: res.data.initials,
+                        clientStatus: res.data.clientStatus
+                    });
+                };
+                setBtnLoading(false);
             } else {
-                setBtnLoading(false)
+                setBtnLoading(false);
                 console.log('getAccountinfoResponse', res);
             };
-        });
+        }).catch((e) => console.log(JSON.stringify(e)))
     };
 
     const collectPoints = () => {
-        
-        if (!scannedCode || !amount) return;
+        if (!scannedCode || !amount ) return;
         setBtnLoading(true);
         let data = {
             card: scannedCode,
@@ -63,6 +69,7 @@ const ManagePoints = (props: any) => {
             productId: 1
         };
         Bonus.CollectPoints(data).then(res => {
+            console.log('----CollectPoints Response----', res)
             if (res.status === 200) {
                 let transaction: ITransaction = {
                     tranAmount: res.data.accumulatedBonus,
@@ -78,7 +85,6 @@ const ManagePoints = (props: any) => {
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
-
                     bonus: res.data.accumulatedBonus,
                     availableBonus: res.data.availableScore
                 });
@@ -105,6 +111,7 @@ const ManagePoints = (props: any) => {
             deviceTranId: "1"
         };
         Bonus.PayWithPoints(data).then(res => {
+            console.log('----PayWithPoints Response----', res)
             if (res.status === 200) {
                 let transaction: ITransaction = {
                     tranAmount: res.data.spentBonus,
@@ -176,20 +183,25 @@ const ManagePoints = (props: any) => {
                             buttonTitle='ქულების დაგროვება'
                             titleStylee={styles.btntext}
                             onPress={collectPoints}
-                            isLoading={false} />}
+                            isLoading={btnLoading} />}
                 </View>
-
-                <View style={{ marginTop: 60 }}>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect, { marginBottom: 30 }]}>ბარათის სტატუსი : აქტიური</Text>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>მფლობელი: {userInfo.initials} </Text>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
-                    <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
-                </View>
+                {userNotFound !== ''?
+                    <View style={{ marginTop: 60 }}>
+                        <Text style={[styles.infoText, styles.infoError, { marginBottom: 30 }]}>დაფიქსირდა შეცდომა: </Text>
+                        <Text style={[styles.infoText, styles.infoError]}>{userNotFound} </Text>
+                    </View>
+                    :
+                    <View style={{ marginTop: 60 }}>
+                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect, { marginBottom: 30 }]}>{userInfo.initials? 'ბარათის ტიპი: აქტიური' : 'ბარათის ტიპი: '}</Text>
+                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>მფლობელი: {userInfo.initials} </Text>
+                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
+                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
+                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
+                    </View>}
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading = {btnLoading} />
+        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} />
     };
 
     return (
@@ -237,7 +249,12 @@ const styles = StyleSheet.create({
 
     infoTextPay: {
         color: '#ffda02'
+    },
+
+    infoError: {
+        color: '#E50B09'
     }
+
 });
 
 export default ManagePoints;

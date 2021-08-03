@@ -2,14 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, View, Modal, Pressable, } from 'react-native'
 
 const ConfirmationModal = (props: any) => {
-    const {modalVisible, closeModal, onReverseTransaction} = props;
+    const { modalVisible, closeModal, onReverseTransaction } = props;
     return (
         <View style={styles.centeredView}>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-
                 onRequestClose={() => {
                     closeModal;
                 }}>
@@ -42,10 +41,9 @@ const styles = StyleSheet.create({
     },
 
     modalView: {
-        width: '100%',
+        width: '90%',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: 300,
         backgroundColor: "white",
         borderRadius: 7,
         shadowColor: "#000",
@@ -59,9 +57,7 @@ const styles = StyleSheet.create({
     },
 
     modalContent: {
-        paddingHorizontal: 20,
-        paddingTop: 10
-
+        padding: 20,
     },
 
     buttons: {

@@ -1,37 +1,36 @@
 import React from 'react';
 
-import {StyleSheet, Text, View, Modal, Pressable, Image,  } from 'react-native'
+import { StyleSheet, Text, View, Modal, Pressable, Image, } from 'react-native'
 
 
 const PointModal = (props: any) => {
- const {collectInfo, modalVisible, closeModal, type} = props;
+  const { collectInfo, modalVisible, closeModal, type } = props;
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-       
         onRequestClose={() => {
           closeModal;
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-              <View style={{alignSelf: 'center', marginTop: 40}}>
-                  <Image style={{width: 60, height: 60}} source ={require('../assets/images/success_mark.png')} />
-              </View>
-            <View style={styles.modalContent}>
-              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>ბარათის მფლობელი: {collectInfo.initials}</Text>
-              {type === 'Pay'? 
-                <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დახარჯული ქულა: {collectInfo.bonus}</Text> : 
-                <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
-              }
-              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
-              <Text style={[styles.modalText, type === 'Pay'? styles.modalTextPay : styles.modalTextCollect]}>კლიენტის სტატუსი: </Text>
+            <View style={{ alignSelf: 'center', marginTop: 40 }}>
+              <Image style={{ width: 60, height: 60 }} source={require('../assets/images/success_mark.png')} />
             </View>
-              <Pressable style={[styles.button,  type === 'Pay'? styles.buttonPay: styles.buttonCollect]} onPress={closeModal}>
-                <Text style={styles.btnText}>დახურვა</Text>
-              </Pressable>
+            <View style={styles.modalContent}>
+              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>ბარათის მფლობელი: {collectInfo.initials}</Text>
+              {type === 'Pay' ?
+                <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>დახარჯული ქულა: {collectInfo.bonus}</Text> :
+                <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
+              }
+              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
+              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>კლიენტის სტატუსი: </Text>
+            </View>
+            <Pressable style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={closeModal}>
+              <Text style={styles.btnText}>დახურვა</Text>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -48,10 +47,9 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    width: '100%',
+    width: '90%',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: 400,
     backgroundColor: "white",
     borderRadius: 7,
     shadowColor: "#000",
@@ -65,32 +63,28 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-    paddingHorizontal: 20,
+    padding: 20,
   },
 
-  buttons: {
-    width: '100%',
-    alignItems: 'center'
-  },
   button: {
-    width: '50%',
+    paddingHorizontal: 20,
     height: 45,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-   
     borderRadius: 7,
     marginBottom: 40
-    
+
   },
 
   buttonCollect: {
     backgroundColor: 'green',
   },
+
   buttonPay: {
     backgroundColor: '#ffda02'
   },
-  
+
   btnText: {
     color: 'white',
     fontSize: 14,
@@ -104,8 +98,9 @@ const styles = StyleSheet.create({
   },
 
   modalTextCollect: {
-    color: 'green', 
+    color: 'green',
   },
+
   modalTextPay: {
     color: '#ffda02'
   }

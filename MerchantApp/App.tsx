@@ -5,6 +5,8 @@ import axios from 'axios';
 import AuthService, { IInterceptop } from './services/AuthService';
 import AuthProvider, { AppContext } from './services/ContextService';
 import RNBootSplash from "react-native-bootsplash";
+import FullScreenLoader from './Components/FullScreenLoader';
+FullScreenLoader
 
 
 
@@ -13,11 +15,10 @@ const App = () => {
   const [userToken, setUserToken] = useState<string>("");
   const AxiosInterceptor = useRef<IInterceptop[]>([]);
 
-  const { setIsAuth } = useContext(AppContext)
+  const { setIsAuth, isAuthenticated } = useContext(AppContext)
 
-  useEffect(() => {
-    RNBootSplash.hide();
-  }, [])
+ 
+
 
   const RegisterCommonInterceptor = () => {
     let requestInterceptor = axios.interceptors.request.use((config) => {
@@ -50,8 +51,6 @@ const App = () => {
   }, [userToken])
 
 
-  
-
   useEffect(() => {
     setDeviceId(getUniqueId())
   }, []);
@@ -60,18 +59,17 @@ const App = () => {
   useEffect(() => {
     AuthService.getToken().then(data => {
       setUserToken(data || "");
-    })
-  }, [userToken])
+    });
+  }, [userToken]);
 
   useEffect(() => {
     AxiosInterceptor.current = [RegisterCommonInterceptor(), AuthService.registerAuthInterceptor(logOut)];
-
     return () => {
       AxiosInterceptor.current.forEach(sub => sub.unsubscribe());
     }
-  }, [])
+  }, []);
 
-
+   
   return (
     <AuthProvider>
       <AppNavigatior id={deviceId} />

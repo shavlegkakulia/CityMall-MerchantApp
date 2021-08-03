@@ -14,16 +14,15 @@ const AuthState: IAuth = {
 
 export const AppContext = createContext<IAuth>(AuthState)
 
-const AuthProvider: React.FC =({children}) => {
+const AuthProvider: React.FC = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<any>(AuthState.isAuthenticated);
     const setIsAuth = (value: boolean | null) => {
-        console.log('contexed passed value ------------>', value)
         setIsAuthenticated(value);
     }
 
 
     return (
-        <AppContext.Provider value = {{
+        <AppContext.Provider value={{
             isAuthenticated,
             setIsAuth,
         }}>

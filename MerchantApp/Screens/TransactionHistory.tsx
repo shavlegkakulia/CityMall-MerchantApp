@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Bonus from '../services/Bonus';
 import { getTransactions, updateTransactions } from '../services/TransactionService';
 import ConfirmationModal from '../Components/ConfirmationModal';
@@ -29,7 +29,7 @@ const TransactionHistory = () => {
             ":" +
             ("0" + minutes).slice(-2);
         return newdate;
-    }
+    };
 
     useEffect(() => {
         loadTransactions();
@@ -39,7 +39,7 @@ const TransactionHistory = () => {
         getTransactions().then(res => {
             setTransactions(res);
         });
-    }
+    };
 
     const reverseTransaction = async () => {
         let type = selectedTran.tranType === 'Payment' ? 2 : 1;
@@ -56,7 +56,7 @@ const TransactionHistory = () => {
                     setShowModal(false);
                 });
             } else {
-                console.log('*****ReverseTransaction*****', res.data)
+                console.log('*****ReverseTransaction*****', res.data);
             };
             
         }).catch(e => console.log(e));
@@ -66,7 +66,7 @@ const TransactionHistory = () => {
         setSelectedTran(tran);
         setShowModal(true);
         return;
-    }
+    };
 
     const Transaction = (props: any) => {
         const { card, reversed, tranAmount, tranDate, tranType } = props.transaction;
@@ -83,8 +83,8 @@ const TransactionHistory = () => {
                     <Image style={[styles.reversalImg, reversed ? styles.reversed : {}]} source={require('../assets/images/reversal.png')} />
                 </TouchableOpacity>
             </View>
-        )
-    }
+        );
+    };
 
     return (
         <ScrollView style={styles.mainContainer}>
@@ -100,7 +100,7 @@ const TransactionHistory = () => {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        marginHorizontal: 20,
+        marginHorizontal: 30,
         marginTop: 20
     },
 

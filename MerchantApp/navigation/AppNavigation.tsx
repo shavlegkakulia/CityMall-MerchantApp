@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, {useState, useContext, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ManagePoints from '../Screens/ManagePoints';
@@ -10,20 +10,28 @@ import { AppContext } from '../services/ContextService';
 import LogoutButton from '../Components/LogoutButton';
 import AuthService from '../services/AuthService';
 import RNBootSplash from "react-native-bootsplash";
+import FullScreenLoader from '../Components/FullScreenLoader';
 
-const Stack = createStackNavigator();
+
+const Stack = createStackNavigator();;
 
 const AppNavigatior = (props: any) => {
+    
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
     useEffect(() => {
-        AuthService.isAuthenticated().then(data => setIsAuth(data));
+        AuthService.isAuthenticated().then(data => setIsAuth(data)).finally(() => {
+            setIsInitialized(true)
+        });
     }, [])
    
     
 
     const { isAuthenticated, setIsAuth } = useContext(AppContext);
 
+    if(!isInitialized) return <FullScreenLoader/>
+
     return (
-        <NavigationContainer onReady={()=> RNBootSplash.hide()}>
+        <NavigationContainer onReady={() =>RNBootSplash.hide()}>
             <Stack.Navigator initialRouteName="AuthScreen">
                 {isAuthenticated === false ? (<Stack.Screen
                     name='AuthScreen'
