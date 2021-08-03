@@ -4,6 +4,7 @@ import AppNavigatior from './navigation/AppNavigation';
 import axios from 'axios';
 import AuthService, { IInterceptop } from './services/AuthService';
 import AuthProvider, { AppContext } from './services/ContextService';
+import RNBootSplash from "react-native-bootsplash";
 
 
 
@@ -14,6 +15,9 @@ const App = () => {
 
   const { setIsAuth } = useContext(AppContext)
 
+  useEffect(() => {
+    RNBootSplash.hide();
+  }, [])
 
   const RegisterCommonInterceptor = () => {
     let requestInterceptor = axios.interceptors.request.use((config) => {
@@ -45,6 +49,8 @@ const App = () => {
     setIsAuth(false);
   }, [userToken])
 
+
+  
 
   useEffect(() => {
     setDeviceId(getUniqueId())

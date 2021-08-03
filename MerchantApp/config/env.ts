@@ -1,8 +1,8 @@
-import { DEV_API, PROD_API,  PROD_CONNECT_API, _DEV_CONNECT_API, TOKEN_TTL } from '@env';
+import { DEV_API, PROD_API,  PROD_CONNECT_API, DEV_CONNECT_API, TOKEN_TTL } from '@env';
 
 const devEnvironmentVariables = {
     API_URL: DEV_API,
-    CONNECT_URL: _DEV_CONNECT_API,
+    CONNECT_URL: DEV_CONNECT_API,
     TOKEN_TTL
 } 
 

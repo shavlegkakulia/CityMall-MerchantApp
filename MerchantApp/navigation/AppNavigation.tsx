@@ -7,9 +7,9 @@ import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
 import AuthScreen from '../Screens/AuthScreen';
 import { AppContext } from '../services/ContextService';
-import { Button } from 'react-native';
 import LogoutButton from '../Components/LogoutButton';
 import AuthService from '../services/AuthService';
+import RNBootSplash from "react-native-bootsplash";
 
 const Stack = createStackNavigator();
 
@@ -23,7 +23,7 @@ const AppNavigatior = (props: any) => {
     const { isAuthenticated, setIsAuth } = useContext(AppContext);
 
     return (
-        <NavigationContainer>
+        <NavigationContainer onReady={()=> RNBootSplash.hide()}>
             <Stack.Navigator initialRouteName="AuthScreen">
                 {isAuthenticated === false ? (<Stack.Screen
                     name='AuthScreen'
