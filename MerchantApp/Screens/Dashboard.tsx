@@ -1,13 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
-import { getUniqueId } from 'react-native-device-info';
-import AuthService from '../services/AuthService';
 import { getTransactions, clearTransactions } from '../services/TransactionService';
 import CloseDayModal from '../Components/CloseDayModal';
 import { AppContext } from '../services/ContextService';
 import Bonus from '../services/Bonus';
-import { useEffect } from 'react';
-// deviceId = bc410a9ca5485e94
 
 const Dashboard = (props: any) => {
 
@@ -91,6 +87,7 @@ const Dashboard = (props: any) => {
             if (res.data.success) {
                 setBtonLoading(false);
                 setShowModal(false);
+                clearTransactions();
             } else {
                 setBtonLoading(false);
             }

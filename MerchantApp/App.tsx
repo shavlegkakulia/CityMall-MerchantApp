@@ -15,7 +15,7 @@ const App = () => {
   const [userToken, setUserToken] = useState<string>("");
   const AxiosInterceptor = useRef<IInterceptop[]>([]);
 
-  const { setIsAuth, isAuthenticated } = useContext(AppContext)
+  const { setIsAuth } = useContext(AppContext)
 
  
 
@@ -57,12 +57,14 @@ const App = () => {
 
 
   useEffect(() => {
+   
     AuthService.getToken().then(data => {
       setUserToken(data || "");
     });
   }, [userToken]);
 
   useEffect(() => {
+    console.log('Developer <--Avtandil Shaburishvili, 08.04.2021--> ')
     AxiosInterceptor.current = [RegisterCommonInterceptor(), AuthService.registerAuthInterceptor(logOut)];
     return () => {
       AxiosInterceptor.current.forEach(sub => sub.unsubscribe());

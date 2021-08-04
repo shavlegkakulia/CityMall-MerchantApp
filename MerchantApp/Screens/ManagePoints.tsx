@@ -21,7 +21,7 @@ const ManagePoints = (props: any) => {
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>('');
     const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
-    const [userNotFound, setUserNotFound] = useState<string | undefined>('');
+    const [errorMessage, setErrorMessage] = useState<string | undefined>('');
     const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
 
 
@@ -50,7 +50,7 @@ const ManagePoints = (props: any) => {
 
     const GetUserInfo = () => {
         setBtnLoading(true);
-        setUserNotFound('');
+        setErrorMessage('');
         Bonus.GetAccountInfo(scannedCode).then(res => {
             if (res.data.success) {
                 setUserInfo({
@@ -60,14 +60,14 @@ const ManagePoints = (props: any) => {
                     clientStatus: res.data.data?.clientStatus
                 });
             } else {
-                setUserNotFound(res.data.error?.errorDesc)
+                setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
         }).catch((e) => console.log(JSON.stringify(e)))
     };
 
     const collectPoints = () => {
-        setUserNotFound('');
+        setErrorMessage('');
         if (!scannedCode || !amount) return;
         setBtnLoading(true);
         let data = {
@@ -97,7 +97,7 @@ const ManagePoints = (props: any) => {
                 });
                 setShowModal(true);
             } else {
-                setUserNotFound(res.data.error?.errorDesc)
+                setErrorMessage(res.data.error?.errorDesc)
                 
             };
             setBtnLoading(false)
@@ -110,7 +110,7 @@ const ManagePoints = (props: any) => {
     };
 
     const PayWithPoints = (otp: string) => {
-        setUserNotFound('');
+        setErrorMessage('');
         setBtnLoading(true);
         let data = {
             card: scannedCode,
@@ -143,7 +143,8 @@ const ManagePoints = (props: any) => {
                 setShowModal(true);
 
             } else {
-                setUserNotFound(res.data.error?.errorDesc)
+                console.log('aqane', res.data.success)
+                setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
 
@@ -199,8 +200,8 @@ const ManagePoints = (props: any) => {
                 </View>
                 <View style={{ marginTop: 30 }}>
                     <Text style={[styles.infoText, { marginBottom: 30 }]}>ბარათის ინფორმაცია: </Text>
-                    {userNotFound ?
-                        <Text style={[styles.infoText, styles.infoError]}>{userNotFound} </Text>
+                    {errorMessage ?
+                        <Text style={[styles.infoText, styles.infoError]}>{errorMessage} </Text>
                         :
                         <Fragment>
                             <Text style={styles.infoText}>მფლობელი: {userInfo.initials} </Text>
@@ -216,7 +217,7 @@ const ManagePoints = (props: any) => {
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} />
+        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} errorMessage ={errorMessage} />
     };
 
     return (

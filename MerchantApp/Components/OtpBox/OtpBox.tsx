@@ -55,12 +55,13 @@ const OtpBox = (props: any) => {
             card: props.card
         }
         Bonus.SendOtp(data).then(res => {
+            console.log('otp ress', res.data)
         })
     }
 
 
     return (
-        <View style={{ flex: 1, marginHorizontal: 20 }}>
+        <View style={{ flex: 1, marginHorizontal: 20,  }}>
             <View style={styles.otpBoxConteiner}>
                 {otp.map((element, index) => (
                     <TextInput
@@ -77,8 +78,9 @@ const OtpBox = (props: any) => {
                         onKeyPress={event => { handleFocusPrev(event, index) }}
                     />
                 ))}
-
+            
             </View>
+            {props.errorMessage? <Text style={{fontSize: 12, color: 'red', textAlign: 'center'}}>{props.errorMessage}</Text> : null}
             <AppButton
                             btnStyle={styles.button}
                             buttonTitle='დადასტურება'
