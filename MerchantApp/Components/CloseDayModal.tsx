@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, Pressable, Image, } from 'react-native'
+import { StyleSheet, Text, View, Modal, Pressable, Image, } from 'react-native';
+import AppButton from './AppButton';
+
 
 
 
 const CloseDayModal = (props: any) => {
-    const { modalVisible, closeModal, data } = props;
+    const { modalVisible, closeModal, data, isLoading, onCloseDay } = props;
     const { accumulationSum, accumulationReversalSum, accumulationCount, paymentSum, paymentReversalSum, paymentCount } = data;
 
     return (
@@ -32,9 +34,23 @@ const CloseDayModal = (props: any) => {
                             <Text>დახარჯული ქულა: {paymentSum}</Text>
                             <Text>დარევერსებული ქულა: {paymentReversalSum}</Text>
                         </View>
-                        <Pressable style={styles.button} onPress={closeModal}>
-                            <Text style={styles.btnText}>დღის დახურვა</Text>
-                        </Pressable>
+                        <View style={styles.buttons}>
+                        <AppButton
+                            btnStyle={[styles.button, styles.buttonDanger]}
+                            buttonTitle='გაუქმებაა'
+                            titleStylee={styles.btnText}
+                            onPress={closeModal}
+                            isLoading={false} />
+                        <AppButton
+                            btnStyle={[styles.button, ]}
+                            buttonTitle='დღის დახურვა'
+                            titleStylee={styles.btnText}
+                            onPress={onCloseDay}
+                            isLoading={isLoading} />
+
+                            
+                        </View>
+                        
                     </View>
                 </View>
             </Modal>
@@ -72,6 +88,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
+        width: '45%',
         paddingHorizontal: 20,
         height: 45,
         alignSelf: 'center',
@@ -82,8 +99,8 @@ const styles = StyleSheet.create({
         marginBottom: 40
     },
 
-    buttonCollect: {
-
+    buttonDanger: {
+        backgroundColor: '#E50B09'
     },
     buttonPay: {
         backgroundColor: '#ffda02'
@@ -92,7 +109,8 @@ const styles = StyleSheet.create({
     btnText: {
         color: 'white',
         fontSize: 14,
-        fontWeight: '500'
+        fontWeight: '500',
+        textAlign: 'center'
     },
 
     modalText: {
@@ -112,6 +130,14 @@ const styles = StyleSheet.create({
     sampleStyle: {
         fontSize: 16,
         fontWeight: '700',
+    },
+
+    buttons: {
+        width: '90%',
+        flexDirection: 'row',
+        alignSelf: 'center',
+        justifyContent: 'space-between'
+        
     }
 });
 

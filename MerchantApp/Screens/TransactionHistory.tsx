@@ -9,6 +9,7 @@ const TransactionHistory = () => {
     const [transactions, setTransactions] = useState([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedTran, setSelectedTran] = useState<any>();
+    const [btnLoading, setBtnLoading] = useState<boolean>(false);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return "";
@@ -42,6 +43,7 @@ const TransactionHistory = () => {
     };
 
     const reverseTransaction = async () => {
+        setBtnLoading(true);
         let type = selectedTran.tranType === 'Payment' ? 2 : 1;
         let reverseData = {
             card: selectedTran.card,
@@ -54,12 +56,14 @@ const TransactionHistory = () => {
                 updateTransactions(selectedTran.stan).then(() => {
                     loadTransactions();
                     setShowModal(false);
+                    setBtnLoading(false);
                 });
             } else {
+                setBtnLoading(false);
                 console.log('*****ReverseTransaction*****', res.data);
             };
             
-        }).catch(e => console.log(e));
+        }).catch(e => {console.log(e); setBtnLoading(false)});
     };
 
     const confirmReverse = (tran: any) => {
@@ -71,8 +75,7 @@ const TransactionHistory = () => {
     const Transaction = (props: any) => {
         const { card, reversed, tranAmount, tranDate, tranType } = props.transaction;
         return (
-            <View
-                style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect]}
+            <View style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect]}
                 pointerEvents={reversed ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
@@ -91,6 +94,7 @@ const TransactionHistory = () => {
             <ConfirmationModal
                 modalVisible={showModal}
                 closeModal={() => setShowModal(false)}
+                isLoading = {btnLoading}
                 onReverseTransaction={reverseTransaction} />
             {transactions?.map((tran, index) => (<Transaction key={index} transaction={tran} />))}
         </ScrollView>
@@ -123,8 +127,8 @@ const styles = StyleSheet.create({
     },
 
     reversalImg: {
-        width: 30,
-        height: 30,
+        width: 33,
+        height: 33,
     },
 
     reversed: {

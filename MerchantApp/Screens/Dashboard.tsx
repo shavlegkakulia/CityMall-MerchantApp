@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 const Dashboard = (props: any) => {
 
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [btnLoading, setBtonLoading] = useState<boolean>(false);
     const [closeDayData, setCloseDayData] = useState({
         accumulationSum: 0,
         accumulationReversalSum: 0,
@@ -73,7 +74,9 @@ const Dashboard = (props: any) => {
         })
     }
 
+
     const CloseDay = () => {
+        setBtonLoading(true);
         let data = {
             batchId: '1',
             accumulateTranCount: closeDayData.accumulationCount.length,
@@ -84,10 +87,14 @@ const Dashboard = (props: any) => {
             payAmountRevers: closeDayData.paymentReversalSum,
         }
         Bonus.CloseDay(data).then(res => {
-            if(res.status === 200) {
+            console.log(res.data)
+            if (res.data.success) {
+                setBtonLoading(false);
                 setShowModal(false);
+            } else {
+                setBtonLoading(false);
             }
-        })
+        }).catch(e => {console.log(e); setBtonLoading(false)})
     }
 
 
@@ -95,26 +102,26 @@ const Dashboard = (props: any) => {
 
 
         <View style={styles.container}>
-            {showModal && <CloseDayModal modalVisible={showModal} closeModal={CloseDay} data={closeDayData} />}
-            <View style={{flex: 4, alignItems: 'center', marginVertical: 15}}>
+            {showModal && <CloseDayModal modalVisible={showModal} closeModal={()=> {setShowModal(false); setBtonLoading(false)}} data={closeDayData} isLoading = {btnLoading} onCloseDay = {CloseDay}/>}
+            <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
                 <Image style={styles.merchantLogo} source={require('../assets/images/miniso-logo.png')} />
             </View>
-            <View style={{flex: 2, marginHorizontal: 10}}>
+            <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
                     <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{flex: 2,  marginHorizontal: 10}}>
+            <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
                     <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{flex: 2,  marginHorizontal: 10}}>
+            <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                     <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{flex: 2,  marginHorizontal: 10}}>
+            <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={() => startCloseDay()} >
                     <Text style={styles.serviceLabel}>დღის დახურვა</Text>
                 </TouchableOpacity>
@@ -124,29 +131,25 @@ const Dashboard = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         paddingHorizontal: 5,
         backgroundColor: '#FFFFFF'
     },
 
-    dashboardHeader: {
-        width: '100%',
-        height: 60,
-        backgroundColor: '#cfcfcf',
-        alignItems: 'center',
-        justifyContent: 'center'
+    gridRow: {
+        flex: 2,
+        marginHorizontal: 10
     },
-    headerText: {
-        fontSize: 14,
-        color: '#000'
-    },
+
     merchantLogo: {
         width: '100%',
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },
+
     service: {
         width: '100%',
         height: '100%',
@@ -160,26 +163,25 @@ const styles = StyleSheet.create({
     payWithPoints: {
         backgroundColor: '#FFC900'
     },
+
     collectPoints: {
         backgroundColor: '#3269E5'
     },
+
     transactionHistory: {
         backgroundColor: '#40ADEC'
     },
+
     closeDay: {
         backgroundColor: '#E50B09'
     },
+
     serviceLabel: {
         fontSize: 24,
         fontWeight: '500',
         textAlign: 'center',
         color: 'white'
-
-
-
     }
-
-
 
 })
 

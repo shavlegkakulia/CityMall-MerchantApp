@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, Fragment } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Keyboard } from 'react-native';
 import AppInput from '../Components/AppInput';
 import BarCodeReader from '../Components/BarCodeReader';
 import Bonus from '../services/Bonus';
@@ -8,6 +8,7 @@ import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ManagePoints = (props: any) => {
 
@@ -20,8 +21,20 @@ const ManagePoints = (props: any) => {
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>('');
     const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
-    const [userNotFound, setUserNotFound] = useState<string | undefined>('')
-    const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0 });
+    const [userNotFound, setUserNotFound] = useState<string | undefined>('');
+    const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
+
+
+    useEffect(() => {
+        Keyboard.addListener("keyboardDidShow", keyboardDidShow);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", keyboardDidShow);
+        };
+    }, []);
+
+    const keyboardDidShow = () => setScannCode(false);
 
 
     const getScannedValue = (value: any) => {
@@ -37,30 +50,25 @@ const ManagePoints = (props: any) => {
 
     const GetUserInfo = () => {
         setBtnLoading(true);
+        setUserNotFound('');
         Bonus.GetAccountInfo(scannedCode).then(res => {
-            console.log('----accountInfoRes---', res.data)
-            if (res.status === 200) {
-                
-                if (res.data.errorDesc !== '') {
-                    setUserNotFound(res.data.ErrorMessage)
-                } else {
-                    setUserInfo({
-                        amount: res.data.amount,
-                        score: res.data.score,
-                        initials: res.data.initials,
-                        clientStatus: res.data.clientStatus
-                    });
-                };
-                setBtnLoading(false);
+            if (res.data.success) {
+                setUserInfo({
+                    amount: res.data.data?.amount,
+                    score: res.data.data?.score,
+                    initials: res.data.data?.initials,
+                    clientStatus: res.data.data?.clientStatus
+                });
             } else {
-                setBtnLoading(false);
-                console.log('getAccountinfoResponse', res);
+                setUserNotFound(res.data.error?.errorDesc)
             };
+            setBtnLoading(false);
         }).catch((e) => console.log(JSON.stringify(e)))
     };
 
     const collectPoints = () => {
-        if (!scannedCode || !amount ) return;
+        setUserNotFound('');
+        if (!scannedCode || !amount) return;
         setBtnLoading(true);
         let data = {
             card: scannedCode,
@@ -69,30 +77,30 @@ const ManagePoints = (props: any) => {
             productId: 1
         };
         Bonus.CollectPoints(data).then(res => {
-            console.log('----CollectPoints Response----', res)
-            if (res.status === 200) {
+            if (res.data.success) {
                 let transaction: ITransaction = {
-                    tranAmount: res.data.accumulatedBonus,
+                    tranAmount: res.data.data?.accumulatedBonus,
                     batchId: '1',
                     card: scannedCode,
                     deviceId: getUniqueId(),
                     respCode: '000',
-                    stan: res.data.stan,
+                    stan: res.data.data?.stan,
                     tranDate: Date.now(),
-                    tranType: res.data.tranType,
+                    tranType: res.data.data?.tranType,
                     reversed: false
                 };
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
-                    bonus: res.data.accumulatedBonus,
-                    availableBonus: res.data.availableScore
+                    bonus: res.data.data?.accumulatedBonus,
+                    availableBonus: res.data.data?.availableScore
                 });
                 setShowModal(true);
-                setBtnLoading(false);
             } else {
-                setBtnLoading(false)
+                setUserNotFound(res.data.error?.errorDesc)
+                
             };
+            setBtnLoading(false)
         }).catch(e => setBtnLoading(false));
     };
 
@@ -102,6 +110,7 @@ const ManagePoints = (props: any) => {
     };
 
     const PayWithPoints = (otp: string) => {
+        setUserNotFound('');
         setBtnLoading(true);
         let data = {
             card: scannedCode,
@@ -111,61 +120,64 @@ const ManagePoints = (props: any) => {
             deviceTranId: "1"
         };
         Bonus.PayWithPoints(data).then(res => {
-            console.log('----PayWithPoints Response----', res)
-            if (res.status === 200) {
+            if (res.data.success) {
                 let transaction: ITransaction = {
-                    tranAmount: res.data.spentBonus,
+                    tranAmount: res.data.data?.spentBonus,
                     batchId: '1',
                     card: scannedCode,
                     deviceId: getUniqueId(),
                     respCode: '000',
-                    stan: res.data.stan,
+                    stan: res.data.data?.stan,
                     tranDate: Date.now(),
-                    tranType: res.data.tranType,
+                    tranType: res.data.data?.tranType,
                     reversed: false
                 };
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
-                    clientStatis: userInfo.clientStatus,
-                    bonus: res.data.spentBonus,
-                    availableBonus: res.data.availableScore
+                    clientStatus: userInfo.clientStatus,
+                    bonus: res.data.data?.spentBonus,
+                    availableBonus: res.data.data?.availableScore
                 });
-                setBtnLoading(false);
+                setStep(0);
+                setShowModal(true);
+
             } else {
-                setBtnLoading(false);
+                setUserNotFound(res.data.error?.errorDesc)
             };
-            setStep(0);
-            setShowModal(true);
+            setBtnLoading(false);
 
         });
     };
 
     const onCloseModal = () => {
-        setUserInfo({ amount: 0, score: 0, initials: '' });
+        setUserInfo({ amount: 0, score: 0, initials: '', clientStatus: '' });
         setScannedCode('');
         setAmount('');
         setShowModal(false);
-        setAcumulationIfno({ initials: '', bonus: 0, availableBonus: 0 });
+        setAcumulationIfno({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
     };
 
 
+    console.log(userInfo)
     let PayStep = null;
     if (step === 0) {
         PayStep = (
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginHorizontal: 10, flex: 8, justifyContent: 'space-between' }}>
                 {!scannCode ?
                     <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() => setScannCode(true)}>
                         <Text style={styles.btntext}>კოდის დასკანერება</Text>
                     </TouchableOpacity> : null}
-                <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />
+
                 <AppInput
                     label='ბარათი'
+                    keyboardType='numeric'
                     value={scannedCode}
                     error={!scannedCode ? true : false}
                     onChangeText={(newValue: any) => setScannedCode(newValue)} />
                 <AppInput
                     label='თანხა'
+                    keyboardType='numeric'
                     error={!amount ? true : false}
                     value={amount}
                     onChangeText={(newValue: any) => setAmount(newValue)} />
@@ -185,19 +197,22 @@ const ManagePoints = (props: any) => {
                             onPress={collectPoints}
                             isLoading={btnLoading} />}
                 </View>
-                {userNotFound !== ''?
-                    <View style={{ marginTop: 60 }}>
-                        <Text style={[styles.infoText, styles.infoError, { marginBottom: 30 }]}>დაფიქსირდა შეცდომა: </Text>
+                <View style={{ marginTop: 30 }}>
+                    <Text style={[styles.infoText, { marginBottom: 30 }]}>ბარათის ინფორმაცია: </Text>
+                    {userNotFound ?
                         <Text style={[styles.infoText, styles.infoError]}>{userNotFound} </Text>
-                    </View>
-                    :
-                    <View style={{ marginTop: 60 }}>
-                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect, { marginBottom: 30 }]}>{userInfo.initials? 'ბარათის ტიპი: აქტიური' : 'ბარათის ტიპი: '}</Text>
-                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>მფლობელი: {userInfo.initials} </Text>
-                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
-                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
-                        <Text style={[styles.infoText, type === 'Pay' ? styles.infoTextPay : styles.infoTextCollect]}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
-                    </View>}
+                        :
+                        <Fragment>
+                            <Text style={styles.infoText}>მფლობელი: {userInfo.initials} </Text>
+                            <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
+                            <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
+                            <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
+                        </Fragment>
+                    }
+
+
+
+                </View>
             </View>
         );
     } else if (step === 1) {
@@ -205,10 +220,13 @@ const ManagePoints = (props: any) => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            {scannCode ? <BarCodeReader getValue={getScannedValue} /> : null}
+        <ScrollView style={{ flex: 1 }}>
+            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />}
+            {scannCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
+                <BarCodeReader getValue={getScannedValue} />
+            </View> : null}
             {PayStep}
-        </View>
+        </ScrollView>
     );
 };
 
@@ -240,15 +258,7 @@ const styles = StyleSheet.create({
     infoText: {
         fontWeight: '700',
         fontSize: 16,
-        color: '#00a400'
-    },
-
-    infoTextCollect: {
-        color: '#00a400'
-    },
-
-    infoTextPay: {
-        color: '#ffda02'
+        color: '#000'
     },
 
     infoError: {

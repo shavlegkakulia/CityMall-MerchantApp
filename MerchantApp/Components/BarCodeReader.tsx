@@ -21,7 +21,7 @@ const BarCodeReader = (props: any) => {
        
     }, [])
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  marginTop: 80}}>
+        <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center',  marginTop: 80}}>
             <View style={{ width: width, height: width, }}>
                 <RNCamera
                     onBarCodeRead={handleBarCodeRead}

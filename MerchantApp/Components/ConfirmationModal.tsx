@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Modal, Pressable, } from 'react-native'
+import { StyleSheet, Text, View, Modal, Pressable, } from 'react-native';
+import AppButton from './AppButton';
 
 const ConfirmationModal = (props: any) => {
-    const { modalVisible, closeModal, onReverseTransaction } = props;
+    const { modalVisible, closeModal, onReverseTransaction, isLoading } = props;
     return (
         <View style={styles.centeredView}>
             <Modal
@@ -18,12 +19,20 @@ const ConfirmationModal = (props: any) => {
                             <Text style={styles.modalText}>დარწმუნებული ხართ რომ გსურთ ტრანზაქციის დარევერსება?</Text>
                         </View>
                         <View style={styles.buttons}>
-                            <Pressable style={[styles.button, styles.btnDanger]} onPress={closeModal}>
-                                <Text style={styles.btnText}>{'არა'.toLocaleUpperCase()}</Text>
-                            </Pressable>
-                            <Pressable style={[styles.button, styles.btnGreen]} onPress={onReverseTransaction}>
-                                <Text style={styles.btnText}>{'დიახ'.toLocaleUpperCase()}</Text>
-                            </Pressable>
+                            <AppButton
+                                btnStyle={[styles.button, styles.btnDanger]}
+                                buttonTitle='არა'
+                                titleStylee={styles.btnText}
+                                onPress={closeModal}
+                                isLoading={false} />
+
+                            <AppButton
+                                btnStyle={[styles.button, styles.btnGreen]}
+                                buttonTitle='დიახ'
+                                titleStylee={styles.btnText}
+                                onPress={onReverseTransaction}
+                                isLoading={isLoading} />
+
                         </View>
                     </View>
                 </View>
@@ -91,7 +100,8 @@ const styles = StyleSheet.create({
 
     modalText: {
         fontSize: 16,
-        marginBottom: 20
+        marginBottom: 20,
+        textAlign: 'center'
     }
 });
 

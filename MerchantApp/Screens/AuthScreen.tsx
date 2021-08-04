@@ -15,7 +15,6 @@ const AuthScreen = (props: any) => {
     const [password, setPassword] = useState<string>('123123');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
-    const [isFocused, setIsFocused] = useState<boolean>(false);
 
     useEffect(() => {
         Keyboard.addListener("keyboardDidShow", keyboardDidShow);

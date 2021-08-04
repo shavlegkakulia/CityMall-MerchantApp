@@ -20,13 +20,13 @@ const PointModal = (props: any) => {
               <Image style={{ width: 60, height: 60 }} source={require('../assets/images/success_mark.png')} />
             </View>
             <View style={styles.modalContent}>
-              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>ბარათის მფლობელი: {collectInfo.initials}</Text>
+              <Text style={styles.modalText}>ბარათის მფლობელი: {collectInfo.initials}</Text>
               {type === 'Pay' ?
-                <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>დახარჯული ქულა: {collectInfo.bonus}</Text> :
-                <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
+                <Text style={styles.modalText}>დახარჯული ქულა: {collectInfo.bonus}</Text> :
+                <Text style={styles.modalText}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
               }
-              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
-              <Text style={[styles.modalText, type === 'Pay' ? styles.modalTextPay : styles.modalTextCollect]}>კლიენტის სტატუსი: </Text>
+              <Text style={styles.modalText}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
+              <Text style={styles.modalText}>კლიენტის სტატუსი: {collectInfo.clientStatus} </Text>
             </View>
             <Pressable style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={closeModal}>
               <Text style={styles.btnText}>დახურვა</Text>

@@ -53,8 +53,8 @@ class AuthService {
     return await storage.getItem('access_token');
   };
 
-  async getDeviceId(): Promise<string | null > {
-      return await storage.getItem('device_id');
+  async getDeviceId(): Promise<string | null> {
+    return await storage.getItem('device_id');
   }
 
   async getRefreshToken(): Promise<string | null> {
@@ -98,7 +98,7 @@ class AuthService {
     loginObj.append('client_id', 'MerchantApi');
     loginObj.append('client_secret', 'secret');
     loginObj.append('grant_type', 'password');
-    return await axios.post(`http://109.238.238.195:17411/connect/token`, loginObj, config);
+    return await axios.post(`${envs.CONNECT_URL}/connect/token`, loginObj, config);
   };
 
 
@@ -123,7 +123,7 @@ class AuthService {
         config.headers.Authorization = `Bearer ${token}`,
           config.headers.device_id = deviceId;
       }
-      
+
     };
 
     const waitForRefresh = (config?: AxiosRequestConfig) => {
@@ -175,10 +175,9 @@ class AuthService {
           if (error?.response?.status === 500) {
             // error.message = 'Something went wrong';
           }
-
-
           return Promise.reject(error);
         }
+
         const originalRequest = error.config;
         //if refresh already started wait and retry with new token
         if (this.refreshStarted) {
@@ -203,11 +202,11 @@ class AuthService {
         refreshObj.append('client_secret', 'secret');
         refreshObj.append('grant_type', 'refresh_token');
         refreshObj.append('refresh_token', await this.getRefreshToken() || '');
-       
+
         return axios
-          .post<IAuthResponse>(`http://109.238.238.195:17411/connect/token`, refreshObj, config)
+          .post<IAuthResponse>(`${envs.CONNECT_URL}/connect/token`, refreshObj, config)
           .then(async response => {
-            console.log('ssssssssssssssssssssssssssssssssss', response)
+            console.log('--------Refresh Token Response-------', response)
             if (!response.data.access_token) throw response;
             await this.setToken(
               response.data.access_token,
