@@ -69,6 +69,7 @@ const ManagePoints = (props: any) => {
     const collectPoints = () => {
         setErrorMessage('');
         if (!scannedCode || !amount) return;
+        Keyboard.dismiss();
         setBtnLoading(true);
         let data = {
             card: scannedCode,

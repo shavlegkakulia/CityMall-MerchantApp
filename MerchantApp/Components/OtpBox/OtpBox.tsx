@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Keyboard } from 'react-native';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 import Bonus from '../../services/Bonus';
 import AppButton from '../AppButton';

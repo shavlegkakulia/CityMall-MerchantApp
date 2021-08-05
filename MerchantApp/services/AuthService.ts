@@ -88,7 +88,7 @@ class AuthService {
       skipRefresh: true,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        
+
       }
     }
     const loginObj = new URLSearchParams();
@@ -100,8 +100,6 @@ class AuthService {
     loginObj.append('grant_type', 'password');
     return await axios.post(`${envs.CONNECT_URL}/connect/token`, loginObj, config);
   };
-
-
 
   async isAuthenticated(): Promise<boolean | null> {
     let token = await this.getToken();
@@ -171,7 +169,7 @@ class AuthService {
             error?.response?.status !== 400) ||
           error.config.anonymous ||
           error.config.skipRefresh
-          
+
         ) {
 
           // if (error?.response?.status === 500) {
@@ -213,15 +211,12 @@ class AuthService {
               response.data.access_token,
               response.data.refresh_token,
             );
-
             this.refreshStarted = false;
-
             setAuthToken(originalRequest);
             return axios(originalRequest);
           })
           .catch(err => {
             this.refreshStarted = false;
-
             callBack();
             return Promise.reject(err);
           });

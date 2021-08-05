@@ -5,6 +5,7 @@ import AuthService from '../services/AuthService';
 import { AppContext } from '../services/ContextService';
 import AppButton from '../Components/AppButton';
 import AppInput from '../Components/AppInput';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -16,7 +17,7 @@ const AuthScreen = () => {
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
     const [authRequired, setAuthRequires] = useState<any>({ user: false, pwd: false });
-    const [authError, setAuthError] = useState<boolean>(false);
+    const [authError, setAuthError] = useState<string>('');
 
     useEffect(() => {
         Keyboard.addListener("keyboardDidShow", keyboardDidShow);
@@ -43,6 +44,8 @@ const AuthScreen = () => {
 
     const login = () => {
         setAuthRequires({ user: false, pwd: false });
+        setAuthError('');
+        Keyboard.dismiss();
         if (!userName && !password) {
             setAuthRequires({ user: true, pwd: true });
             return;
@@ -65,14 +68,12 @@ const AuthScreen = () => {
                     setIsAuth(true);
                     setBtnLoading(false);
                 } else {
-                    console.log(res.data)
+                    console.log(res.status)
                     setBtnLoading(false);
                 }
-            }).catch(error => {
-                Alert.alert(
-                    'Error',
-                    JSON.stringify(error)
-                ); setBtnLoading(false)
+            }).catch(() => {
+                setAuthError('მომხმარებელი არ მოიძებნა')
+                setBtnLoading(false)
             })
         }
 
@@ -81,13 +82,13 @@ const AuthScreen = () => {
 
 
     return (
-        <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            {!keyboardStatus && <View style={[styles.imageWrap, { alignItems: 'flex-start' }]}>
+        <ScrollView scrollEnabled ={false}  keyboardShouldPersistTaps  = 'always' contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }} >
+            <View style={[styles.imageWrap, { alignItems: 'flex-start' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-topLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-topRight.png')} />
-            </View>}
+            </View>
             <View style={styles.middleContent}>
-                <View>
+                <View style={{ marginVertical: 10,}}>
                     <AppInput
                         label='მომხმარებელი'
                         value={userName}
@@ -103,7 +104,7 @@ const AuthScreen = () => {
                         isPasswordInput
                         error={authRequired.pwd}
                     />
-                   {authError? <Text>{authError}</Text> : null}
+                   {authError? <Text style={{color: '#E50B09'}}>{authError}</Text> : null}
                 </View>
                 <AppButton
                     btnStyle={styles.authButton}
@@ -112,11 +113,11 @@ const AuthScreen = () => {
                     onPress={login}
                     isLoading={btnLoading} />
             </View>
-            {!keyboardStatus && <View style={[styles.imageWrap, { alignItems: 'flex-end' }]}>
+            <View style={[styles.imageWrap, { alignItems: 'flex-end' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
-            </View>}
-        </View>
+            </View>
+        </ScrollView>
     )
 
 }
@@ -135,14 +136,14 @@ const styles = StyleSheet.create({
     middleContent: {
         flex: 8,
         alignSelf: 'center',
-        justifyContent: 'space-around',
+        marginVertical: 20
     },
     authInput: {
         width: deviceWidth - 80,
         height: deviceHeight / 12,
         backgroundColor: '#E6E7E8',
         borderRadius: 10,
-        marginBottom: 20,
+        
         paddingLeft: 20
     },
     authButton: {
@@ -152,8 +153,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 10
-
+        borderRadius: 10,
 
     }
 
