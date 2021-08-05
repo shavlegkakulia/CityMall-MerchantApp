@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, Keyboard, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, Keyboard, ActivityIndicator, Alert } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
 import { AppContext } from '../services/ContextService';
@@ -10,11 +10,13 @@ const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 // deviceId = bc410a9ca5485e94
 
-const AuthScreen = (props: any) => {
-    const [userName, setUserName] = useState<string>('ggggg');
-    const [password, setPassword] = useState<string>('123123');
+const AuthScreen = () => {
+    const [userName, setUserName] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
+    const [authRequired, setAuthRequires] = useState<any>({ user: false, pwd: false });
+    const [authError, setAuthError] = useState<boolean>(false);
 
     useEffect(() => {
         Keyboard.addListener("keyboardDidShow", keyboardDidShow);
@@ -40,21 +42,40 @@ const AuthScreen = (props: any) => {
 
 
     const login = () => {
-        setBtnLoading(true);
-        let data = {
-            username: userName,
-            password: password
-        }
-        AuthService.SignIn(data).then(res => {
-            if (res.status === 200) {
-                AuthService.setToken(res.data.access_token, res.data.refresh_token);
-                AuthService.setDeviceId(getUniqueId());
-                setIsAuth(true);
-                setBtnLoading(false);
-            } else {
-                setBtnLoading(false);
+        setAuthRequires({ user: false, pwd: false });
+        if (!userName && !password) {
+            setAuthRequires({ user: true, pwd: true });
+            return;
+        } else if (!password) {
+            setAuthRequires({ user: false, pwd: true });
+            return;
+        } else if (!userName) {
+            setAuthRequires({ user: true, pwd: false });
+            return;
+        } else {
+            setBtnLoading(true);
+            let data = {
+                username: userName,
+                password: password
             }
-        }).catch(error => { console.log(error); setBtnLoading(false) })
+            AuthService.SignIn(data).then(res => {
+                if (res.status === 200) {
+                    AuthService.setToken(res.data.access_token, res.data.refresh_token);
+                    AuthService.setDeviceId(getUniqueId());
+                    setIsAuth(true);
+                    setBtnLoading(false);
+                } else {
+                    console.log(res.data)
+                    setBtnLoading(false);
+                }
+            }).catch(error => {
+                Alert.alert(
+                    'Error',
+                    JSON.stringify(error)
+                ); setBtnLoading(false)
+            })
+        }
+
     }
 
 
@@ -67,21 +88,22 @@ const AuthScreen = (props: any) => {
             </View>}
             <View style={styles.middleContent}>
                 <View>
-                    {/* <TextInput style={styles.authInput} value={userName} onChangeText={(val) => setUserName(val)} /> */}
-                    <AppInput 
+                    <AppInput
                         label='მომხმარებელი'
                         value={userName}
                         onChangeText={(newValue: any) => setUserName(newValue)}
-                    
+                        error={authRequired.user}
                     />
                     <AppInput
                         label='პაროლი'
                         value={password}
                         onChangeText={(newValue: any) => setPassword(newValue)}
-                        secureTextEntry={passwordSecure} 
-                        onPasswordSecure = {() => setPasswordSecure(!passwordSecure)}
+                        secureTextEntry={passwordSecure}
+                        onPasswordSecure={() => setPasswordSecure(!passwordSecure)}
                         isPasswordInput
+                        error={authRequired.pwd}
                     />
+                   {authError? <Text>{authError}</Text> : null}
                 </View>
                 <AppButton
                     btnStyle={styles.authButton}

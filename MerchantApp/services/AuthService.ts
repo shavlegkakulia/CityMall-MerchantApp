@@ -85,12 +85,12 @@ class AuthService {
 
   async SignIn(data: IAuthRequest) {
     const config = {
+      skipRefresh: true,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        
       }
     }
-
-
     const loginObj = new URLSearchParams();
     loginObj.append('username', data.username || '');
     loginObj.append('password', data.password);
@@ -171,10 +171,11 @@ class AuthService {
             error?.response?.status !== 400) ||
           error.config.anonymous ||
           error.config.skipRefresh
+          
         ) {
-          if (error?.response?.status === 500) {
-            // error.message = 'Something went wrong';
-          }
+
+          // if (error?.response?.status === 500) {
+          // }
           return Promise.reject(error);
         }
 

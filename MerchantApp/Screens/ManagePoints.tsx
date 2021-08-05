@@ -210,9 +210,6 @@ const ManagePoints = (props: any) => {
                             <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
                         </Fragment>
                     }
-
-
-
                 </View>
             </View>
         );
@@ -221,7 +218,7 @@ const ManagePoints = (props: any) => {
     };
 
     return (
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView  keyboardShouldPersistTaps  = 'always' style={{ flex: 1 }}>
             {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />}
             {scannCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />
