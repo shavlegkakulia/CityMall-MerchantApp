@@ -1,9 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { Alert, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { getTransactions, clearTransactions } from '../services/TransactionService';
+import AuthService from '../services/AuthService';
 import CloseDayModal from '../Components/CloseDayModal';
 import { AppContext } from '../services/ContextService';
 import Bonus from '../services/Bonus';
+import axios from 'axios';
+import envs from '../config/env'
 
 const Dashboard = (props: any) => {
 
@@ -33,8 +36,6 @@ const Dashboard = (props: any) => {
 
 
             data.forEach((e: any) => {
-                // let payArray = [];
-                // let accArray = []
                 if (e.tranType === 'Payment') {
                     PaymentCount.push(e)
                     if (e.reversed === true) {
@@ -42,7 +43,6 @@ const Dashboard = (props: any) => {
                     } else {
                         Payment += e.tranAmount;
                     }
-                    // PaymentCount = payArray.length;
                 } else {
                     AccumulationCount.push(e)
                     if (e.reversed === true) {
@@ -50,7 +50,6 @@ const Dashboard = (props: any) => {
                     } else {
                         Accumulation += e.tranAmount;
                     }
-                    // AccumulationCount = accArray.length
                 }
 
             });
@@ -83,17 +82,47 @@ const Dashboard = (props: any) => {
             payAmountRevers: closeDayData.paymentReversalSum,
         }
         Bonus.CloseDay(data).then(res => {
-            console.log(res.data)
+            //console.log(res.data)
             if (res.data.success) {
                 setBtonLoading(false);
                 setShowModal(false);
+                Alert.alert(
+                    'დღის დახურვა',
+                    'დღის დახურვა წარმატებულია',
+                )
                 clearTransactions();
             } else {
                 setBtonLoading(false);
+                Alert.alert(
+                    'დაფიქსირდა შეცდომა'
+                )
+                
             }
         }).catch(e => {console.log(e); setBtonLoading(false)})
     }
 
+
+    const fn = async () => {
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+        const refreshObj = new URLSearchParams();
+        refreshObj.append('scope', 'MerchantApi offline_access');
+        refreshObj.append('client_id', 'MerchantApi');
+        refreshObj.append('client_secret', 'secret');
+        refreshObj.append('grant_type', 'refresh_token');
+        refreshObj.append('refresh_token', await AuthService.getRefreshToken() || '');
+        console.log(`${envs.CONNECT_URL}/connect/token`, refreshObj, config)
+         axios.post(`${envs.CONNECT_URL}/connect/token`, refreshObj, config)
+          .then((Response: any) => {
+            console.log('--------Refresh Token Response-------', Response)
+          }).catch(err => console.log('--------Refresh Token Error-------', err))
+          
+    }
+
+    
 
     return (
 
@@ -119,10 +148,13 @@ const Dashboard = (props: any) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={() => startCloseDay()} >
+                <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={startCloseDay} >
                     <Text style={styles.serviceLabel}>დღის დახურვა</Text>
                 </TouchableOpacity>
             </View>
+            {/* <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={()=>AuthService.setToken('kajshdjaskdhkahskdjhakshd', '')} >
+                    <Text style={styles.serviceLabel}>წაშლა</Text>
+                </TouchableOpacity> */}
         </View>
     );
 };

@@ -1,7 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Modal, Pressable, Alert, TextInput } from 'react-native'
-import { color } from 'react-native-reanimated';
+import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
 import AppInput from './AppInput';
 
 const AppModal = (props: any) => {

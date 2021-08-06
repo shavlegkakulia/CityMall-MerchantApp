@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, Pressable, Image, } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Modal } from 'react-native';
 import AppButton from './AppButton';
 
 

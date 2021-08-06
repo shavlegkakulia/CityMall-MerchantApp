@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Modal, Pressable, } from 'react-native';
+import { StyleSheet, Text, View, Modal } from 'react-native';
 import AppButton from './AppButton';
 
 const ConfirmationModal = (props: any) => {

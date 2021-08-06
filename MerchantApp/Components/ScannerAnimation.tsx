@@ -1,7 +1,5 @@
-import React, { useRef } from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Animated, Dimensions,  StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('screen');
 
@@ -25,7 +23,7 @@ const ScannerAnimation = () => {
 
     return (
 
-        <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center'}]} >
+        <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center' }]} >
             {/*area of scanning place*/}
             <View style={{ width: width, height: width / 2 }}>
                 {/*animated scan line*/}
@@ -84,8 +82,8 @@ const styles = StyleSheet.create({
         borderColor: 'white'
     },
     scanLine: {
-        width: '100%', 
-        height: 2, 
+        width: '100%',
+        height: 2,
         backgroundColor: 'red'
     }
 

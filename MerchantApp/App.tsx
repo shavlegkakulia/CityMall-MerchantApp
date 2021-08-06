@@ -4,9 +4,6 @@ import AppNavigatior from './navigation/AppNavigation';
 import axios from 'axios';
 import AuthService, { IInterceptop } from './services/AuthService';
 import AuthProvider, { AppContext } from './services/ContextService';
-import RNBootSplash from "react-native-bootsplash";
-import FullScreenLoader from './Components/FullScreenLoader';
-FullScreenLoader
 
 
 
@@ -52,7 +49,7 @@ const App = () => {
 
 
   useEffect(() => {
-    setDeviceId(getUniqueId())
+    setDeviceId(getUniqueId());
   }, []);
 
 

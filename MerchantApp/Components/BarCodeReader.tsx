@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, View, Dimensions, Alert } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import ScannerAnimation from './ScannerAnimation';
 

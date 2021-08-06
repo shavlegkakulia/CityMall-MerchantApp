@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Image, StyleSheet, TouchableOpacity, Text, TextInput, View, Button, Dimensions, Keyboard, ActivityIndicator, Alert } from 'react-native';
+import { Image, StyleSheet, Text, View, Dimensions, Keyboard } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
 import { AppContext } from '../services/ContextService';
@@ -19,27 +19,8 @@ const AuthScreen = () => {
     const [authRequired, setAuthRequires] = useState<any>({ user: false, pwd: false });
     const [authError, setAuthError] = useState<string>('');
 
-    useEffect(() => {
-        Keyboard.addListener("keyboardDidShow", keyboardDidShow);
-        Keyboard.addListener("keyboardDidHide", keyboardDidHide);
-
-        // cleanup function
-        return () => {
-            Keyboard.removeListener("keyboardDidShow", keyboardDidShow);
-            Keyboard.removeListener("keyboardDidHide", keyboardDidHide);
-        };
-    }, []);
-
-    const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
-    const keyboardDidShow = () => setKeyboardStatus(true);
-    const keyboardDidHide = () => setKeyboardStatus(false);
-
-
-
 
     const { setIsAuth } = useContext(AppContext);
-
-
 
 
     const login = () => {
@@ -68,7 +49,6 @@ const AuthScreen = () => {
                     setIsAuth(true);
                     setBtnLoading(false);
                 } else {
-                    console.log(res.status)
                     setBtnLoading(false);
                 }
             }).catch(() => {

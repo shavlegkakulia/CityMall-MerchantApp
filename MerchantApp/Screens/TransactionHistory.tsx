@@ -60,10 +60,9 @@ const TransactionHistory = () => {
                 });
             } else {
                 setBtnLoading(false);
-                console.log('*****ReverseTransaction*****', res.data);
             };
-            
-        }).catch(e => {console.log(e); setBtnLoading(false)});
+
+        }).catch(e => { console.log(e); setBtnLoading(false) });
     };
 
     const confirmReverse = (tran: any) => {
@@ -94,9 +93,10 @@ const TransactionHistory = () => {
             <ConfirmationModal
                 modalVisible={showModal}
                 closeModal={() => setShowModal(false)}
-                isLoading = {btnLoading}
+                isLoading={btnLoading}
                 onReverseTransaction={reverseTransaction} />
-            {transactions?.map((tran, index) => (<Transaction key={index} transaction={tran} />))}
+            {transactions?.length === 0 ? <Text style = {{fontSize: 18}}>ტრანზაქციები არ მოიძებნა</Text> :
+                transactions?.map((tran, index) => (<Transaction key={index} transaction={tran} />))}
         </ScrollView>
     );
 };

@@ -63,7 +63,7 @@ const ManagePoints = (props: any) => {
                 setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
-        }).catch((e) => console.log(JSON.stringify(e)))
+        }).catch((e) => console.log(JSON.parse(JSON.stringify(e))))
     };
 
     const collectPoints = () => {
@@ -93,6 +93,7 @@ const ManagePoints = (props: any) => {
                 addTransaction(transaction);
                 setAcumulationIfno({
                     initials: userInfo.initials,
+                    clientStatus: userInfo.clientStatus,
                     bonus: res.data.data?.accumulatedBonus,
                     availableBonus: res.data.data?.availableScore
                 });
@@ -161,7 +162,6 @@ const ManagePoints = (props: any) => {
     };
 
 
-    console.log(userInfo)
     let PayStep = null;
     if (step === 0) {
         PayStep = (
@@ -182,7 +182,10 @@ const ManagePoints = (props: any) => {
                     keyboardType='numeric'
                     error={!amount ? true : false}
                     value={amount}
-                    onChangeText={(newValue: any) => setAmount(newValue)} />
+                    onChangeText={(newValue: any) => setAmount(newValue)} 
+                    editable = {errorMessage !== ''? false : true
+                }
+                    />
                 <View >
                     {type === 'Pay' ?
                         <AppButton

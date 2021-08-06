@@ -159,24 +159,13 @@ class AuthService {
         return response;
       },
       async (error: any) => {
-        console.log('+++++++++error in auth interceptor++++++++++', JSON.stringify(error.response), JSON.parse(JSON.stringify(error.response)).data.error)
+        console.log('<----- Error in Auth Interceptor ----->', JSON.stringify(error.response), JSON.parse(JSON.stringify(error.response)).data.error)
         error.response = error.response || {};
 
         //Reject promise if usual error
-        if (
-          (error?.response?.status !== 401 &&
-            error?.response?.status !== 403 &&
-            error?.response?.status !== 400) ||
-          error.config.anonymous ||
-          error.config.skipRefresh
-
-        ) {
-
-          // if (error?.response?.status === 500) {
-          // }
+        if ((error?.response?.status !== 401 && error?.response?.status !== 403 && error?.response?.status !== 400) || error.config.anonymous || error.config.skipRefresh) {
           return Promise.reject(error);
         }
-
         const originalRequest = error.config;
         //if refresh already started wait and retry with new token
         if (this.refreshStarted) {
@@ -185,7 +174,7 @@ class AuthService {
             setAuthToken(originalRequest);
             return axios(originalRequest);
           });
-        }
+        };
 
         //refresh token
         this.refreshStarted = true;
@@ -202,10 +191,8 @@ class AuthService {
         refreshObj.append('grant_type', 'refresh_token');
         refreshObj.append('refresh_token', await this.getRefreshToken() || '');
 
-        return axios
-          .post<IAuthResponse>(`${envs.CONNECT_URL}/connect/token`, refreshObj, config)
-          .then(async response => {
-            console.log('--------Refresh Token Response-------', response)
+        await axios.post<IAuthResponse>(`${envs.CONNECT_URL}/connect/token`, refreshObj, config).then(async response => {
+            console.log('<===Refresh Token Response==>', response)
             if (!response.data.access_token) throw response;
             await this.setToken(
               response.data.access_token,
@@ -214,8 +201,8 @@ class AuthService {
             this.refreshStarted = false;
             setAuthToken(originalRequest);
             return axios(originalRequest);
-          })
-          .catch(err => {
+          }).catch(err => {
+            console.log('<===Refresh Token Response===>', err)
             this.refreshStarted = false;
             callBack();
             return Promise.reject(err);

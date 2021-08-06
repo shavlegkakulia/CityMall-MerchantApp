@@ -1,15 +1,9 @@
-import React, { useEffect, useState, forwardRef } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, View, TextInput, Image, Touchable, TouchableOpacityBase, TouchableOpacity } from 'react-native';
-
-
-
-
+import React, {useState, forwardRef } from 'react';
+import {  StyleSheet, Text, View, TextInput, Image,  TouchableOpacity } from 'react-native';
 
 const AppInput = ((props: any, ref: any) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
-    // useEffect(() => {
-    //     props.callBack(isFocused)
-    // }, [isFocused])
+    
     return (
 
         <View style={{ marginVertical: 10 }}>
