@@ -62,7 +62,7 @@ const App = () => {
 
   useEffect(() => {
     console.log('Developer <--Avtandil Shaburishvili, 08.04.2021--> ')
-    AxiosInterceptor.current = [RegisterCommonInterceptor(), AuthService.registerAuthInterceptor(logOut)];
+    AxiosInterceptor.current = [RegisterCommonInterceptor(), AuthService.registerAuthInterceptor(async() => await logOut())];
     return () => {
       AxiosInterceptor.current.forEach(sub => sub.unsubscribe());
     }

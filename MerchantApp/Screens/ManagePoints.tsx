@@ -63,7 +63,7 @@ const ManagePoints = (props: any) => {
                 setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
-        }).catch((e) => console.log(JSON.parse(JSON.stringify(e))))
+        }).catch((e) => { console.log((e)); setBtnLoading(false) })
     };
 
     const collectPoints = () => {
@@ -100,7 +100,7 @@ const ManagePoints = (props: any) => {
                 setShowModal(true);
             } else {
                 setErrorMessage(res.data.error?.errorDesc)
-                
+
             };
             setBtnLoading(false)
         }).catch(e => setBtnLoading(false));
@@ -143,13 +143,10 @@ const ManagePoints = (props: any) => {
                 });
                 setStep(0);
                 setShowModal(true);
-
             } else {
-                console.log('aqane', res.data.success)
                 setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
-
         });
     };
 
@@ -170,7 +167,6 @@ const ManagePoints = (props: any) => {
                     <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() => setScannCode(true)}>
                         <Text style={styles.btntext}>კოდის დასკანერება</Text>
                     </TouchableOpacity> : null}
-
                 <AppInput
                     label='ბარათი'
                     keyboardType='numeric'
@@ -182,10 +178,9 @@ const ManagePoints = (props: any) => {
                     keyboardType='numeric'
                     error={!amount ? true : false}
                     value={amount}
-                    onChangeText={(newValue: any) => setAmount(newValue)} 
-                    editable = {errorMessage !== ''? false : true
-                }
-                    />
+                    onChangeText={(newValue: any) => setAmount(newValue)}
+                    editable={errorMessage !== '' ? false : true
+                    } />
                 <View >
                     {type === 'Pay' ?
                         <AppButton
@@ -218,11 +213,11 @@ const ManagePoints = (props: any) => {
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} errorMessage ={errorMessage} />
+        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} errorMessage={errorMessage} />
     };
 
     return (
-        <ScrollView  keyboardShouldPersistTaps  = 'always' style={{ flex: 1 }}>
+        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
             {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />}
             {scannCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />

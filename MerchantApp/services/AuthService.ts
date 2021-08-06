@@ -181,18 +181,16 @@ class AuthService {
         const config = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
-          }
+          },
+          skipRefresh: true
         }
-
         const refreshObj = new URLSearchParams();
         refreshObj.append('scope', 'MerchantApi offline_access');
         refreshObj.append('client_id', 'MerchantApi');
         refreshObj.append('client_secret', 'secret');
         refreshObj.append('grant_type', 'refresh_token');
         refreshObj.append('refresh_token', await this.getRefreshToken() || '');
-
-        await axios.post<IAuthResponse>(`${envs.CONNECT_URL}/connect/token`, refreshObj, config).then(async response => {
-            console.log('<===Refresh Token Response==>', response)
+        return await axios.post<IAuthResponse>(`${envs.CONNECT_URL}/connect/token`, refreshObj, config).then(async response => {
             if (!response.data.access_token) throw response;
             await this.setToken(
               response.data.access_token,
@@ -202,7 +200,6 @@ class AuthService {
             setAuthToken(originalRequest);
             return axios(originalRequest);
           }).catch(err => {
-            console.log('<===Refresh Token Response===>', err)
             this.refreshStarted = false;
             callBack();
             return Promise.reject(err);
