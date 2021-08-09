@@ -61,7 +61,9 @@ const OtpBox = (props: any) => {
 
     return (
         <View style={{ flex: 1, marginHorizontal: 20,  }}>
+            <Text style={{textAlign: 'center', marginTop: 10}}>გთხოვთ შეიყვანოთ ბარათის მფლობელის მობილურზე გამოგზავნილი კოდი</Text>
             <View style={styles.otpBoxConteiner}>
+                
                 {otp.map((element, index) => (
                     <TextInput
                         ref={refs[index]}

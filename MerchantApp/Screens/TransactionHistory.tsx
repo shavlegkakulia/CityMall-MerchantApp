@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect, Fragment } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import Bonus from '../services/Bonus';
-import { getTransactions, updateTransactions } from '../services/TransactionService';
+import { getTransactions, ITransaction, updateTransactions } from '../services/TransactionService';
 import ConfirmationModal from '../Components/ConfirmationModal';
+import FullScreenLoader from '../Components/FullScreenLoader';
+
 
 const TransactionHistory = () => {
 
@@ -10,6 +12,7 @@ const TransactionHistory = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedTran, setSelectedTran] = useState<any>();
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
+    const [isInit, setIsInit] = useState<boolean>(false);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return "";
@@ -39,8 +42,21 @@ const TransactionHistory = () => {
     const loadTransactions = () => {
         getTransactions().then(res => {
             setTransactions(res);
-        });
+            setIsInit(true);
+        })
+
     };
+
+    const transactionSum = (data: ITransaction[]) => {
+        let sum = 0;
+        data.forEach((tr: ITransaction) => {
+            if (tr.reversed === false && tr.tranAmount !== undefined) {
+                sum += tr.tranAmount
+            };
+        });
+
+        return sum
+    }
 
     const reverseTransaction = async () => {
         setBtnLoading(true);
@@ -74,7 +90,7 @@ const TransactionHistory = () => {
     const Transaction = (props: any) => {
         const { card, reversed, tranAmount, tranDate, tranType } = props.transaction;
         return (
-            <View style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect]}
+            <View style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect, reversed ? styles.reversed : {}]}
                 pointerEvents={reversed ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
@@ -89,23 +105,50 @@ const TransactionHistory = () => {
     };
 
     return (
-        <ScrollView style={styles.mainContainer}>
-            <ConfirmationModal
-                modalVisible={showModal}
-                closeModal={() => setShowModal(false)}
-                isLoading={btnLoading}
-                onReverseTransaction={reverseTransaction} />
-            {transactions?.length === 0 ? <Text style = {{fontSize: 18}}>ტრანზაქციები არ მოიძებნა</Text> :
-                transactions?.map((tran, index) => (<Transaction key={index} transaction={tran} />))}
-        </ScrollView>
+        !isInit ?
+            <FullScreenLoader /> :
+
+            <SafeAreaView style={styles.mainContainer}>
+                <ConfirmationModal
+                    modalVisible={showModal}
+                    closeModal={() => setShowModal(false)}
+                    isLoading={btnLoading}
+                    onReverseTransaction={reverseTransaction} />
+                {transactions && transactions.length === 0 ?
+                <View style={styles.noTransactions}>
+                    <Image style= {styles.searchIcon} source = {require('../assets/images/search.png')} />
+                    <Text style={{ fontSize: 18, textAlign: 'center' }}>ტრანზაქციები არ მოიძებნა</Text>
+                </View>
+                     :
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.transactionSum}>ტრანზაქციების ჯამი: {transactionSum(transactions)} </Text>
+                        <FlatList
+                            contentContainerStyle={{ padding: 10 }}
+                            data={transactions}
+                            renderItem={({ item }) => <Transaction transaction={item} />}
+                            keyExtractor={(item: any) => item.stan} />
+                    </View>}
+            </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        marginHorizontal: 30,
+        marginHorizontal: 20,
         marginTop: 20
+    },
+
+    noTransactions : {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    searchIcon: {
+        width: 30,
+        height: 30,
+        marginRight: 10
     },
 
     tranWrap: {
@@ -116,6 +159,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderWidth: 2,
         borderRadius: 10
+    },
+
+    transactionSum: {
+        textAlign: 'right',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#000'
     },
 
     tranWrapPay: {

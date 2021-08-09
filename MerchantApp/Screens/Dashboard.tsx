@@ -87,16 +87,16 @@ const Dashboard = (props: any) => {
                     'დაფიქსირდა შეცდომა'
                 );
             };
-        }).catch(e => {console.log(e); setBtonLoading(false)});
+        }).catch(e => { console.log(e); setBtonLoading(false) });
     };
 
 
 
     return (
         <View style={styles.container}>
-            {showModal && <CloseDayModal modalVisible={showModal} closeModal={()=> {setShowModal(false); setBtonLoading(false)}} data={closeDayData} isLoading = {btnLoading} onCloseDay = {CloseDay}/>}
+            {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
             <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
-                <Image style={styles.merchantLogo} source={require('../assets/images/miniso-logo.png')} />
+                <Image style={styles.merchantLogo} source={require('../assets/images/city-mall-icon.png')} />
             </View>
             <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
@@ -118,6 +118,7 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>დღის დახურვა</Text>
                 </TouchableOpacity>
             </View>
+            <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
         </View>
     );
 };
@@ -136,10 +137,8 @@ const styles = StyleSheet.create({
     },
 
     merchantLogo: {
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
+        width: 130,
+        height: 170,
     },
 
     service: {

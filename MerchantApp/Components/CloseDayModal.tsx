@@ -10,7 +10,7 @@ const CloseDayModal = (props: any) => {
     const { accumulationSum, accumulationReversalSum, accumulationCount, paymentSum, paymentReversalSum, paymentCount } = data;
 
     return (
-        <View style={styles.centeredView}>
+        <View >
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -28,11 +28,11 @@ const CloseDayModal = (props: any) => {
                             <Text style={styles.sampleStyle}>დაგროვების ტრანზაქციები: </Text>
                             <Text>ტრანზაქციების რაოდებონა: {accumulationCount.length}</Text>
                             <Text>დაგროვებული ქულა: {accumulationSum}</Text>
-                            <Text style={{ marginBottom: 10 }}>დარევერსებული ქულა: {accumulationReversalSum}</Text>
+                            <Text style={{ marginBottom: 10 }}>გაუქმებული ტრანზაქცია: {accumulationReversalSum}</Text>
                             <Text style={styles.sampleStyle}>გადახდის ტრანზაქციები:</Text>
                             <Text>ტრანზაქციების რაოდებონა: {paymentCount.length}</Text>
                             <Text>დახარჯული ქულა: {paymentSum}</Text>
-                            <Text>დარევერსებული ქულა: {paymentReversalSum}</Text>
+                            <Text>გაუქმებული ტრანზაქცია: {paymentReversalSum}</Text>
                         </View>
                         <View style={styles.buttons}>
                         <AppButton

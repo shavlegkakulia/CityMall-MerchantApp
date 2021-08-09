@@ -5,7 +5,7 @@ import AppButton from './AppButton';
 const ConfirmationModal = (props: any) => {
     const { modalVisible, closeModal, onReverseTransaction, isLoading } = props;
     return (
-        <View style={styles.centeredView}>
+        <View >
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -16,7 +16,7 @@ const ConfirmationModal = (props: any) => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.modalContent}>
-                            <Text style={styles.modalText}>დარწმუნებული ხართ რომ გსურთ ტრანზაქციის დარევერსება?</Text>
+                            <Text style={styles.modalText}>დარწმუნებული ხართ რომ გსურთ ტრანზაქციის გაუქმება?</Text>
                         </View>
                         <View style={styles.buttons}>
                             <AppButton
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#000000a3'
+        backgroundColor: '#000000a3',
+        
     },
 
     modalView: {

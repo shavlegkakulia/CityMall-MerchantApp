@@ -21,7 +21,7 @@ export interface ICollectPointsResponseData {
     address?: string,
     receiptId?: string,
     tranType?: string,
-    accumulatedBonus?: number,
+    accumulatedBonus: number,
     status?: string,
     bonus?: number,
     availableScore?: number

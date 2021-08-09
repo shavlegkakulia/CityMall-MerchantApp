@@ -3,7 +3,6 @@ import {  StyleSheet, Text, View, TextInput, Image,  TouchableOpacity } from 're
 
 const AppInput = ((props: any, ref: any) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
-    
     return (
 
         <View style={{ marginVertical: 10 }}>
@@ -18,7 +17,7 @@ const AppInput = ((props: any, ref: any) => {
             {props.isPasswordInput ? <TouchableOpacity style={styles.passwordEye} onPress={props.onPasswordSecure}>
                 <Image style={styles.passwordEyeImg} source={require('../assets/images/password-eye.png')} />
             </TouchableOpacity> : null}
-            {props.error ? <Text style={styles.errorText}>გთხოვთ შეავსოთ ველი</Text> : null}
+            {props.error !== '' ? <Text style={styles.errorText}>{props.error}</Text> : null}
         </View>
     );
 });

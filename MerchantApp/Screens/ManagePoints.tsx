@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Keyboard, ScrollView, NativeSegmentedControlIOSChangeEvent, Alert } from 'react-native';
 import AppInput from '../Components/AppInput';
 import BarCodeReader from '../Components/BarCodeReader';
 import Bonus from '../services/Bonus';
@@ -8,7 +8,8 @@ import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
-import { ScrollView } from 'react-native-gesture-handler';
+import { validateAmountInput } from '../services/comonServices';
+
 
 const ManagePoints = (props: any) => {
 
@@ -27,7 +28,6 @@ const ManagePoints = (props: any) => {
 
     useEffect(() => {
         Keyboard.addListener("keyboardDidShow", keyboardDidShow);
-
         // cleanup function
         return () => {
             Keyboard.removeListener("keyboardDidShow", keyboardDidShow);
@@ -45,8 +45,27 @@ const ManagePoints = (props: any) => {
     };
 
     useEffect(() => {
-        if (scannedCode.length === 16) GetUserInfo();
+        if (scannedCode?.length === 16) GetUserInfo();
+        
     }, [scannedCode]);
+
+    const handleCardNumber = (value: string) => {
+        let reg = new RegExp('^[0-9]+$');
+        if(!reg.test(value) && value.length !== 0 ) {
+            return;
+        } else {
+            setScannedCode(value)
+        }
+    };
+
+    const handleAmount = (value: string) => {
+        if(!validateAmountInput(value)) {
+            return;
+        }else {
+            setAmount(value.trim())
+        }
+
+    }
 
     const GetUserInfo = () => {
         setBtnLoading(true);
@@ -108,6 +127,13 @@ const ManagePoints = (props: any) => {
 
     const sendOtp = () => {
         if (!scannedCode || !amount) return;
+        if(amount > userInfo.amount) {
+            Alert.alert(
+                'შეცდომა!',
+                'ბალანზე არ არის საკმარისი თანხა'
+            );
+                return;
+        }
         setStep(step + 1);
     };
 
@@ -163,25 +189,28 @@ const ManagePoints = (props: any) => {
     if (step === 0) {
         PayStep = (
             <View style={{ marginHorizontal: 10, flex: 8, justifyContent: 'space-between' }}>
-                {!scannCode ?
-                    <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() => setScannCode(true)}>
-                        <Text style={styles.btntext}>კოდის დასკანერება</Text>
-                    </TouchableOpacity> : null}
+                
                 <AppInput
                     label='ბარათი'
                     keyboardType='numeric'
+                    maxLength={16}
                     value={scannedCode}
-                    error={!scannedCode ? true : false}
-                    onChangeText={(newValue: any) => setScannedCode(newValue)} />
+                    error={scannedCode.length < 16? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
+                    onChangeText = {(newValue: string) => handleCardNumber(newValue)}
+                     />
                 <AppInput
                     label='თანხა'
-                    keyboardType='numeric'
-                    error={!amount ? true : false}
+                    keyboardType='number-pad'
+                    error={amount === ''? 'გთხოვთ შეავსოთ ველი' : ''}
                     value={amount}
-                    onChangeText={(newValue: any) => setAmount(newValue)}
+                    onChangeText={(newValue: string) => handleAmount(newValue)}
                     editable={errorMessage !== '' ? false : true
                     } />
                 <View >
+                {!scannCode ?
+                    <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() =>{ setScannCode(true); Keyboard.dismiss()}}>
+                        <Text style={styles.btntext}>კოდის დასკანერება</Text>
+                    </TouchableOpacity> : null}
                     {type === 'Pay' ?
                         <AppButton
                             btnStyle={[styles.button, styles.buttonPay]}
@@ -217,7 +246,7 @@ const ManagePoints = (props: any) => {
     };
 
     return (
-        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
+        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1}}>
             {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />}
             {scannCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />

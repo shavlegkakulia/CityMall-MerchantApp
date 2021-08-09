@@ -16,7 +16,7 @@ const AuthScreen = () => {
     const [password, setPassword] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
-    const [authRequired, setAuthRequires] = useState<any>({ user: false, pwd: false });
+    const [authRequired, setAuthRequires] = useState<any>({ user: '', pwd: '' });
     const [authError, setAuthError] = useState<string>('');
 
 
@@ -28,13 +28,13 @@ const AuthScreen = () => {
         setAuthError('');
         Keyboard.dismiss();
         if (!userName && !password) {
-            setAuthRequires({ user: true, pwd: true });
+            setAuthRequires({ user: 'გთხოვთ შეავსოთ ველი', pwd: 'გთხოვთ შეავსოთ ველი' });
             return;
         } else if (!password) {
-            setAuthRequires({ user: false, pwd: true });
+            setAuthRequires({ user: '', pwd: 'გთხოვთ შეავსოთ ველი' });
             return;
         } else if (!userName) {
-            setAuthRequires({ user: true, pwd: false });
+            setAuthRequires({ user: 'გთხოვთ შეავსოთ ველი', pwd: '' });
             return;
         } else {
             setBtnLoading(true);
@@ -97,6 +97,7 @@ const AuthScreen = () => {
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
             </View>
+            <Text style={{textAlign:'right', fontWeight: '700', fontSize: 12, marginRight: 10}}>Powerd By UNICARD</Text>
         </ScrollView>
     )
 
