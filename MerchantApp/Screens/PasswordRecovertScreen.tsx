@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Alert, Button, Dimensions, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import AppButton from "../Components/AppButton";
 import AppInput from "../Components/AppInput";
 import Bonus from "../services/Bonus";
 import { validateChangePassword } from "../services/comonServices";
+import { AppContext } from "../services/ContextService";
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 
 const PasswordRecovery = (props: any) => {
-    const [userName, setUserName] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [newPasswordValidation, setNewPasswordValidation] = useState<string>('პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან და  შეიცვადეს ასოებს და ციფრებს')
     const [repeatePassword, setRepeatePassword] = useState<string>('');
@@ -20,14 +20,15 @@ const PasswordRecovery = (props: any) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [step, setStep] = useState<number>(0);
 
-    useEffect(() => {
 
+    const { userName, setUsername } = useContext(AppContext);
+
+    useEffect(() => {
         if (validateChangePassword(newPassword)) {
             setNewPasswordValidation('')
         } else {
             setNewPasswordValidation('პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან  და შეიცვადეს ასოებს და ციფრებს')
         }
-
         if (newPassword === repeatePassword) {
             setRepPasswordError('')
         } else {
@@ -43,7 +44,7 @@ const PasswordRecovery = (props: any) => {
                 <AppInput
                     label='მომხმარებელი'
                     value={userName}
-                    onChangeText={(newValue: any) => setUserName(newValue)}
+                    onChangeText={(newValue: any) => setUsername(newValue)}
                     error={errorMessage}
                 />
                 <AppButton
@@ -93,7 +94,6 @@ const PasswordRecovery = (props: any) => {
                     titleStylee={{ fontSize: 20, color: 'white' }}
                     onPress={() => changeUserPassword()}
                 />
-
             </>
         )
     }

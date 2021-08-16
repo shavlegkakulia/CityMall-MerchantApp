@@ -14,6 +14,8 @@ target 'MerchantApp' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
   target 'MerchantAppTests' do
     inherit! :complete
     # Pods for testing

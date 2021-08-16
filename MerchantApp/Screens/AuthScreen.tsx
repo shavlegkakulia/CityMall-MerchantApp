@@ -6,22 +6,48 @@ import { AppContext } from '../services/ContextService';
 import AppButton from '../Components/AppButton';
 import AppInput from '../Components/AppInput';
 import { ScrollView } from 'react-native-gesture-handler';
+import CheckBox from '@react-native-community/checkbox';
+import { setItem, getItem } from '../services/StorageService';
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 // deviceId = bc410a9ca5485e94
 
 const AuthScreen = (props: any) => {
-    const [userName, setUserName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [isRemembered, setIsRemembered] = useState<boolean>(false);
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [passwordSecure, setPasswordSecure] = useState<boolean>(true);
     const [authRequired, setAuthRequires] = useState<any>({ user: '', pwd: '' });
     const [authError, setAuthError] = useState<string>('');
 
 
-    const { setIsAuth } = useContext(AppContext);
+    const { setIsAuth, setUsername, userName } = useContext(AppContext);
 
+    useEffect(() => {
+        isRememberedUser();
+    }, [userName]);
+
+
+
+    const isRememberedUser = async () => {
+        let rememberedUser = await getItem('userName');
+        if (!rememberedUser) {
+            setUsername('');
+            setIsRemembered(false);
+            return;
+        } else {
+            setUsername(rememberedUser);
+            setIsRemembered(true);
+            return;
+        };
+    };
+
+    const changeRememberedUser = () => {
+        setItem('userName', '');
+        setUsername('');
+        return;
+    }
 
     const login = () => {
         setAuthRequires({ user: false, pwd: false });
@@ -38,6 +64,7 @@ const AuthScreen = (props: any) => {
             return;
         } else {
             setBtnLoading(true);
+
             let data = {
                 username: userName,
                 password: password
@@ -46,6 +73,11 @@ const AuthScreen = (props: any) => {
                 if (res.status === 200) {
                     AuthService.setToken(res.data.access_token, res.data.refresh_token);
                     AuthService.setDeviceId(getUniqueId());
+                    if (isRemembered) {
+                        setItem('userName', userName);
+                    } else {
+                        setItem('userName', '')
+                    }
                     setIsAuth(true);
                     setBtnLoading(false);
                 } else {
@@ -72,7 +104,7 @@ const AuthScreen = (props: any) => {
                     <AppInput
                         label='მომხმარებელი'
                         value={userName}
-                        onChangeText={(newValue: any) => setUserName(newValue)}
+                        onChangeText={(newValue: any) => setUsername(newValue)}
                         error={authRequired.user}
                     />
                     <AppInput
@@ -85,6 +117,11 @@ const AuthScreen = (props: any) => {
                         error={authRequired.pwd}
                     />
                     {authError ? <Text style={{ color: '#E50B09' }}>{authError}</Text> : null}
+                    <TouchableOpacity style={styles.checkBox} onPress={() => setIsRemembered(!isRemembered)}>
+                        <CheckBox value={isRemembered} onValueChange={() => setIsRemembered(!isRemembered)} />
+                        <Text style={styles.passRecoveryText}>მომხმარებლის დამახსოვრება</Text>
+                    </TouchableOpacity>
+
                 </View>
                 <AppButton
                     btnStyle={styles.authButton}
@@ -92,9 +129,11 @@ const AuthScreen = (props: any) => {
                     titleStylee={{ fontSize: 20, color: 'white' }}
                     onPress={login}
                     isLoading={btnLoading} />
-                <TouchableOpacity style={styles.pasRecovery} onPress={() => props.navigation.navigate('PasswordRecoveryScreen')}>
+                <TouchableOpacity style={styles.pasRecovery} onPress={() => { props.navigation.navigate('PasswordRecoveryScreen'); setPassword('') }}>
                     <Text style={styles.passRecoveryText}>პაროლის აღდგენა</Text>
                 </TouchableOpacity>
+
+
             </View>
             <View style={[styles.imageWrap, { alignItems: 'flex-end' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
@@ -150,6 +189,11 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         fontWeight: '600',
         color: '#000'
+    },
+    checkBox: {
+        flexDirection: 'row',
+        alignItems: 'center'
+
     }
 
 })
