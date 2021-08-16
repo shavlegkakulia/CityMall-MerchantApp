@@ -128,7 +128,7 @@ const ManagePoints = (props: any) => {
         if(amount > userInfo.amount) {
             Alert.alert(
                 'შეცდომა!',
-                'ბალანზე არ არის საკმარისი თანხა'
+                'ანგარიშზე არ არის საკმარისი თანხა'
             );
                 return;
         }

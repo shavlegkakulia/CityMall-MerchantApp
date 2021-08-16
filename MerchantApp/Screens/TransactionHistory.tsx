@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, SegmentedControlIOSComponent } from 'react-native';
 import Bonus from '../services/Bonus';
 import { getTransactions, ITransaction, updateTransactions } from '../services/TransactionService';
 import ConfirmationModal from '../Components/ConfirmationModal';
@@ -9,6 +9,8 @@ import FullScreenLoader from '../Components/FullScreenLoader';
 const TransactionHistory = () => {
 
     const [transactions, setTransactions] = useState([]);
+    const [accumulationTrSum, setAccumulationTrSum] = useState<number | string>(0);
+    const [payWithPointsSum, setPayWithPointsSum] = useState<number | string>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedTran, setSelectedTran] = useState<any>();
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
@@ -42,20 +44,34 @@ const TransactionHistory = () => {
     const loadTransactions = () => {
         getTransactions().then(res => {
             setTransactions(res);
+            transactionSum(res);
             setIsInit(true);
         })
 
     };
 
     const transactionSum = (data: ITransaction[]) => {
-        let sum = 0;
-        data.forEach((tr: ITransaction) => {
+        let accSum = 0;
+        let paySum = 0;
+        let accumulatedTr = data.filter(tr => tr.tranType !== 'Payment');
+        let paymentTr = data.filter(tr => tr.tranType === 'Payment');
+        //console.log('accumulation ----->', accumulatedTr, 'paymentTr ----->',paymentTr);
+
+        accumulatedTr.forEach((tr: ITransaction) => {
+            
             if (tr.reversed === false && tr.tranAmount !== undefined) {
-                sum += tr.tranAmount
+                accSum += tr.tranAmount;
+                setAccumulationTrSum(accSum);
             };
         });
-
-        return sum
+        paymentTr.forEach((tr: ITransaction) => {
+            
+            if (tr.reversed === false && tr.tranAmount !== undefined) {
+                paySum += tr.tranAmount
+                setPayWithPointsSum(paySum);
+            };
+        });
+        
     }
 
     const reverseTransaction = async () => {
@@ -120,8 +136,9 @@ const TransactionHistory = () => {
                     <Text style={{ fontSize: 18, textAlign: 'center' }}>ტრანზაქციები არ მოიძებნა</Text>
                 </View>
                      :
-                    <View style={{ flex: 1 }}>
-                        <Text style={styles.transactionSum}>ტრანზაქციების ჯამი: {transactionSum(transactions)} </Text>
+                    <View style={{ flex: 1, width: '100%' }}>
+                        <Text style={styles.transactionSum}>დაგროვებული ქულების ჯამი: {accumulationTrSum} </Text>
+                        <Text style={styles.transactionSum}>დახარჯული ქულების ჯამი: {payWithPointsSum} </Text>
                         <FlatList
                             contentContainerStyle={{ padding: 10 }}
                             data={transactions}
@@ -163,7 +180,7 @@ const styles = StyleSheet.create({
 
     transactionSum: {
         textAlign: 'right',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#000'

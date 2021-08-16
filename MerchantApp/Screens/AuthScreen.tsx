@@ -26,7 +26,7 @@ const AuthScreen = (props: any) => {
 
     useEffect(() => {
         isRememberedUser();
-    }, [userName]);
+    }, []);
 
 
 
