@@ -59,9 +59,7 @@ const ManagePoints = (props: any) => {
     };
 
     const handleAmount = (value: string) => {
-        if(!validateAmountInput(value)) {
-            return;
-        }else {
+        if(validateAmountInput(value)) {
             setAmount(value.trim())
         }
 
@@ -87,7 +85,7 @@ const ManagePoints = (props: any) => {
 
     const collectPoints = () => {
         setErrorMessage('');
-        if (!scannedCode || !amount) return;
+        if (!scannedCode || !amount ||  amount === '0' ||  scannedCode.length < 16) return;
         Keyboard.dismiss();
         setBtnLoading(true);
         let data = {
@@ -126,7 +124,7 @@ const ManagePoints = (props: any) => {
     };
 
     const sendOtp = () => {
-        if (!scannedCode || !amount) return;
+        if (!scannedCode || !amount ||  amount === '0' || scannedCode.length < 16) return;
         if(amount > userInfo.amount) {
             Alert.alert(
                 'შეცდომა!',
@@ -204,8 +202,7 @@ const ManagePoints = (props: any) => {
                     error={amount === ''? 'გთხოვთ შეავსოთ ველი' : ''}
                     value={amount}
                     onChangeText={(newValue: string) => handleAmount(newValue)}
-                    editable={errorMessage !== '' ? false : true
-                    } />
+                    editable={errorMessage !== '' ? false : true} />
                 <View >
                 {!scannCode ?
                     <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() =>{ setScannCode(true); Keyboard.dismiss()}}>
@@ -242,7 +239,14 @@ const ManagePoints = (props: any) => {
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox count={4} card={scannedCode} makePayment={PayWithPoints} btnLoading={btnLoading} errorMessage={errorMessage} />
+        PayStep = <OtpBox 
+            count={4} 
+            card={scannedCode} 
+            makePayment={PayWithPoints} 
+            btnLoading={btnLoading} 
+            errorMessage={errorMessage}
+            serviceType = 'collectPoints' 
+            OtpHeaderText = 'გთხოვთ შეიყვანოთ ბარათის მფლობელის მობილურზე გამოგზავნილი კოდი' />
     };
 
     return (

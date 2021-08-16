@@ -184,7 +184,15 @@ class Bonus {
     }
 
     SendOtp = async (data: ISendOtpRequest) => {
-        return await axios.post(`${env.API_URL}/api/Bonus/SendOtp`, data)
+        return await axios.post(`${env.API_URL}/api/Otp/SendOtp`, data);
+    }
+
+    SendUserOtp = async(value: string) => {
+        return await axios.post(`${env.API_URL}/api/Otp/SendUserOtp`, {username: value});
+    }
+
+    ChangeUserPassword = async(data: any) => {
+        return await axios.post(`${env.API_URL}/api/users/ChangeUserPassword`, data)
     }
 }
 

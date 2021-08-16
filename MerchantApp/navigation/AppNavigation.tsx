@@ -6,11 +6,13 @@ import Dashboard from '../Screens/Dashboard';
 import TransactionHistory from '../Screens/TransactionHistory';
 import ScannerAnimation from '../Components/ScannerAnimation';
 import AuthScreen from '../Screens/AuthScreen';
+import PasswordRecovery from '../Screens/PasswordRecovertScreen';
 import { AppContext } from '../services/ContextService';
 import LogoutButton from '../Components/LogoutButton';
 import AuthService from '../services/AuthService';
 import RNBootSplash from "react-native-bootsplash";
 import FullScreenLoader from '../Components/FullScreenLoader';
+
 
 
 const Stack = createStackNavigator();;
@@ -33,11 +35,20 @@ const AppNavigatior = (props: any) => {
     return (
         <NavigationContainer onReady={() =>RNBootSplash.hide()}>
             <Stack.Navigator initialRouteName="AuthScreen">
-                {isAuthenticated === false ? (<Stack.Screen
+                {isAuthenticated === false ? (
+                    <>
+                <Stack.Screen
                     name='AuthScreen'
                     component={AuthScreen}
                     options={{ title: '', headerShown: false }}
-                />) : (
+                />
+                <Stack.Screen
+                    name='PasswordRecoveryScreen'
+                    component={PasswordRecovery}
+                    options={{ title: 'პაროლის აღდგენა', headerShown: true }}
+                />
+                </>
+                ) : (
                     <>
                         <Stack.Screen
                             name='Dashboard'

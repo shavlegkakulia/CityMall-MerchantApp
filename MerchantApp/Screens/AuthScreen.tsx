@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, Dimensions, Keyboard } from 'react-native';
+import { Image, StyleSheet, Text, View, Dimensions, Keyboard, TouchableOpacity } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
 import AuthService from '../services/AuthService';
 import { AppContext } from '../services/ContextService';
@@ -11,7 +11,7 @@ const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 // deviceId = bc410a9ca5485e94
 
-const AuthScreen = () => {
+const AuthScreen = (props: any) => {
     const [userName, setUserName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
@@ -62,13 +62,13 @@ const AuthScreen = () => {
 
 
     return (
-        <ScrollView scrollEnabled ={false}  keyboardShouldPersistTaps  = 'always' contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }} >
+        <ScrollView scrollEnabled={false} keyboardShouldPersistTaps='always' contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }} >
             <View style={[styles.imageWrap, { alignItems: 'flex-start' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-topLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-topRight.png')} />
             </View>
             <View style={styles.middleContent}>
-                <View style={{ marginVertical: 10,}}>
+                <View style={{ marginVertical: 10, }}>
                     <AppInput
                         label='მომხმარებელი'
                         value={userName}
@@ -84,7 +84,7 @@ const AuthScreen = () => {
                         isPasswordInput
                         error={authRequired.pwd}
                     />
-                   {authError? <Text style={{color: '#E50B09'}}>{authError}</Text> : null}
+                    {authError ? <Text style={{ color: '#E50B09' }}>{authError}</Text> : null}
                 </View>
                 <AppButton
                     btnStyle={styles.authButton}
@@ -92,12 +92,15 @@ const AuthScreen = () => {
                     titleStylee={{ fontSize: 20, color: 'white' }}
                     onPress={login}
                     isLoading={btnLoading} />
+                <TouchableOpacity style={styles.pasRecovery} onPress={() => props.navigation.navigate('PasswordRecoveryScreen')}>
+                    <Text style={styles.passRecoveryText}>პაროლის აღდგენა</Text>
+                </TouchableOpacity>
             </View>
             <View style={[styles.imageWrap, { alignItems: 'flex-end' }]}>
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
             </View>
-            <Text style={{textAlign:'right', fontWeight: '700', fontSize: 12, marginRight: 10}}>Powerd By UNICARD</Text>
+            <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
         </ScrollView>
     )
 
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
         height: deviceHeight / 12,
         backgroundColor: '#E6E7E8',
         borderRadius: 10,
-        
+
         paddingLeft: 20
     },
     authButton: {
@@ -135,7 +138,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         borderRadius: 10,
-
+    },
+    pasRecovery: {
+        marginTop: 10,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    passRecoveryText: {
+        fontSize: 16,
+        lineHeight: 19,
+        fontWeight: '600',
+        color: '#000'
     }
 
 })

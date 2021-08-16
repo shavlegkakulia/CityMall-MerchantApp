@@ -46,7 +46,12 @@ const OtpBox = (props: any) => {
             return;
         } else {
             let value = otp.join('');
-            props.makePayment(value);
+            if(props.serviceType === 'collectPoints') {
+                props.makePayment(value);
+            } else {
+                return
+            }
+            
         }
     }
 
@@ -60,10 +65,10 @@ const OtpBox = (props: any) => {
 
 
     return (
-        <View style={{ flex: 1, marginHorizontal: 20,  }}>
-            <Text style={{textAlign: 'center', marginTop: 10}}>გთხოვთ შეიყვანოთ ბარათის მფლობელის მობილურზე გამოგზავნილი კოდი</Text>
+        <View style={{ flex: 1, marginHorizontal: 10 }}>
+            <Text style={{ textAlign: 'center',}}>{props.OtpHeaderText}</Text>
             <View style={styles.otpBoxConteiner}>
-                
+
                 {otp.map((element, index) => (
                     <TextInput
                         ref={refs[index]}
@@ -79,15 +84,15 @@ const OtpBox = (props: any) => {
                         onKeyPress={event => { handleFocusPrev(event, index) }}
                     />
                 ))}
-            
+
             </View>
-            {props.errorMessage? <Text style={{fontSize: 12, color: 'red', textAlign: 'center'}}>{props.errorMessage}</Text> : null}
+            {props.errorMessage ? <Text style={{ fontSize: 12, color: 'red', textAlign: 'center' }}>{props.errorMessage}</Text> : null}
             <AppButton
-                            btnStyle={styles.button}
-                            buttonTitle='დადასტურება'
-                            titleStylee={styles.btntext}
-                            onPress={submitOtp}
-                            isLoading={props.btnLoading} />
+                btnStyle={[styles.button, props.serviceType === 'collectPoints'? styles.btnPay : styles.btnPasswordRec]}
+                buttonTitle='დადასტურება'
+                titleStylee={styles.btntext}
+                onPress={submitOtp}
+                isLoading={props.btnLoading} />
         </View>);
 }
 
@@ -96,14 +101,15 @@ const styles = StyleSheet.create({
     otpBoxConteiner: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%'
+
     },
     otpBox: {
         width: 50,
         height: 50,
         borderWidth: 1,
         borderRadius: 7,
-
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
@@ -115,10 +121,16 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 60,
         marginTop: 20,
-        backgroundColor: '#ffda02',
+       
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 7
+    },
+    btnPay: {
+        backgroundColor: '#ffda02',
+    },
+    btnPasswordRec: {
+        backgroundColor: 'blue',
     },
     btntext: {
         fontSize: 16,

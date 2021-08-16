@@ -163,7 +163,7 @@ class AuthService {
         error.response = error.response || {};
 
         //Reject promise if usual error
-        if ((error?.response?.status !== 401 && error?.response?.status !== 403 && error?.response?.status !== 400) || error.config.anonymous || error.config.skipRefresh) {
+        if ((error?.response?.status !== 401 && error?.response?.status !== 403) || error.config.anonymous || error.config.skipRefresh) {
           return Promise.reject(error);
         }
         const originalRequest = error.config;
