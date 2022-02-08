@@ -137,7 +137,7 @@ class AuthService {
     //add auth header
     let requestInterceptor = axios.interceptors.request.use(
       async (config: AxiosRequestConfig) => {
-        if (this.isAuthenticated() && !config.anonymous) {
+        if (await this.isAuthenticated() && !config.anonymous) {
           //if refreshStarted wait
           if (this.refreshStarted && !config.skipRefresh) {
             return waitForRefresh(config).then(async (config: any) => {
