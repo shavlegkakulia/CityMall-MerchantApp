@@ -38,13 +38,13 @@ const CloseDayModal = (props: any) => {
                         <AppButton
                             btnStyle={[styles.button, styles.buttonDanger]}
                             buttonTitle='გაუქმებაა'
-                            titleStylee={styles.btnText}
+                            titleStyle={styles.btnText}
                             onPress={closeModal}
                             isLoading={false} />
                         <AppButton
                             btnStyle={[styles.button, ]}
                             buttonTitle='დღის დახურვა'
-                            titleStylee={styles.btnText}
+                            titleStyle={styles.btnText}
                             onPress={onCloseDay}
                             isLoading={isLoading} />
 

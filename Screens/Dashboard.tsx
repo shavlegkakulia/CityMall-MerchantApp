@@ -103,14 +103,19 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.gridRow}>
+            {/* <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
                     <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                     <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.gridRow}>
+                <TouchableOpacity style={[styles.service, styles.useVoucher]} onPress={() => props.navigation.navigate('UseVoucher')} >
+                    <Text style={styles.serviceLabel}>ვაუჩერების გახარჯვა</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.gridRow}>
@@ -118,6 +123,7 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>დღის დახურვა</Text>
                 </TouchableOpacity>
             </View>
+            
             <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
         </View>
     );
@@ -165,6 +171,10 @@ const styles = StyleSheet.create({
 
     closeDay: {
         backgroundColor: '#E50B09'
+    },
+
+    useVoucher: {
+        backgroundColor: '#012d08'
     },
 
     serviceLabel: {

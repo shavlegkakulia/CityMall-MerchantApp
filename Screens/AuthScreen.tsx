@@ -126,7 +126,7 @@ const AuthScreen = (props: any) => {
                 <AppButton
                     btnStyle={styles.authButton}
                     buttonTitle='ავტორიზაცია'
-                    titleStylee={{ fontSize: 20, color: 'white' }}
+                    titleStyle={{ fontSize: 20, color: 'white' }}
                     onPress={login}
                     isLoading={btnLoading} />
                 <TouchableOpacity style={styles.pasRecovery} onPress={() => { props.navigation.navigate('PasswordRecoveryScreen'); setPassword('') }}>

@@ -8,7 +8,7 @@ import OtpBox from '../Components/OtpBox/OtpBox';
 import { getUniqueId } from 'react-native-device-info';
 import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
-import { validateAmountInput } from '../services/comonServices';
+import { validateAmountInput } from '../services/commonServices';
 
 
 const ManagePoints = (props: any) => {
@@ -17,13 +17,13 @@ const ManagePoints = (props: any) => {
 
     const [step, setStep] = useState<number>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [scannCode, setScannCode] = useState<boolean>(false);
+    const [scanCode, setScanCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>('');
-    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '' });
+    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '', vouchers: [] });
     const [errorMessage, setErrorMessage] = useState<string | undefined>('');
-    const [acumulationInfo, setAcumulationIfno] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
+    const [accumulationInfo, setAccumulationInfo] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
 
 
     useEffect(() => {
@@ -34,13 +34,13 @@ const ManagePoints = (props: any) => {
         };
     }, []);
 
-    const keyboardDidShow = () => setScannCode(false);
+    const keyboardDidShow = () => setScanCode(false);
 
 
     const getScannedValue = (value: any) => {
         setScannedCode(value);
         if (value) {
-            setScannCode(false);
+            setScanCode(false);
         };
     };
 
@@ -74,7 +74,8 @@ const ManagePoints = (props: any) => {
                     amount: res.data.data?.amount,
                     score: res.data.data?.score,
                     initials: res.data.data?.initials,
-                    clientStatus: res.data.data?.clientStatus
+                    clientStatus: res.data.data?.clientStatus,
+                    vouchers: res.data.data?.vouchers
                 });
             } else {
                 setErrorMessage(res.data.error?.errorDesc)
@@ -108,7 +109,7 @@ const ManagePoints = (props: any) => {
                     reversed: false
                 };
                 addTransaction(transaction);
-                setAcumulationIfno({
+                setAccumulationInfo({
                     initials: userInfo.initials,
                     clientStatus: userInfo.clientStatus,
                     bonus: res.data.data?.accumulatedBonus,
@@ -159,7 +160,7 @@ const ManagePoints = (props: any) => {
                     reversed: false
                 };
                 addTransaction(transaction);
-                setAcumulationIfno({
+                setAccumulationInfo({
                     initials: userInfo.initials,
                     clientStatus: userInfo.clientStatus,
                     bonus: res.data.data?.spentBonus,
@@ -179,7 +180,7 @@ const ManagePoints = (props: any) => {
         setScannedCode('');
         setAmount('');
         setShowModal(false);
-        setAcumulationIfno({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
+        setAccumulationInfo({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
     };
 
 
@@ -204,22 +205,22 @@ const ManagePoints = (props: any) => {
                     onChangeText={(newValue: string) => handleAmount(newValue)}
                     editable={errorMessage !== '' ? false : true} />
                 <View >
-                {!scannCode ?
-                    <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() =>{ setScannCode(true); Keyboard.dismiss()}}>
+                {!scanCode ?
+                    <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() =>{ setScanCode(true); Keyboard.dismiss()}}>
                         <Text style={styles.btntext}>კოდის დასკანერება</Text>
                     </TouchableOpacity> : null}
                     {type === 'Pay' ?
                         <AppButton
                             btnStyle={[styles.button, styles.buttonPay]}
                             buttonTitle='ქულებით გადახდა'
-                            titleStylee={styles.btntext}
+                            titleStyle={styles.btntext}
                             onPress={sendOtp}
                             isLoading={btnLoading} />
                         :
                         <AppButton
                             btnStyle={[styles.button, styles.buttonCollect]}
                             buttonTitle='ქულების დაგროვება'
-                            titleStylee={styles.btntext}
+                            titleStyle={styles.btntext}
                             onPress={collectPoints}
                             isLoading={btnLoading} />}
                 </View>
@@ -233,6 +234,12 @@ const ManagePoints = (props: any) => {
                             <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
                             <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
                             <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
+                            <Text style={styles.infoText}>ფასდაკლების ვაუჩერები: </Text>
+                            {
+                              userInfo.vouchers !== undefined &&  userInfo?.vouchers.map((v: any, i:number) => (
+                                    <Text style={styles.infoText} key = {i}>{'- ' + v.discountPercentage + ' % ' + v.voucherDescription}</Text>
+                                ))
+                            }
                         </Fragment>
                     }
                 </View>
@@ -251,8 +258,8 @@ const ManagePoints = (props: any) => {
 
     return (
         <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1}}>
-            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={acumulationInfo} type={type} />}
-            {scannCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
+            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={accumulationInfo} type={type} />}
+            {scanCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />
             </View> : null}
             {PayStep}

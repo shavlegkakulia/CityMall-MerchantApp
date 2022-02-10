@@ -73,6 +73,14 @@ export interface IPayWithPointsResponse {
     error?:IResonseError
 }
 
+
+export interface  IUserInfo {
+    amount: number,
+    score: number,
+    initials: string,
+    clientStatus: string
+}
+
 export interface ICloseDayRequest {
     batchId: string,
     accumulateTranCount: number,
@@ -97,19 +105,41 @@ export interface ICloseDayResponse {
    
 }
 
-
-export interface IGetAccountInfroResponseData {
-    amount?: number,
-    errorCode?: number,
-    errorDesc?: string,
-    fullName?: string,
-    initials?: string
-    score?: number,
-    clientStatus?: string
+export interface IVouchers {
+        amount:number,
+         centre:number,
+         createDate:string,
+         discountPercentage:number,
+         isActive:boolean,
+         merchants:string[],
+         numberOfVouchers:number,
+         sqlScript?:null,
+         userID:number
+         voucherCode:string,
+         voucherDescription:string,
+         voucherEndDate:string,
+         voucherID:number,
+         voucherPerMerchant:number,
+         voucherPurchasePoints:number,
+         voucherSegmentID:number,
+         voucherStartDate:string,
+         voucherVolume:number
 }
 
-export interface IGetAccountInfroResponse {
-    data?: IGetAccountInfroResponseData,
+export interface IGetAccountInfoResponseData {
+  amount:number,
+  clientStatus:string,
+  errorCode:number,
+  errorDesc:string,
+  fullName:string,
+  initials:string,
+  score:number,
+  vouchers:IVouchers[] | []
+   
+}
+
+export interface IGetAccountInfoResponse {
+    data?: IGetAccountInfoResponseData,
     success: boolean,
     error?: IResonseError
 }
@@ -162,6 +192,13 @@ export interface IReverseTransactionResponse  {
     errors?: IResonseError
 }
 
+export interface IUseVoucherRequest {
+    card: string,
+    voucherCode: string,
+    amount: number,
+    initialAmount: number | string
+}
+
 class Bonus {
 
     CollectPoints = async (data: ICollectPointsRequest) => {
@@ -180,7 +217,7 @@ class Bonus {
     }
 
     GetAccountInfo = async (card: string) => {
-        return await axios.get<IGetAccountInfroResponse>(`${env.API_URL}/api/Bonus/GetAccountInfo?Card=${card}`);
+        return await axios.get<IGetAccountInfoResponse>(`${env.API_URL}/api/Bonus/GetAccountInfo?Card=${card}`);
     }
 
     SendOtp = async (data: ISendOtpRequest) => {
@@ -193,6 +230,10 @@ class Bonus {
 
     ChangeUserPassword = async(data: any) => {
         return await axios.post(`${env.API_URL}/api/users/ChangeUserPassword`, data)
+    }
+
+    UseVoucher = async (data: IUseVoucherRequest ) => {
+        return await axios.post(`${env.API_URL}/api/Voucher/UseVoucher`, data);
     }
 }
 

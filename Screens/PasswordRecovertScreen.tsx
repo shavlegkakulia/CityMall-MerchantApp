@@ -3,7 +3,7 @@ import { Alert, Button, Dimensions, Image, ScrollView, StyleSheet, Text, View } 
 import AppButton from "../Components/AppButton";
 import AppInput from "../Components/AppInput";
 import Bonus from "../services/Bonus";
-import { validateChangePassword } from "../services/comonServices";
+import { validateChangePassword } from "../services/commonServices";
 import { AppContext } from "../services/ContextService";
 
 const deviceHeight = Dimensions.get('screen').height;
@@ -12,7 +12,7 @@ const deviceWidth = Dimensions.get('screen').width;
 const PasswordRecovery = (props: any) => {
     const [newPassword, setNewPassword] = useState<string>('');
     const [newPasswordValidation, setNewPasswordValidation] = useState<string>('პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან და  შეიცვადეს ასოებს და ციფრებს')
-    const [repeatePassword, setRepeatePassword] = useState<string>('');
+    const [repeatPassword, setRepeatPassword] = useState<string>('');
     const [repPasswordError, setRepPasswordError] = useState<string>('გაიმეორეთ პაროლი');
     const [otp, setOtp] = useState<string>('');
     const [passwordSecure, setPasswordSecure] = useState<boolean>(false);
@@ -29,12 +29,12 @@ const PasswordRecovery = (props: any) => {
         } else {
             setNewPasswordValidation('პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან  და შეიცვადეს ასოებს და ციფრებს')
         }
-        if (newPassword === repeatePassword) {
+        if (newPassword === repeatPassword) {
             setRepPasswordError('')
         } else {
             setRepPasswordError('გაიმეორეთ პაროლი')
         }
-    }, [newPassword, repeatePassword, userName])
+    }, [newPassword, repeatPassword, userName])
 
     let PasswordStep;
 
@@ -51,8 +51,8 @@ const PasswordRecovery = (props: any) => {
                     isLoading={btnLoading}
                     btnStyle={styles.authButton}
                     buttonTitle='შემდეგი'
-                    titleStylee={{ fontSize: 20, color: 'white' }}
-                    onPress={() => chechUser()}
+                    titleStyle={{ fontSize: 20, color: 'white' }}
+                    onPress={() => checkUser()}
                 />
             </>
         )
@@ -72,8 +72,8 @@ const PasswordRecovery = (props: any) => {
                 <Text>გთხოვთ გაიმეოროთ პაროლი</Text>
                 <AppInput
                     label='გაიმეორეთ პაროლი'
-                    value={repeatePassword}
-                    onChangeText={(newValue: any) => setRepeatePassword(newValue)}
+                    value={repeatPassword}
+                    onChangeText={(newValue: any) => setRepeatPassword(newValue)}
                     secureTextEntry={passwordSecure}
                     onPasswordSecure={() => setPasswordSecure(!passwordSecure)}
                     isPasswordInput
@@ -91,14 +91,14 @@ const PasswordRecovery = (props: any) => {
                     isLoading={btnLoading}
                     btnStyle={styles.authButton}
                     buttonTitle='შემდეგი'
-                    titleStylee={{ fontSize: 20, color: 'white' }}
+                    titleStyle={{ fontSize: 20, color: 'white' }}
                     onPress={() => changeUserPassword()}
                 />
             </>
         )
     }
 
-    const chechUser = () => {
+    const checkUser = () => {
         setErrorMessage('');
         if (userName === '') {
             setErrorMessage('გთხოვთ შეავსოთ ველი');
@@ -124,7 +124,7 @@ const PasswordRecovery = (props: any) => {
         let data = {
             username: userName,
             password: newPassword,
-            confirmPassword: repeatePassword,
+            confirmPassword: repeatPassword,
             otp: otp
         }
 

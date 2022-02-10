@@ -90,7 +90,7 @@ const OtpBox = (props: any) => {
             <AppButton
                 btnStyle={[styles.button, props.serviceType === 'collectPoints'? styles.btnPay : styles.btnPasswordRec]}
                 buttonTitle='დადასტურება'
-                titleStylee={styles.btntext}
+                titleStyle={styles.btntext}
                 onPress={submitOtp}
                 isLoading={props.btnLoading} />
         </View>);

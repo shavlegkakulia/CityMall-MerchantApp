@@ -22,14 +22,14 @@ const ConfirmationModal = (props: any) => {
                             <AppButton
                                 btnStyle={[styles.button, styles.btnDanger]}
                                 buttonTitle='არა'
-                                titleStylee={styles.btnText}
+                                titleStyle={styles.btnText}
                                 onPress={closeModal}
                                 isLoading={false} />
 
                             <AppButton
                                 btnStyle={[styles.button, styles.btnGreen]}
                                 buttonTitle='დიახ'
-                                titleStylee={styles.btnText}
+                                titleStyle={styles.btnText}
                                 onPress={onReverseTransaction}
                                 isLoading={isLoading} />
 

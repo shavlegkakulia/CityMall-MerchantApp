@@ -12,6 +12,7 @@ import LogoutButton from '../Components/LogoutButton';
 import AuthService from '../services/AuthService';
 import RNBootSplash from "react-native-bootsplash";
 import FullScreenLoader from '../Components/FullScreenLoader';
+import UseVoucherScreen from '../Screens/UseVoucherScreen';
 
 
 
@@ -82,6 +83,10 @@ const AppNavigatior = (props: any) => {
                             name='TransactionHistory'
                             component={TransactionHistory}
                             options={{ title: 'ტრანზაქციების ისტორია' }} />
+                            <Stack.Screen
+                            name='UseVoucher'
+                            component={UseVoucherScreen}
+                            options={{ title: 'ვაუჩერის გახარჯვა' }} />
                         <Stack.Screen
                             name='ScannerAnimation' component={ScannerAnimation} />
                     </>)}
