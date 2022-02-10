@@ -238,7 +238,7 @@ const ManagePoints = (props: any) => {
                             <Text style={styles.infoText}>ვაუჩერები: </Text>
                             {
                               userInfo.vouchers !== undefined &&  userInfo?.vouchers.map((v: any, i:number) => (
-                                    <Text style={styles.infoText} key = {i}>{'- ' + v.discountPercentage + '' + v.voucherDescription}</Text>
+                                    <Text style={styles.infoText} key = {i}>{v.voucherDescription}</Text>
                                 ))
                             }
                         </Fragment>

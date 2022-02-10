@@ -138,6 +138,7 @@ const ManagePoints = (props: any) => {
         })
     };
 
+    console.log(userInfo?.vouchers)
 
     let PayStep = null;
     if (step === 0) {
@@ -157,7 +158,7 @@ const ManagePoints = (props: any) => {
                 <View>
 
                     {
-                       scannedCode.length === 16 &&  userInfo?.vouchers !== undefined ?
+                       scannedCode.length === 16 &&  userInfo?.vouchers?.length === 0 ?
                        <View style={styles.noTransactions}>
                        <Image style={styles.searchIcon} source={require('../assets/images/search.png')} />
                        <Text style={{ fontSize: 18, textAlign: 'center' }}>ვაუჩერები არ მოიძებნა</Text>
@@ -167,7 +168,7 @@ const ManagePoints = (props: any) => {
                                 <TouchableOpacity style={styles.checkBox} onPress={() => handleSetVoucher(v)} key={i}>
                                     <CheckBox value={voucher?.voucherCode === v.voucherCode ? true : false} onChange={() => handleSetVoucher(v)} />
                                     <View>
-                                        <Text style={[styles.infoText, { fontSize: 16, lineHeight: 22 }]}>{v.discountPercentage + '' + v.voucherDescription}</Text>
+                                        <Text style={[styles.infoText, { fontSize: 16, lineHeight: 22 }]}>{v.voucherDescription}</Text>
                                         <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
                                         <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>რაოდენობა: {v.numberOfVouchers}</Text>
                                     </View>
@@ -266,6 +267,8 @@ const styles = StyleSheet.create({
     },
     checkBox: {
         flexDirection: 'row',
+        marginBottom: 15,
+        alignItems: 'flex-start',
 
     }
 
