@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, SegmentedControlIOSComponent } from 'react-native';
-import Bonus from '../services/Bonus';
+import Bonus, { IClientTransaction } from '../services/Bonus';
 import { getTransactions, ITransaction, updateTransactions } from '../services/TransactionService';
 import ConfirmationModal from '../Components/ConfirmationModal';
 import FullScreenLoader from '../Components/FullScreenLoader';
@@ -8,7 +8,7 @@ import FullScreenLoader from '../Components/FullScreenLoader';
 
 const TransactionHistory = () => {
 
-    const [transactions, setTransactions] = useState([]);
+    const [transactions, setTransactions] = useState<IClientTransaction[] | []>();
     const [accumulationTrSum, setAccumulationTrSum] = useState<number | string>(0);
     const [payWithPointsSum, setPayWithPointsSum] = useState<number | string>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -42,41 +42,21 @@ const TransactionHistory = () => {
     }, []);
 
     const loadTransactions = () => {
-        getTransactions().then(res => {
-            setTransactions(res);
-            transactionSum(res);
+
+        Bonus.GetClientTransactions().then(res => {
+            console.log(res.data.data)
+            setTransactions(res.data.data);
             setIsInit(true);
         })
-
+        .catch(e => {
+            console.log(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
+        })
     };
 
-    const transactionSum = (data: ITransaction[]) => {
-        let accSum = 0;
-        let paySum = 0;
-        let accumulatedTr = data.filter(tr => tr.tranType !== 'Payment');
-        let paymentTr = data.filter(tr => tr.tranType === 'Payment');
-        //console.log('accumulation ----->', accumulatedTr, 'paymentTr ----->',paymentTr);
-
-        accumulatedTr.forEach((tr: ITransaction) => {
-            
-            if (tr.reversed === false && tr.tranAmount !== undefined) {
-                accSum += tr.tranAmount;
-                setAccumulationTrSum(accSum);
-            };
-        });
-        paymentTr.forEach((tr: ITransaction) => {
-            
-            if (tr.reversed === false && tr.tranAmount !== undefined) {
-                paySum += tr.tranAmount
-                setPayWithPointsSum(paySum);
-            };
-        });
-        
-    }
-
+  
     const reverseTransaction = async () => {
         setBtnLoading(true);
-        let type = selectedTran.tranType === 'Payment' ? 2 : 1;
+        let type = selectedTran.transactionType;
         let reverseData = {
             card: selectedTran.card,
             amount: selectedTran.tranAmount,
@@ -85,11 +65,11 @@ const TransactionHistory = () => {
         };
         Bonus.ReverseTransaction(type, reverseData).then(res => {
             if (res.status === 200) {
-                updateTransactions(selectedTran.stan).then(() => {
+                
                     loadTransactions();
                     setShowModal(false);
                     setBtnLoading(false);
-                });
+               
             } else {
                 setBtnLoading(false);
             };
@@ -104,17 +84,17 @@ const TransactionHistory = () => {
     };
 
     const Transaction = (props: any) => {
-        const { card, reversed, tranAmount, tranDate, tranType } = props.transaction;
+        const { card, reversaled, points, authDate, transactionType } = props.transaction;
         return (
-            <View style={[styles.tranWrap, tranType === 'Payment' ? styles.tranWrapPay : styles.tranWrapCollect, reversed ? styles.reversed : {}]}
-                pointerEvents={reversed ? 'none' : 'auto'}>
+            <View style={[styles.tranWrap, transactionType === 1 ?styles.tranWrapCollect : styles.tranWrapPay, reversaled > 0? styles.reversed : {}]}
+                pointerEvents={reversaled > 0 ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
-                    <Text>ქულა: {tranAmount}</Text>
-                    <Text>თარიღი: {formatDate(tranDate)}</Text>
+                    <Text>ქულა: {points}</Text>
+                    <Text>თარიღი: {formatDate(authDate)}</Text>
                 </View>
                 <TouchableOpacity onPress={() => confirmReverse(props.transaction)}>
-                    <Image style={[styles.reversalImg, reversed ? styles.reversed : {}]} source={require('../assets/images/reversal.png')} />
+                    <Image style={[styles.reversalImg, reversaled > 0 ? styles.reversed : {}]} source={require('../assets/images/reversal.png')} />
                 </TouchableOpacity>
             </View>
         );
@@ -137,8 +117,8 @@ const TransactionHistory = () => {
                 </View>
                      :
                     <View style={{ flex: 1, width: '100%' }}>
-                        <Text style={styles.transactionSum}>დაგროვებული ქულების ჯამი: {accumulationTrSum} </Text>
-                        <Text style={styles.transactionSum}>დახარჯული ქულების ჯამი: {payWithPointsSum} </Text>
+                        {/* <Text style={styles.transactionSum}>დაგროვებული ქულების ჯამი: {accumulationTrSum} </Text>
+                        <Text style={styles.transactionSum}>დახარჯული ქულების ჯამი: {payWithPointsSum} </Text> */}
                         <FlatList
                             contentContainerStyle={{ padding: 10 }}
                             data={transactions}

@@ -212,6 +212,28 @@ export interface ITerminalInfo {
     orgId: number
 }
 
+export interface IClientTransaction {
+    stan?: string,
+    card?: string,
+    accountNumber?: string,
+    authDate?: Date,
+    amount?: number,
+    tranType?: string,
+    merchantName?: string,
+    merchantAddress?: string,
+    reversaled?: number,
+    terminalId?: string,
+    centre?: number,
+    merchantId?: string,
+    transactionType?: number,
+    imageURL?: string
+}
+
+
+interface IClientTransactionResponse {
+  data?:IClientTransaction[]
+}
+
 class Bonus {
 
     CollectPoints = async (data: ICollectPointsRequest) => {
@@ -251,6 +273,11 @@ class Bonus {
 
     UseVoucher = async (data: IUseVoucherRequest) => {
         return await axios.post(`${env.API_URL}/api/Voucher/UseVoucher`, data);
+    }
+
+    GetClientTransactions = async () => {
+        return await axios.get<IClientTransactionResponse>(`${env.API_URL}/api/Clients/GetUserTransactions?Page=1&PageSize=50`);
+
     }
 }
 

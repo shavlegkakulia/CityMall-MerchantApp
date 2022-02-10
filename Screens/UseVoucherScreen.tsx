@@ -160,7 +160,7 @@ const ManagePoints = (props: any) => {
                                 <TouchableOpacity style={styles.checkBox} onPress={() => handleSetVoucher(v)} key={i}>
                                     <CheckBox value={voucher?.voucherCode === v.voucherCode ? true : false} onChange={() => handleSetVoucher(v)} />
                                     <View>
-                                        <Text style={[styles.infoText, {fontSize: 16, lineHeight: 22}]}>{v.discountPercentage + ' % ' + v.voucherDescription}</Text>
+                                        <Text style={[styles.infoText, {fontSize: 16, lineHeight: 22}]}>{v.discountPercentage + '' + v.voucherDescription}</Text>
                                         <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
                                         <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>რაოდენობა: {v.numberOfVouchers}</Text>
                                     </View>
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 7,
-        backgroundColor: '#012d08',
+        backgroundColor: '#228B22',
     },
 
     btntext: {

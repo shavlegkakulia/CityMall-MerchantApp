@@ -3,12 +3,14 @@ import { Alert, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-na
 import { getTransactions, clearTransactions } from '../services/TransactionService';
 import CloseDayModal from '../Components/CloseDayModal';
 import Bonus, { ITerminalInfo } from '../services/Bonus';
+import FullScreenLoader from '../Components/FullScreenLoader';
 
 const Dashboard = (props: any) => {
 
     const [showModal, setShowModal] = useState<boolean>(false);
     const [btnLoading, setBtonLoading] = useState<boolean>(false);
-    const [terminalInfo, setTerminalInfo] = useState<ITerminalInfo>()
+    const [terminalInfo, setTerminalInfo] = useState<ITerminalInfo>();
+    const [isInit, setIsInit] = useState<boolean>(false);
     const [closeDayData, setCloseDayData] = useState({
         accumulationSum: 0,
         accumulationReversalSum: 0,
@@ -28,11 +30,11 @@ const Dashboard = (props: any) => {
 
     const getTerminalInfo = () => {
         Bonus.GetTerminalInfo().then(res => {
-            console.log(res.data)
+            setIsInit(true);
             setTerminalInfo(res.data)
         })
             .catch(e => {
-                console.log(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
+                setIsInit(true)
                 Alert.alert(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
             })
     }
@@ -114,6 +116,9 @@ const Dashboard = (props: any) => {
 
 
     return (
+        !isInit ?
+        <FullScreenLoader />
+        :
         <View style={styles.container}>
             {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
             <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
@@ -140,14 +145,10 @@ const Dashboard = (props: any) => {
             </View>
             <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.useVoucher]} onPress={() => props.navigation.navigate('UseVoucher')} >
-                    <Text style={styles.serviceLabel}>ვაუჩერების გახარჯვა</Text>
+                    <Text style={styles.serviceLabel}>ვაუჩერების განაღდება</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.closeDay]} onPress={startCloseDay} >
-                    <Text style={styles.serviceLabel}>დღის დახურვა</Text>
-                </TouchableOpacity>
-            </View>
+            
 
             <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
         </View>
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     },
 
     useVoucher: {
-        backgroundColor: '#012d08'
+        backgroundColor: '#228B22'
     },
 
     serviceLabel: {

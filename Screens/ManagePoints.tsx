@@ -69,6 +69,7 @@ const ManagePoints = (props: any) => {
         setBtnLoading(true);
         setErrorMessage('');
         Bonus.GetAccountInfo(scannedCode).then(res => {
+            console.log(res.data.data)
             if (res.data.success) {
                 setUserInfo({
                     amount: res.data.data?.amount,
@@ -234,10 +235,10 @@ const ManagePoints = (props: any) => {
                             <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
                             <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
                             <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
-                            <Text style={styles.infoText}>ფასდაკლების ვაუჩერები: </Text>
+                            <Text style={styles.infoText}>ვაუჩერები: </Text>
                             {
                               userInfo.vouchers !== undefined &&  userInfo?.vouchers.map((v: any, i:number) => (
-                                    <Text style={styles.infoText} key = {i}>{'- ' + v.discountPercentage + ' % ' + v.voucherDescription}</Text>
+                                    <Text style={styles.infoText} key = {i}>{'- ' + v.discountPercentage + '' + v.voucherDescription}</Text>
                                 ))
                             }
                         </Fragment>
