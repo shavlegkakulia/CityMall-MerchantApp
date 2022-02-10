@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { getTransactions, clearTransactions } from '../services/TransactionService';
 import CloseDayModal from '../Components/CloseDayModal';
-import Bonus from '../services/Bonus';
+import Bonus, { ITerminalInfo } from '../services/Bonus';
 
 const Dashboard = (props: any) => {
 
     const [showModal, setShowModal] = useState<boolean>(false);
     const [btnLoading, setBtonLoading] = useState<boolean>(false);
+    const [terminalInfo, setTerminalInfo] = useState<ITerminalInfo>()
     const [closeDayData, setCloseDayData] = useState({
         accumulationSum: 0,
         accumulationReversalSum: 0,
@@ -17,6 +18,24 @@ const Dashboard = (props: any) => {
         paymentCount: []
 
     });
+
+
+    useEffect(() => {
+        getTerminalInfo()
+    }, []);
+
+
+
+    const getTerminalInfo = () => {
+        Bonus.GetTerminalInfo().then(res => {
+            console.log(res.data)
+            setTerminalInfo(res.data)
+        })
+            .catch(e => {
+                console.log(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
+                Alert.alert(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
+            })
+    }
 
     const startCloseDay = () => {
         getTransactions().then(data => {
@@ -92,6 +111,8 @@ const Dashboard = (props: any) => {
 
 
 
+
+
     return (
         <View style={styles.container}>
             {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
@@ -103,11 +124,15 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
                 </TouchableOpacity>
             </View>
-            {/* <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
-                    <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
-                </TouchableOpacity>
-            </View> */}
+            {
+                terminalInfo?.canSpend ?
+                    <View style={styles.gridRow}>
+                        <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
+                            <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
+                        </TouchableOpacity>
+                    </View>
+                    : null
+            }
             <View style={styles.gridRow}>
                 <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
                     <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
@@ -123,7 +148,7 @@ const Dashboard = (props: any) => {
                     <Text style={styles.serviceLabel}>დღის დახურვა</Text>
                 </TouchableOpacity>
             </View>
-            
+
             <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
         </View>
     );

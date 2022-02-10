@@ -26,9 +26,8 @@ const ManagePoints = (props: any) => {
     const [scanCode, setScanCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
-    const [amount, setAmount] = useState<string>('');
+
     const [voucher, setVoucher] = useState<IVouchers>();
-    const [discountAmount, setDiscountAmount] = useState<number | undefined>(0);
     const [userInfo, setUserInfo] = useState<IUserInfo>();
     const [errorMessage, setErrorMessage] = useState<string | undefined>('');
 
@@ -40,21 +39,29 @@ const ManagePoints = (props: any) => {
         };
     }, []);
 
-    useEffect(() => {
-        if(amount !== '' && voucher !== undefined) {
-            let newPrice = Number(amount) -  (Number(amount) * (voucher?.discountPercentage!/100));
-            setDiscountAmount(newPrice);
-        } else {
-            setDiscountAmount(undefined);
-        } 
-    }, [amount, voucher]);
 
     useEffect(() => {
         if (scannedCode?.length === 16) GetUserInfo();
 
     }, [scannedCode]);
 
-  
+    const formatDate = (dateString: string) => {
+        if (!dateString) return "";
+        let dateObj = new Date(dateString);
+        let month = dateObj.getUTCMonth() + 1; //months from 1-12
+        let day = dateObj.getUTCDate();
+        let year = dateObj.getUTCFullYear();
+        let minutes = dateObj.getMinutes();
+        let hour = dateObj.getHours();
+        let newdate =
+            ("0" + day).slice(-2) +
+            "." +
+            ("0" + month).slice(-2) +
+            "." +
+            year +
+            " " 
+        return newdate;
+    };
 
     const keyboardDidShow = () => setScanCode(false);
 
@@ -74,15 +81,7 @@ const ManagePoints = (props: any) => {
         }
     };
 
-    const handleAmount = (value: string) => {
-        if (validateAmountInput(value)) {
-            if(voucher !== undefined) {
-                let newPrice = Number(amount) -  (Number(value) * (voucher?.discountPercentage!/100));
-                setDiscountAmount(newPrice);
-            };
-            setAmount(value.trim());
-        };
-    };
+
     
     const GetUserInfo = () => {
         setBtnLoading(true);
@@ -110,13 +109,6 @@ const ManagePoints = (props: any) => {
     
 
 
-    const onCloseModal = () => {
-        setUserInfo({ amount: 0, score: 0, initials: '', clientStatus: '' });
-        setScannedCode('');
-        setAmount('');
-        setShowModal(false);
-    };
-
     const handleSetVoucher = (v: IVouchers) => {
         if(v.voucherCode === voucher?.voucherCode) {
             setVoucher(undefined)
@@ -126,15 +118,15 @@ const ManagePoints = (props: any) => {
     };
 
     const handleUseVoucher = () => {
-        if(!amount || !scannedCode) {
+        if(!scannedCode) {
             return;
         };
         setBtnLoading(true);
         let data: IUseVoucherRequest = {
             card: scannedCode,
             voucherCode: voucher?.voucherCode!,
-            initialAmount: amount,
-            amount: discountAmount!
+           
+            
         }
 
         Bonus.UseVoucher(data).then(res => {
@@ -160,38 +152,29 @@ const ManagePoints = (props: any) => {
                     error={scannedCode.length < 16 ? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
                     onChangeText={(newValue: string) => handleCardNumber(newValue)}
                 />
-                <AppInput
-                    label='თანხა'
-                    keyboardType='number-pad'
-                    error={amount === '' ? 'გთხოვთ შეავსოთ ველი' : ''}
-                    value={amount}
-                    onChangeText={(newValue: string) => handleAmount(newValue)}
-                    editable={errorMessage !== '' ? false : true} />
+               
                 
                     <View>
                         {
-                             userInfo?.vouchers!.map((v, i) => (
+                             userInfo?.vouchers!.map((v: IVouchers, i) => (
                                 <TouchableOpacity style={styles.checkBox} onPress={() => handleSetVoucher(v)} key={i}>
                                     <CheckBox value={voucher?.voucherCode === v.voucherCode ? true : false} onChange={() => handleSetVoucher(v)} />
-                                    <Text style={{color: 'black', fontSize: 14}}>{v.discountPercentage + ' % ' + v.voucherDescription}</Text>
+                                    <View>
+                                        <Text style={[styles.infoText, {fontSize: 16, lineHeight: 22}]}>{v.discountPercentage + ' % ' + v.voucherDescription}</Text>
+                                        <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
+                                        <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>რაოდენობა: {v.numberOfVouchers}</Text>
+                                    </View>
+                                    
                                 </TouchableOpacity>
                             ))
                         }
                     </View>
-                   
-                
-
-                {discountAmount && voucher !== undefined?
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{color: 'black', fontSize: 20}}>ფასდაკლებული თანხა: </Text>
-                        <Text style={{color: 'black', fontSize: 20}}>{discountAmount || ''}</Text>
-                    </View> : null}
                 <View >
                     <TouchableOpacity style={styles.button} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
                         <Text style={styles.btntext}>ბარათის დასკანერება</Text>
                     </TouchableOpacity>
                     <AppButton 
-                      buttonTitle = {'გადახდა'}
+                      buttonTitle = {'ვაუჩერის განაღდება'}
                       isLoading = {btnLoading} 
                       onPress ={handleUseVoucher}
                       btnStyle = {styles.button}
@@ -220,14 +203,13 @@ const ManagePoints = (props: any) => {
         PayStep = (
             <View style={{flex: 1, height: Dimensions.get('window').height- 150, justifyContent: 'center', alignItems: 'center'}}>
                  <Image source = {require('../assets/images/success_mark.png')} style = {{width: 70, height: 70}} />
-                 <Text style={{fontSize: 20, color: 'black'}}>გადახდა წარმატებით დასრულდა</Text>   
+                 <Text style={{fontSize: 20, color: 'black'}}>ოპერაცია წარმატებით დასრულდა</Text>   
             </View>
         )
     }
 
     return (
         <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
-            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} />}
             {scanCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />
             </View> : null}
@@ -265,7 +247,6 @@ const styles = StyleSheet.create({
     },
     checkBox: {
         flexDirection: 'row',
-        alignItems: 'center'
 
     }
 

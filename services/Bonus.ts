@@ -34,7 +34,7 @@ export interface ICollectPointsResponseData {
 
 }
 
-export interface ICollectPointsResponse{ 
+export interface ICollectPointsResponse {
     data?: ICollectPointsResponseData,
     success: boolean,
     error?: IResonseError
@@ -70,11 +70,11 @@ export interface IPayWithPointsResponseData {
 export interface IPayWithPointsResponse {
     data?: IPayWithPointsResponseData,
     success: boolean,
-    error?:IResonseError
+    error?: IResonseError
 }
 
 
-export interface  IUserInfo {
+export interface IUserInfo {
     amount: number,
     score: number,
     initials: string,
@@ -95,47 +95,47 @@ export interface ICloseDayRequest {
 export interface ICloseDayResponseData {
     errorCode: number,
     errorDesc: string
-   
+
 }
 
 export interface ICloseDayResponse {
     data?: ICloseDayResponseData,
     success: boolean,
     error?: IResonseError
-   
+
 }
 
 export interface IVouchers {
-        amount:number,
-         centre:number,
-         createDate:string,
-         discountPercentage:number,
-         isActive:boolean,
-         merchants:string[],
-         numberOfVouchers:number,
-         sqlScript?:null,
-         userID:number
-         voucherCode:string,
-         voucherDescription:string,
-         voucherEndDate:string,
-         voucherID:number,
-         voucherPerMerchant:number,
-         voucherPurchasePoints:number,
-         voucherSegmentID:number,
-         voucherStartDate:string,
-         voucherVolume:number
+    amount: number,
+    centre: number,
+    createDate: string,
+    discountPercentage: number,
+    isActive: boolean,
+    merchants: string[],
+    numberOfVouchers: number,
+    sqlScript?: null,
+    userID: number
+    voucherCode: string,
+    voucherDescription: string,
+    voucherEndDate: string,
+    voucherID: number,
+    voucherPerMerchant: number,
+    voucherPurchasePoints: number,
+    voucherSegmentID: number,
+    voucherStartDate: string,
+    voucherVolume: number
 }
 
 export interface IGetAccountInfoResponseData {
-  amount:number,
-  clientStatus:string,
-  errorCode:number,
-  errorDesc:string,
-  fullName:string,
-  initials:string,
-  score:number,
-  vouchers:IVouchers[] | []
-   
+    amount: number,
+    clientStatus: string,
+    errorCode: number,
+    errorDesc: string,
+    fullName: string,
+    initials: string,
+    score: number,
+    vouchers: IVouchers[] | []
+
 }
 
 export interface IGetAccountInfoResponse {
@@ -157,7 +157,7 @@ export interface ISendOtpResponseData {
 export interface ISendOtpResponse {
     data?: ISendOtpResponseData,
     success: boolean,
-    error?:IResonseError
+    error?: IResonseError
 }
 
 export interface IReverseTransactionRequest {
@@ -167,7 +167,7 @@ export interface IReverseTransactionRequest {
     stan: string
 }
 
-export interface IReverseTransactionResponseData  {
+export interface IReverseTransactionResponseData {
     declinedByUnicard: number,
     accumulatedBonus: number,
     orgName: any,
@@ -186,8 +186,8 @@ export interface IReverseTransactionResponseData  {
     reversed?: boolean
 }
 
-export interface IReverseTransactionResponse  {
-    data?:IReverseTransactionResponseData
+export interface IReverseTransactionResponse {
+    data?: IReverseTransactionResponseData
     success: boolean,
     errors?: IResonseError
 }
@@ -195,8 +195,21 @@ export interface IReverseTransactionResponse  {
 export interface IUseVoucherRequest {
     card: string,
     voucherCode: string,
-    amount: number,
-    initialAmount: number | string
+    amount?: number,
+    initialAmount?: number | string
+}
+
+export interface ITerminalInfo {
+    id: number,
+    userId: number,
+    terminalId: string,
+    merchantId: string,
+    isActive: boolean,
+    canSpend: boolean,
+    needSmsValidation: boolean,
+    deviceId: string,
+    merchantName: string,
+    orgId: number
 }
 
 class Bonus {
@@ -220,19 +233,23 @@ class Bonus {
         return await axios.get<IGetAccountInfoResponse>(`${env.API_URL}/api/Bonus/GetAccountInfo?Card=${card}`);
     }
 
+    GetTerminalInfo = async () => {
+        return await axios.get<ITerminalInfo>(`${env.API_URL}/api/Terminal/GetTerminalInfo`);
+    }
+
     SendOtp = async (data: ISendOtpRequest) => {
         return await axios.post(`${env.API_URL}/api/Otp/SendOtp`, data);
     }
 
-    SendUserOtp = async(value: string) => {
-        return await axios.post(`${env.API_URL}/api/Otp/SendUserOtp`, {username: value});
+    SendUserOtp = async (value: string) => {
+        return await axios.post(`${env.API_URL}/api/Otp/SendUserOtp`, { username: value });
     }
 
-    ChangeUserPassword = async(data: any) => {
+    ChangeUserPassword = async (data: any) => {
         return await axios.post(`${env.API_URL}/api/users/ChangeUserPassword`, data)
     }
 
-    UseVoucher = async (data: IUseVoucherRequest ) => {
+    UseVoucher = async (data: IUseVoucherRequest) => {
         return await axios.post(`${env.API_URL}/api/Voucher/UseVoucher`, data);
     }
 }
