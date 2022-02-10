@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Keyboard, ScrollView,Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Keyboard, ScrollView, Image, Dimensions } from 'react-native';
 import AppInput from '../Components/AppInput';
 import BarCodeReader from '../Components/BarCodeReader';
-import Bonus, {IVouchers, IUseVoucherRequest} from '../services/Bonus';
+import Bonus, { IVouchers, IUseVoucherRequest } from '../services/Bonus';
 import PointModal from '../Components/PointModal';
 import AppButton from '../Components/AppButton';
 import { validateAmountInput } from '../services/commonServices';
@@ -59,7 +59,7 @@ const ManagePoints = (props: any) => {
             ("0" + month).slice(-2) +
             "." +
             year +
-            " " 
+            " "
         return newdate;
     };
 
@@ -82,7 +82,7 @@ const ManagePoints = (props: any) => {
     };
 
 
-    
+
     const GetUserInfo = () => {
         setBtnLoading(true);
         setErrorMessage('');
@@ -106,11 +106,11 @@ const ManagePoints = (props: any) => {
     };
 
 
-    
+
 
 
     const handleSetVoucher = (v: IVouchers) => {
-        if(v.voucherCode === voucher?.voucherCode) {
+        if (v.voucherCode === voucher?.voucherCode) {
             setVoucher(undefined)
         } else {
             setVoucher(v)
@@ -118,15 +118,15 @@ const ManagePoints = (props: any) => {
     };
 
     const handleUseVoucher = () => {
-        if(!scannedCode) {
+        if (!scannedCode || !voucher?.voucherCode) {
             return;
         };
         setBtnLoading(true);
         let data: IUseVoucherRequest = {
             card: scannedCode,
             voucherCode: voucher?.voucherCode!,
-           
-            
+
+
         }
 
         Bonus.UseVoucher(data).then(res => {
@@ -152,34 +152,43 @@ const ManagePoints = (props: any) => {
                     error={scannedCode.length < 16 ? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
                     onChangeText={(newValue: string) => handleCardNumber(newValue)}
                 />
-               
-                
-                    <View>
-                        {
-                             userInfo?.vouchers!.map((v: IVouchers, i) => (
+
+
+                <View>
+
+                    {
+                       scannedCode.length === 16 &&  userInfo?.vouchers !== undefined ?
+                       <View style={styles.noTransactions}>
+                       <Image style={styles.searchIcon} source={require('../assets/images/search.png')} />
+                       <Text style={{ fontSize: 18, textAlign: 'center' }}>ვაუჩერები არ მოიძებნა</Text>
+                   </View>
+                   :
+                            userInfo?.vouchers!.map((v: IVouchers, i) => (
                                 <TouchableOpacity style={styles.checkBox} onPress={() => handleSetVoucher(v)} key={i}>
                                     <CheckBox value={voucher?.voucherCode === v.voucherCode ? true : false} onChange={() => handleSetVoucher(v)} />
                                     <View>
-                                        <Text style={[styles.infoText, {fontSize: 16, lineHeight: 22}]}>{v.discountPercentage + '' + v.voucherDescription}</Text>
-                                        <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
-                                        <Text style={[styles.infoText, {fontSize: 14, lineHeight: 22}]}>რაოდენობა: {v.numberOfVouchers}</Text>
+                                        <Text style={[styles.infoText, { fontSize: 16, lineHeight: 22 }]}>{v.discountPercentage + '' + v.voucherDescription}</Text>
+                                        <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
+                                        <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>რაოდენობა: {v.numberOfVouchers}</Text>
                                     </View>
-                                    
+
                                 </TouchableOpacity>
                             ))
-                        }
-                    </View>
+                            
+                           
+                    }
+                </View>
                 <View >
                     <TouchableOpacity style={styles.button} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
                         <Text style={styles.btntext}>ბარათის დასკანერება</Text>
                     </TouchableOpacity>
-                    <AppButton 
-                      buttonTitle = {'ვაუჩერის განაღდება'}
-                      isLoading = {btnLoading} 
-                      onPress ={handleUseVoucher}
-                      btnStyle = {styles.button}
-                      titleStyle = {styles.btntext}/>
-                       
+                    <AppButton
+                        buttonTitle={'ვაუჩერის განაღდება'}
+                        isLoading={btnLoading}
+                        onPress={handleUseVoucher}
+                        btnStyle={styles.button}
+                        titleStyle={styles.btntext} />
+
 
                 </View>
                 <View style={{ marginTop: 30 }}>
@@ -201,9 +210,9 @@ const ManagePoints = (props: any) => {
         );
     } else {
         PayStep = (
-            <View style={{flex: 1, height: Dimensions.get('window').height- 150, justifyContent: 'center', alignItems: 'center'}}>
-                 <Image source = {require('../assets/images/success_mark.png')} style = {{width: 70, height: 70}} />
-                 <Text style={{fontSize: 20, color: 'black'}}>ოპერაცია წარმატებით დასრულდა</Text>   
+            <View style={{ flex: 1, height: Dimensions.get('window').height - 150, justifyContent: 'center', alignItems: 'center' }}>
+                <Image source={require('../assets/images/success_mark.png')} style={{ width: 70, height: 70 }} />
+                <Text style={{ fontSize: 20, color: 'black' }}>ოპერაცია წარმატებით დასრულდა</Text>
             </View>
         )
     }
@@ -230,6 +239,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#228B22',
     },
 
+    noTransactions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    searchIcon: {
+        width: 30,
+        height: 30,
+        marginRight: 10
+    },
     btntext: {
         fontSize: 16,
         fontWeight: '500',
