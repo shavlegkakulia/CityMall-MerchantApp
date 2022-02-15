@@ -46,12 +46,12 @@ const ManagePoints = (props: any) => {
 
     useEffect(() => {
         if (scannedCode?.length === 16) GetUserInfo();
-        
+
     }, [scannedCode]);
 
     const handleCardNumber = (value: string) => {
         let reg = new RegExp('^[0-9]+$');
-        if(!reg.test(value) && value.length !== 0 ) {
+        if (!reg.test(value) && value.length !== 0) {
             return;
         } else {
             setScannedCode(value)
@@ -59,7 +59,7 @@ const ManagePoints = (props: any) => {
     };
 
     const handleAmount = (value: string) => {
-        if(validateAmountInput(value)) {
+        if (validateAmountInput(value)) {
             setAmount(value.trim())
         }
 
@@ -87,7 +87,7 @@ const ManagePoints = (props: any) => {
 
     const collectPoints = () => {
         setErrorMessage('');
-        if (!scannedCode || !amount ||  amount === '0' ||  scannedCode.length < 16) return;
+        if (!scannedCode || !amount || amount === '0' || scannedCode.length < 16) return;
         Keyboard.dismiss();
         setBtnLoading(true);
         let data = {
@@ -126,13 +126,13 @@ const ManagePoints = (props: any) => {
     };
 
     const sendOtp = () => {
-        if (!scannedCode || !amount ||  amount === '0' || scannedCode.length < 16) return;
-        if(amount > userInfo.amount) {
+        if (!scannedCode || !amount || amount === '0' || scannedCode.length < 16) return;
+        if (amount > userInfo.amount) {
             Alert.alert(
                 'შეცდომა!',
                 'ანგარიშზე არ არის საკმარისი თანხა'
             );
-                return;
+            return;
         }
         setStep(step + 1);
     };
@@ -189,27 +189,27 @@ const ManagePoints = (props: any) => {
     if (step === 0) {
         PayStep = (
             <View style={{ marginHorizontal: 10, flex: 8, justifyContent: 'space-between' }}>
-                
+
                 <AppInput
                     label='ბარათი'
                     keyboardType='numeric'
                     maxLength={16}
                     value={scannedCode}
-                    error={scannedCode.length < 16? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
-                    onChangeText = {(newValue: string) => handleCardNumber(newValue)}
-                     />
+                    error={scannedCode.length < 16 ? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
+                    onChangeText={(newValue: string) => handleCardNumber(newValue)}
+                />
                 <AppInput
                     label='თანხა'
                     keyboardType='number-pad'
-                    error={amount === ''? 'გთხოვთ შეავსოთ ველი' : ''}
+                    error={amount === '' ? 'გთხოვთ შეავსოთ ველი' : ''}
                     value={amount}
                     onChangeText={(newValue: string) => handleAmount(newValue)}
                     editable={errorMessage !== '' ? false : true} />
                 <View >
-                {!scanCode ?
-                    <TouchableOpacity style={[styles.button, type === 'Pay' ? styles.buttonPay : styles.buttonCollect]} onPress={() =>{ setScanCode(true); Keyboard.dismiss()}}>
-                        <Text style={styles.btntext}>კოდის დასკანერება</Text>
-                    </TouchableOpacity> : null}
+                    {!scanCode ?
+                        <TouchableOpacity style={[styles.button, {backgroundColor: '#475264'}]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
+                            <Text style={styles.btntext}>კოდის დასკანერება</Text>
+                        </TouchableOpacity> : null}
                     {type === 'Pay' ?
                         <AppButton
                             btnStyle={[styles.button, styles.buttonPay]}
@@ -232,13 +232,18 @@ const ManagePoints = (props: any) => {
                         :
                         <Fragment>
                             <Text style={styles.infoText}>მფლობელი: {userInfo.initials} </Text>
-                            <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
+                            {
+                                type === 'Pay' ?
+                                    null
+                                    :
+                                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
+                            }
                             <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
                             <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
                             <Text style={styles.infoText}>ვაუჩერები: </Text>
                             {
-                              userInfo.vouchers !== undefined &&  userInfo?.vouchers.map((v: any, i:number) => (
-                                    <Text style={styles.infoText} key = {i}>{v.voucherDescription}</Text>
+                                userInfo.vouchers !== undefined && userInfo?.vouchers.map((v: any, i: number) => (
+                                    <Text style={styles.infoText} key={i}>{v.voucherDescription}</Text>
                                 ))
                             }
                         </Fragment>
@@ -247,18 +252,18 @@ const ManagePoints = (props: any) => {
             </View>
         );
     } else if (step === 1) {
-        PayStep = <OtpBox 
-            count={4} 
-            card={scannedCode} 
-            makePayment={PayWithPoints} 
-            btnLoading={btnLoading} 
+        PayStep = <OtpBox
+            count={4}
+            card={scannedCode}
+            makePayment={PayWithPoints}
+            btnLoading={btnLoading}
             errorMessage={errorMessage}
-            serviceType = 'collectPoints' 
-            OtpHeaderText = 'გთხოვთ შეიყვანოთ ბარათის მფლობელის მობილურზე გამოგზავნილი კოდი' />
+            serviceType='collectPoints'
+            OtpHeaderText='გთხოვთ შეიყვანოთ ბარათის მფლობელის მობილურზე გამოგზავნილი კოდი' />
     };
 
     return (
-        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1}}>
+        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
             {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} collectInfo={accumulationInfo} type={type} />}
             {scanCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
                 <BarCodeReader getValue={getScannedValue} />

@@ -180,7 +180,7 @@ const ManagePoints = (props: any) => {
                     }
                 </View>
                 <View >
-                    <TouchableOpacity style={styles.button} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
+                    <TouchableOpacity style={[styles.button, {backgroundColor: '#475264'}]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
                         <Text style={styles.btntext}>ბარათის დასკანერება</Text>
                     </TouchableOpacity>
                     <AppButton
