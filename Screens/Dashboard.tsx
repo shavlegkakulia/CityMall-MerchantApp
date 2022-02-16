@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { getTransactions, clearTransactions } from '../services/TransactionService';
 import CloseDayModal from '../Components/CloseDayModal';
 import Bonus, { ITerminalInfo } from '../services/Bonus';
 import FullScreenLoader from '../Components/FullScreenLoader';
+import { AppContext } from '../services/ContextService';
 
 const Dashboard = (props: any) => {
+    const {setMerchantname} = useContext(AppContext);
+
 
     const [showModal, setShowModal] = useState<boolean>(false);
     const [btnLoading, setBtonLoading] = useState<boolean>(false);
@@ -31,14 +34,15 @@ const Dashboard = (props: any) => {
     const getTerminalInfo = () => {
         Bonus.GetTerminalInfo().then(res => {
             setIsInit(true);
-            setTerminalInfo(res.data)
+            setTerminalInfo(res.data);
+            setMerchantname(res.data.merchantName);
         })
-            .catch(e => {
+        .catch(e => {
                 setIsInit(true)
                 Alert.alert(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
-            })
-    }
-
+            });
+    };
+    console.log('terminalInfo', terminalInfo)
     const startCloseDay = () => {
         getTransactions().then(data => {
             let AccumulationCount: string[] = [];
@@ -139,7 +143,7 @@ const Dashboard = (props: any) => {
                     : null
             }
             <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionHistory')}>
+                <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionIndex')}>
                     <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
                 </TouchableOpacity>
             </View>

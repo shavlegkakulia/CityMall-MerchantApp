@@ -7,6 +7,7 @@ import PointModal from '../Components/PointModal';
 import AppButton from '../Components/AppButton';
 import { validateAmountInput } from '../services/commonServices';
 import CheckBox from '@react-native-community/checkbox';
+import { formatDate, formatNumber } from '../utils/Utils';
 
 
 export interface IUserInfo {
@@ -45,23 +46,6 @@ const ManagePoints = (props: any) => {
 
     }, [scannedCode]);
 
-    const formatDate = (dateString: string) => {
-        if (!dateString) return "";
-        let dateObj = new Date(dateString);
-        let month = dateObj.getUTCMonth() + 1; //months from 1-12
-        let day = dateObj.getUTCDate();
-        let year = dateObj.getUTCFullYear();
-        let minutes = dateObj.getMinutes();
-        let hour = dateObj.getHours();
-        let newdate =
-            ("0" + day).slice(-2) +
-            "." +
-            ("0" + month).slice(-2) +
-            "." +
-            year +
-            " "
-        return newdate;
-    };
 
     const keyboardDidShow = () => setScanCode(false);
 
@@ -131,12 +115,18 @@ const ManagePoints = (props: any) => {
 
         Bonus.UseVoucher(data).then(res => {
             setBtnLoading(false);
-            setStep(1);
+            setShowModal(true);
         }).catch(e => {
             console.log(e);
             setBtnLoading(false);
         })
     };
+
+    const onCloseModal = () => {
+        setShowModal(false);
+        setUserInfo(undefined);
+
+    }
 
     console.log(userInfo?.vouchers)
 
@@ -158,12 +148,12 @@ const ManagePoints = (props: any) => {
                 <View>
 
                     {
-                       scannedCode.length === 16 &&  userInfo?.vouchers?.length === 0 ?
-                       <View style={styles.noTransactions}>
-                       <Image style={styles.searchIcon} source={require('../assets/images/search.png')} />
-                       <Text style={{ fontSize: 18, textAlign: 'center' }}>ვაუჩერები არ მოიძებნა</Text>
-                   </View>
-                   :
+                        scannedCode.length === 16 && userInfo?.vouchers?.length === 0 ?
+                            <View style={styles.noTransactions}>
+                                <Image style={styles.searchIcon} source={require('../assets/images/search.png')} />
+                                <Text style={{ fontSize: 18, textAlign: 'center' }}>ვაუჩერები არ მოიძებნა</Text>
+                            </View>
+                            :
                             userInfo?.vouchers!.map((v: IVouchers, i) => (
                                 <TouchableOpacity style={styles.checkBox} onPress={() => handleSetVoucher(v)} key={i}>
                                     <CheckBox value={voucher?.voucherCode === v.voucherCode ? true : false} onChange={() => handleSetVoucher(v)} />
@@ -175,12 +165,12 @@ const ManagePoints = (props: any) => {
 
                                 </TouchableOpacity>
                             ))
-                            
-                           
+
+
                     }
                 </View>
                 <View >
-                    <TouchableOpacity style={[styles.button, {backgroundColor: '#475264'}]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
+                    <TouchableOpacity style={[styles.button, { backgroundColor: '#475264' }]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
                         <Text style={styles.btntext}>ბარათის დასკანერება</Text>
                     </TouchableOpacity>
                     <AppButton
@@ -199,10 +189,23 @@ const ManagePoints = (props: any) => {
                         :
                         userInfo !== undefined ?
                             <Fragment>
-                                <Text style={styles.infoText}>მფლობელი: {userInfo!.initials!} </Text>
-                                <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo!.amount!} </Text>
-                                <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo!.score!} </Text>
-                                <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo!.clientStatus}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.infoText}>მფლობელი:  </Text>
+                                    <Text style={styles.descText}>{userInfo.initials}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა:  </Text>
+                                    <Text style={styles.descText}>{formatNumber(userInfo.amount)} ₾</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.infoText}>ხელმისაწვდომი ქულა: </Text>
+                                    <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
+                                    <Text style={styles.descText}>{userInfo.clientStatus}</Text>
+                                </View>
+                             
                             </Fragment>
                             : null
                     }
@@ -224,6 +227,7 @@ const ManagePoints = (props: any) => {
                 <BarCodeReader getValue={getScannedValue} />
             </View> : null}
             {PayStep}
+            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} />}
         </ScrollView>
     );
 };
@@ -270,8 +274,12 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         alignItems: 'flex-start',
 
-    }
-
+    },
+    descText: {
+        fontWeight: '400',
+        fontSize: 16,
+        color: '#000'
+    },
 });
 
 export default ManagePoints;

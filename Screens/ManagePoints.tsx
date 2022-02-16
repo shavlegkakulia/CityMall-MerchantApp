@@ -9,6 +9,7 @@ import { getUniqueId } from 'react-native-device-info';
 import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
 import { validateAmountInput } from '../services/commonServices';
+import { formatNumber } from '../utils/Utils';
 
 
 const ManagePoints = (props: any) => {
@@ -126,7 +127,7 @@ const ManagePoints = (props: any) => {
     };
 
     const sendOtp = () => {
-        if (!scannedCode || !amount || amount === '0' || scannedCode.length < 16) return;
+        if (!scannedCode || !amount || amount === '0' || (scannedCode.length < 16 && scannedCode.length !== 11)) return;
         if (amount > userInfo.amount) {
             Alert.alert(
                 'შეცდომა!',
@@ -191,15 +192,15 @@ const ManagePoints = (props: any) => {
             <View style={{ marginHorizontal: 10, flex: 8, justifyContent: 'space-between' }}>
 
                 <AppInput
-                    label='ბარათი'
+                    label='ბარათი / პირადი ნომერი'
                     keyboardType='numeric'
                     maxLength={16}
                     value={scannedCode}
-                    error={scannedCode.length < 16 ? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
+                    error={scannedCode.length !== 11 && scannedCode.length < 16 ? 'შეიყვანეთ ბარათის ან პირადი ნომერი' : ''}
                     onChangeText={(newValue: string) => handleCardNumber(newValue)}
                 />
                 <AppInput
-                    label='თანხა'
+                    label='თანხა(ლარი)'
                     keyboardType='number-pad'
                     error={amount === '' ? 'გთხოვთ შეავსოთ ველი' : ''}
                     value={amount}
@@ -207,7 +208,7 @@ const ManagePoints = (props: any) => {
                     editable={errorMessage !== '' ? false : true} />
                 <View >
                     {!scanCode ?
-                        <TouchableOpacity style={[styles.button, {backgroundColor: '#475264'}]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: '#475264' }]} onPress={() => { setScanCode(true); Keyboard.dismiss() }}>
                             <Text style={styles.btntext}>კოდის დასკანერება</Text>
                         </TouchableOpacity> : null}
                     {type === 'Pay' ?
@@ -231,19 +232,26 @@ const ManagePoints = (props: any) => {
                         <Text style={[styles.infoText, styles.infoError]}>{errorMessage} </Text>
                         :
                         <Fragment>
-                            <Text style={styles.infoText}>მფლობელი: {userInfo.initials} </Text>
-                            {
-                                type === 'Pay' ?
-                                    null
-                                    :
-                                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა: {userInfo.amount} </Text>
-                            }
-                            <Text style={styles.infoText}>ხელმისაწვდომი ქულა: {userInfo.score} </Text>
-                            <Text style={styles.infoText}>კლიენტის სტატუსი: {userInfo.clientStatus}</Text>
-                            <Text style={styles.infoText}>ვაუჩერები: </Text>
+                            <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.infoText}>მფლობელი:  </Text>
+                                <Text style={styles.descText}>{userInfo.initials}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.infoText}>ხელმისაწვდომი თანხა:  </Text>
+                                <Text style={styles.descText}>{formatNumber(userInfo.amount)} ₾</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.infoText}>ხელმისაწვდომი ქულა: </Text>
+                                <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
+                                <Text style={styles.descText}>{userInfo.clientStatus}</Text>
+                            </View>
+                            <Text style={styles.infoText}>აქტიური ვაუჩერები: </Text>
                             {
                                 userInfo.vouchers !== undefined && userInfo?.vouchers.map((v: any, i: number) => (
-                                    <Text style={styles.infoText} key={i}>{v.voucherDescription}</Text>
+                                    <Text style={styles.descText} key={i}>- {v.voucherDescription}</Text>
                                 ))
                             }
                         </Fragment>
@@ -304,6 +312,11 @@ const styles = StyleSheet.create({
         color: '#000'
     },
 
+    descText: {
+        fontWeight: '400',
+        fontSize: 16,
+        color: '#000'
+    },
     infoError: {
         color: '#E50B09'
     }

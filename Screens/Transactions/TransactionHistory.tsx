@@ -1,48 +1,25 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, SegmentedControlIOSComponent } from 'react-native';
-import Bonus, { IClientTransaction } from '../services/Bonus';
-import { getTransactions, ITransaction, updateTransactions } from '../services/TransactionService';
-import ConfirmationModal from '../Components/ConfirmationModal';
-import FullScreenLoader from '../Components/FullScreenLoader';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import Bonus, { IClientTransaction } from '../../services/Bonus';
+import ConfirmationModal from '../../Components/ConfirmationModal';
+import FullScreenLoader from '../../Components/FullScreenLoader';
+import { formatDate } from '../../utils/Utils';
 
 
 const TransactionHistory = () => {
 
     const [transactions, setTransactions] = useState<IClientTransaction[] | []>();
-    const [accumulationTrSum, setAccumulationTrSum] = useState<number | string>(0);
-    const [payWithPointsSum, setPayWithPointsSum] = useState<number | string>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedTran, setSelectedTran] = useState<any>();
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [isInit, setIsInit] = useState<boolean>(false);
 
-    const formatDate = (dateString: string) => {
-        if (!dateString) return "";
-        let dateObj = new Date(dateString);
-        let month = dateObj.getUTCMonth() + 1; //months from 1-12
-        let day = dateObj.getUTCDate();
-        let year = dateObj.getUTCFullYear();
-        let minutes = dateObj.getMinutes();
-        let hour = dateObj.getHours();
-        let newdate =
-            ("0" + day).slice(-2) +
-            "." +
-            ("0" + month).slice(-2) +
-            "." +
-            year +
-            " " +
-            ("0" + hour).slice(-2) +
-            ":" +
-            ("0" + minutes).slice(-2);
-        return newdate;
-    };
 
     useEffect(() => {
         loadTransactions();
     }, []);
 
     const loadTransactions = () => {
-
         Bonus.GetClientTransactions().then(res => {
             console.log(res.data.data)
             setTransactions(res.data.data);
@@ -84,7 +61,7 @@ const TransactionHistory = () => {
     };
 
     const Transaction = (props: any) => {
-        const { card, reversaled, points, authDate, transactionType } = props.transaction;
+        const { card, reversaled, points, authDate, transactionType, tranType } = props.transaction;
         return (
             <View style={[styles.tranWrap, transactionType === 1 ?styles.tranWrapCollect : styles.tranWrapPay, reversaled > 0? styles.reversed : {}]}
                 pointerEvents={reversaled > 0 ? 'none' : 'auto'}>
@@ -92,9 +69,13 @@ const TransactionHistory = () => {
                     <Text>ბარათი: {card}</Text>
                     <Text>ქულა: {points}</Text>
                     <Text>თარიღი: {formatDate(authDate)}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text>ტიპი: </Text>
+                        <Text style={{fontWeight: '700'}}>{tranType}</Text>
+                    </View>
                 </View>
                 <TouchableOpacity onPress={() => confirmReverse(props.transaction)}>
-                    <Image style={[styles.reversalImg, reversaled > 0 ? styles.reversed : {}]} source={require('../assets/images/reversal.png')} />
+                    <Image style={[styles.reversalImg, reversaled > 0 ? styles.reversed : {}]} source={require('../../assets/images/reversal.png')} />
                 </TouchableOpacity>
             </View>
         );
@@ -112,7 +93,7 @@ const TransactionHistory = () => {
                     onReverseTransaction={reverseTransaction} />
                 {transactions && transactions.length === 0 ?
                 <View style={styles.noTransactions}>
-                    <Image style= {styles.searchIcon} source = {require('../assets/images/search.png')} />
+                    <Image style= {styles.searchIcon} source = {require('../../assets/images/search.png')} />
                     <Text style={{ fontSize: 18, textAlign: 'center' }}>ტრანზაქციები არ მოიძებნა</Text>
                 </View>
                      :
