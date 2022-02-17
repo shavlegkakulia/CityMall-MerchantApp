@@ -60,7 +60,7 @@ const TransactionHistory = () => {
         return;
     };
 
-    const Transaction = (props: any) => {
+    const TransactionList = (props: any) => {
         const { card, reversaled, points, authDate, transactionType, tranType } = props.transaction;
         return (
             <View style={[styles.tranWrap, transactionType === 1 ?styles.tranWrapCollect : styles.tranWrapPay, reversaled > 0? styles.reversed : {}]}
@@ -103,7 +103,7 @@ const TransactionHistory = () => {
                         <FlatList
                             contentContainerStyle={{ padding: 10 }}
                             data={transactions}
-                            renderItem={({ item }) => <Transaction transaction={item} />}
+                            renderItem={({ item }) => <TransactionList transaction={item} />}
                             keyExtractor={(item: any) => item.stan} />
                     </View>}
             </SafeAreaView>

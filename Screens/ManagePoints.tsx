@@ -1,12 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Keyboard, ScrollView, NativeSegmentedControlIOSChangeEvent, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Keyboard, ScrollView, Alert } from 'react-native';
 import AppInput from '../Components/AppInput';
 import BarCodeReader from '../Components/BarCodeReader';
 import Bonus from '../services/Bonus';
 import PointModal from '../Components/PointModal';
 import OtpBox from '../Components/OtpBox/OtpBox';
-import { getUniqueId } from 'react-native-device-info';
-import { addTransaction, ITransaction } from '../services/TransactionService';
 import AppButton from '../Components/AppButton';
 import { validateAmountInput } from '../services/commonServices';
 import { formatNumber } from '../utils/Utils';
@@ -22,9 +20,9 @@ const ManagePoints = (props: any) => {
     const [scannedCode, setScannedCode] = useState<string>('');
     const [btnLoading, setBtnLoading] = useState<boolean>(false);
     const [amount, setAmount] = useState<string>('');
-    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '', vouchers: [] });
+    const [userInfo, setUserInfo] = useState<any>({ amount: 0, score: 0, initials: '', clientStatus: '', vouchers: [], spendRate: {} });
     const [errorMessage, setErrorMessage] = useState<string | undefined>('');
-    const [accumulationInfo, setAccumulationInfo] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
+    const [accumulationInfo, setAccumulationInfo] = useState<any>({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '', spendRate: {} });
 
 
     useEffect(() => {
@@ -77,7 +75,8 @@ const ManagePoints = (props: any) => {
                     score: res.data.data?.score,
                     initials: res.data.data?.initials,
                     clientStatus: res.data.data?.clientStatus,
-                    vouchers: res.data.data?.vouchers
+                    vouchers: res.data.data?.vouchers,
+                    spendRate: res.data.data?.spendRate
                 });
             } else {
                 setErrorMessage(res.data.error?.errorDesc)
@@ -99,18 +98,6 @@ const ManagePoints = (props: any) => {
         };
         Bonus.CollectPoints(data).then(res => {
             if (res.data.success) {
-                let transaction: ITransaction = {
-                    tranAmount: res.data.data?.accumulatedBonus,
-                    batchId: '1',
-                    card: scannedCode,
-                    deviceId: getUniqueId(),
-                    respCode: '000',
-                    stan: res.data.data?.stan,
-                    tranDate: Date.now(),
-                    tranType: res.data.data?.tranType,
-                    reversed: false
-                };
-                addTransaction(transaction);
                 setAccumulationInfo({
                     initials: userInfo.initials,
                     clientStatus: userInfo.clientStatus,
@@ -150,23 +137,12 @@ const ManagePoints = (props: any) => {
         };
         Bonus.PayWithPoints(data).then(res => {
             if (res.data.success) {
-                let transaction: ITransaction = {
-                    tranAmount: res.data.data?.spentBonus,
-                    batchId: '1',
-                    card: scannedCode,
-                    deviceId: getUniqueId(),
-                    respCode: '000',
-                    stan: res.data.data?.stan,
-                    tranDate: Date.now(),
-                    tranType: res.data.data?.tranType,
-                    reversed: false
-                };
-                addTransaction(transaction);
                 setAccumulationInfo({
                     initials: userInfo.initials,
                     clientStatus: userInfo.clientStatus,
                     bonus: res.data.data?.spentBonus,
-                    availableBonus: res.data.data?.availableScore
+                    availableBonus: res.data.data?.availableScore,
+                    spendRate: userInfo.spendRate
                 });
                 setStep(0);
                 setShowModal(true);
@@ -233,7 +209,7 @@ const ManagePoints = (props: any) => {
                         :
                         <Fragment>
                             <View style={{ flexDirection: 'row' }}>
-                            <Text style={styles.infoText}>მფლობელი:  </Text>
+                                <Text style={styles.infoText}>მფლობელი:  </Text>
                                 <Text style={styles.descText}>{userInfo.initials}</Text>
                             </View>
                             <View style={{ flexDirection: 'row' }}>
@@ -244,6 +220,15 @@ const ManagePoints = (props: any) => {
                                 <Text style={styles.infoText}>ხელმისაწვდომი ქულა: </Text>
                                 <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
                             </View>
+                            {
+                                type === 'Pay' ?
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.infoText}> ქულების შეფარდება: </Text>
+                                        <Text style={styles.descText}> {`${userInfo.spendRate['bonus']} ქულა = ${userInfo.spendRate['amount']} ₾`} </Text>
+                                    </View>
+                                    :
+                                    null
+                            }
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
                                 <Text style={styles.descText}>{userInfo.clientStatus}</Text>

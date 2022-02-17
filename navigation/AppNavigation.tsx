@@ -92,7 +92,7 @@ const AppNavigatior = (props: any) => {
                             <Stack.Screen
                             name='VoucherHistory'
                             component={VoucherHistory}
-                            options={{ title: 'ტრანზაქციების ისტორია' }} />
+                            options={{ title: 'ვაუჩერების ისტორია' }} />
                         <Stack.Screen
                             name='UseVoucher'
                             component={UseVoucherScreen}

@@ -134,6 +134,7 @@ export interface IGetAccountInfoResponseData {
     fullName: string,
     initials: string,
     score: number,
+    spendRate: any,
     vouchers: IVouchers[] | []
 
 }
@@ -199,6 +200,26 @@ export interface IUseVoucherRequest {
     initialAmount?: number | string
 }
 
+export interface IUsedVoucher {
+    id: number,
+    stan: string,
+    card: string,
+    voucherCode: string,
+    voucherDescription: string,
+    merchId: string,
+    terminalId: string,
+    deviceId: string,
+    isActive: boolean,
+    voucherUseDate: string
+}
+
+
+export interface IReverseVoucher {
+    stan: string,
+    voucherCode: string,
+    card: string
+}
+
 export interface ITerminalInfo {
     id: number,
     userId: number,
@@ -229,9 +250,8 @@ export interface IClientTransaction {
     imageURL?: string
 }
 
-
 interface IClientTransactionResponse {
-  data?:IClientTransaction[]
+    data?: IClientTransaction[]
 }
 
 class Bonus {
@@ -277,8 +297,17 @@ class Bonus {
 
     GetClientTransactions = async () => {
         return await axios.get<IClientTransactionResponse>(`${env.API_URL}/api/Clients/GetUserTransactions?Page=1&PageSize=50`);
-
     }
+
+    GetUsedVouchers = async () => {
+        return await axios.get<IUsedVoucher[]>(`${env.API_URL}/api/Voucher/GetUsedVouchers`);
+    }
+
+    ReverseVoucher = async (data: IReverseVoucher) => {
+        console.log(`${env.API_URL}/api/Voucher/ReverseVoucher`, data);
+        return await axios.post(`${env.API_URL}/api/Voucher/ReverseVoucher`, data);
+    }
+
 }
 
 

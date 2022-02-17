@@ -5,6 +5,9 @@ import { StyleSheet, Text, View, Modal, Pressable, Image, } from 'react-native'
 
 const PointModal = (props: any) => {
   const { collectInfo, modalVisible, closeModal, type } = props;
+
+
+  console.log('collectInfo', collectInfo)
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -21,9 +24,14 @@ const PointModal = (props: any) => {
             </View>
             <View style={styles.modalContent}>
               <Text style={styles.modalText}>ბარათის მფლობელი: {collectInfo.initials}</Text>
-              {type === 'Pay' ?
-                <Text style={styles.modalText}>დახარჯული ქულა: {collectInfo.bonus}</Text> :
-                <Text style={styles.modalText}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
+              {
+                type === 'Pay' ?
+                  <>
+                    <Text style={styles.modalText}>დახარჯული ქულა: {collectInfo.bonus}</Text>
+                    <Text style={styles.modalText}>ქულების შეფარდება  {`${collectInfo.spendRate['bonus']} ქულა = ${collectInfo.spendRate['amount']} ₾`} </Text>
+                  </>
+                  :
+                  <Text style={styles.modalText}>დაგროვებული ქულა: {collectInfo.bonus}</Text>
               }
               <Text style={styles.modalText}>ხელმისაწვდომი ქულა: {collectInfo.availableBonus} </Text>
               <Text style={styles.modalText}>კლიენტის სტატუსი: {collectInfo.clientStatus} </Text>
