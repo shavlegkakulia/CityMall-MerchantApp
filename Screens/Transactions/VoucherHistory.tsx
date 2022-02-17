@@ -63,7 +63,10 @@ const VoucherHistory = () => {
                 pointerEvents={isActive ===false  ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
-                    <Text>დასახელება: {voucherDescription}</Text>
+                    <>
+                    <Text>დასახელება: </Text>
+                    <Text>{voucherDescription}</Text>
+                    </>
                     <Text>განაღდების თარიღი: {formatDate(voucherUseDate)}</Text>
                 </View>
                 <TouchableOpacity onPress={() => confirmReverse(props.voucher)}>
@@ -134,8 +137,8 @@ const styles = StyleSheet.create({
     },
 
     reversalImg: {
-        width: 33,
-        height: 33,
+        width: 23,
+        height: 23,
     },
 
     reversed: {

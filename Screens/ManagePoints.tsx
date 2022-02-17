@@ -44,8 +44,9 @@ const ManagePoints = (props: any) => {
     };
 
     useEffect(() => {
-        if (scannedCode?.length === 16) GetUserInfo();
-
+        if (scannedCode?.length === 11 ||scannedCode?.length === 16){
+         GetUserInfo();
+        };
     }, [scannedCode]);
 
     const handleCardNumber = (value: string) => {
@@ -82,7 +83,11 @@ const ManagePoints = (props: any) => {
                 setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
-        }).catch((e) => { console.log((e)); setBtnLoading(false) })
+        }).catch((e) => { 
+            setErrorMessage(JSON.parse(JSON.stringify (e.response)).data.DisplayText); 
+            setUserInfo({amount: 0, score: 0, initials: '', clientStatus: '', vouchers: [], spendRate: {}});
+            setBtnLoading(false) 
+        })
     };
 
     const collectPoints = () => {
@@ -110,7 +115,10 @@ const ManagePoints = (props: any) => {
 
             };
             setBtnLoading(false)
-        }).catch(e => setBtnLoading(false));
+        }).catch(e => {
+            setErrorMessage(JSON.parse(JSON.stringify (e.response)).data.DisplayText); 
+            setBtnLoading(false)
+        });
     };
 
     const sendOtp = () => {
@@ -221,9 +229,9 @@ const ManagePoints = (props: any) => {
                                 <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
                             </View>
                             {
-                                type === 'Pay' ?
+                                type === 'Pay'  && userInfo.spendRate['bonus'] !== undefined?
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={styles.infoText}> ქულების შეფარდება: </Text>
+                                        <Text style={styles.infoText}>ქულების შეფარდება: </Text>
                                         <Text style={styles.descText}> {`${userInfo.spendRate['bonus']} ქულა = ${userInfo.spendRate['amount']} ₾`} </Text>
                                     </View>
                                     :

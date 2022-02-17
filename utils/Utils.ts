@@ -14,7 +14,6 @@ export const formatDate = (dateString: string) => {
     let day = dateObj.getUTCDate();
     let year = dateObj.getUTCFullYear();
     let time = dateString.split('T')[1].slice(0, 5)
-    console.log('time', time)
     let newdate =
         ("0" + day).slice(-2) +
         "." +

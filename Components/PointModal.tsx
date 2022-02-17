@@ -7,7 +7,9 @@ const PointModal = (props: any) => {
   const { collectInfo, modalVisible, closeModal, type } = props;
 
 
-  console.log('collectInfo', collectInfo)
+  console.log(collectInfo.spendRate['bonus'])
+
+ 
   return (
     <View style={styles.centeredView}>
       <Modal
