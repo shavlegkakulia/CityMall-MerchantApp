@@ -23,7 +23,6 @@ export interface IUserInfo {
 const ManagePoints = (props: any) => {
 
 
-    const [step, setStep] = useState<number>(0);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [scanCode, setScanCode] = useState<boolean>(false);
     const [scannedCode, setScannedCode] = useState<string>('');
@@ -126,14 +125,17 @@ const ManagePoints = (props: any) => {
     const onCloseModal = () => {
         setShowModal(false);
         setUserInfo(undefined);
+        setScannedCode('');
 
     }
 
     console.log(userInfo?.vouchers)
 
-    let PayStep = null;
-    if (step === 0) {
-        PayStep = (
+    return (
+        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
+            {scanCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
+                <BarCodeReader getValue={getScannedValue} />
+            </View> : null}
             <View style={{ marginHorizontal: 10, flex: 8, justifyContent: 'space-between' }}>
 
                 <AppInput
@@ -144,10 +146,7 @@ const ManagePoints = (props: any) => {
                     error={scannedCode.length < 16 ? 'ბარათის ნომერი უნდა შედგებოდეს 16 ციფრისგან' : ''}
                     onChangeText={(newValue: string) => handleCardNumber(newValue)}
                 />
-
-
                 <View>
-
                     {
                         scannedCode.length === 16 && userInfo?.vouchers?.length === 0 ?
                             <View style={styles.noTransactions}>
@@ -163,11 +162,8 @@ const ManagePoints = (props: any) => {
                                         <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>მოქმედების ვადა: {formatDate(v.voucherStartDate) + ' - ' + formatDate(v.voucherEndDate)}</Text>
                                         <Text style={[styles.infoText, { fontSize: 14, lineHeight: 22 }]}>რაოდენობა: {v.numberOfVouchers}</Text>
                                     </View>
-
                                 </TouchableOpacity>
                             ))
-
-
                     }
                 </View>
                 <View >
@@ -180,54 +176,37 @@ const ManagePoints = (props: any) => {
                         onPress={handleUseVoucher}
                         btnStyle={styles.button}
                         titleStyle={styles.btntext} />
-
-
                 </View>
                 <View style={{ marginTop: 30 }}>
                     <Text style={[styles.infoText, { marginBottom: 30 }]}>ბარათის ინფორმაცია: </Text>
-                    {errorMessage ?
-                        <Text style={[styles.infoText, styles.infoError]}>{errorMessage} </Text>
-                        :
-                        userInfo !== undefined ?
-                            <Fragment>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.infoText}>მფლობელი:  </Text>
-                                    <Text style={styles.descText}>{userInfo.initials}</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.infoText}>ხელმისაწვდომი თანხა:  </Text>
-                                    <Text style={styles.descText}>{formatNumber(userInfo.amount)} ₾</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.infoText}>ხელმისაწვდომი ქულა: </Text>
-                                    <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
-                                    <Text style={styles.descText}>{userInfo.clientStatus}</Text>
-                                </View>
-                             
-                            </Fragment>
-                            : null
+                    {
+                        errorMessage ?
+                            <Text style={[styles.infoText, styles.infoError]}>{errorMessage} </Text>
+                            :
+                            userInfo !== undefined ?
+                                <Fragment>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.infoText}>მფლობელი:  </Text>
+                                        <Text style={styles.descText}>{userInfo.initials}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.infoText}>ხელმისაწვდომი თანხა:  </Text>
+                                        <Text style={styles.descText}>{formatNumber(userInfo.amount)} ₾</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.infoText}>ხელმისაწვდომი ქულა: </Text>
+                                        <Text style={styles.descText}> {formatNumber(userInfo.score)}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.infoText}>კლიენტის სტატუსი: </Text>
+                                        <Text style={styles.descText}>{userInfo.clientStatus}</Text>
+                                    </View>
+
+                                </Fragment>
+                                : null
                     }
                 </View>
             </View>
-        );
-    } else {
-        PayStep = (
-            <View style={{ flex: 1, height: Dimensions.get('window').height - 150, justifyContent: 'center', alignItems: 'center' }}>
-                <Image source={require('../assets/images/success_mark.png')} style={{ width: 70, height: 70 }} />
-                <Text style={{ fontSize: 20, color: 'black' }}>ოპერაცია წარმატებით დასრულდა</Text>
-            </View>
-        )
-    }
-
-    return (
-        <ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
-            {scanCode ? <View style={{ flex: 4, backgroundColor: '#130D1E', opacity: 0.8, }}>
-                <BarCodeReader getValue={getScannedValue} />
-            </View> : null}
-            {PayStep}
             {showModal && <VoucherSuccessModal modalVisible={showModal} closeModal={onCloseModal} />}
         </ScrollView>
     );

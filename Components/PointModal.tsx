@@ -25,7 +25,7 @@ const PointModal = (props: any) => {
             <View style={styles.modalContent}>
               <Text style={styles.modalText}>ბარათის მფლობელი: {collectInfo.initials}</Text>
               {
-                type === 'Pay' ?
+                type === 'Pay' && collectInfo.spendRate['bonus'] !== undefined?
                   <>
                     <Text style={styles.modalText}>დახარჯული ქულა: {collectInfo.bonus}</Text>
                     <Text style={styles.modalText}>ქულების შეფარდება  {`${collectInfo.spendRate['bonus']} ქულა = ${collectInfo.spendRate['amount']} ₾`} </Text>

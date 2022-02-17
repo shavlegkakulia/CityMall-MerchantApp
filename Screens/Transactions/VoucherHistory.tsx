@@ -59,15 +59,15 @@ const VoucherHistory = () => {
         const { card, reversaled, voucherDescription, voucherUseDate, isActive } = props.voucher;
         return (
 
-            <View style={[styles.tranWrap, isActive ===true ? styles.reversed : {}]}
-                pointerEvents={isActive ===true  ? 'none' : 'auto'}>
+            <View style={[styles.tranWrap, isActive ===false ? styles.reversed : {}]}
+                pointerEvents={isActive ===false  ? 'none' : 'auto'}>
                 <View>
                     <Text>ბარათი: {card}</Text>
                     <Text>დასახელება: {voucherDescription}</Text>
                     <Text>განაღდების თარიღი: {formatDate(voucherUseDate)}</Text>
                 </View>
                 <TouchableOpacity onPress={() => confirmReverse(props.voucher)}>
-                    <Image style={[styles.reversalImg, isActive === true ? styles.reversed : {}]} source={require('../../assets/images/reversal.png')} />
+                    <Image style={[styles.reversalImg, isActive === false ? styles.reversed : {}]} source={require('../../assets/images/reversal.png')} />
                 </TouchableOpacity>
             </View>
         );

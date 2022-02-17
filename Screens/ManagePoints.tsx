@@ -154,11 +154,11 @@ const ManagePoints = (props: any) => {
     };
 
     const onCloseModal = () => {
-        setUserInfo({ amount: 0, score: 0, initials: '', clientStatus: '' });
+        setUserInfo({ amount: 0, score: 0, initials: '', clientStatus: '', spendRate: {} });
         setScannedCode('');
         setAmount('');
         setShowModal(false);
-        setAccumulationInfo({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '' });
+        setAccumulationInfo({ initials: '', bonus: 0, availableBonus: 0, clientStatus: '', spendRate: {} });
     };
 
 
