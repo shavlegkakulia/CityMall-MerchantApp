@@ -8,6 +8,7 @@ import AppButton from '../Components/AppButton';
 import { validateAmountInput } from '../services/commonServices';
 import CheckBox from '@react-native-community/checkbox';
 import { formatDate, formatNumber } from '../utils/Utils';
+import VoucherSuccessModal from '../Components/VoucherSuccessModal';
 
 
 export interface IUserInfo {
@@ -227,7 +228,7 @@ const ManagePoints = (props: any) => {
                 <BarCodeReader getValue={getScannedValue} />
             </View> : null}
             {PayStep}
-            {showModal && <PointModal modalVisible={showModal} closeModal={onCloseModal} />}
+            {showModal && <VoucherSuccessModal modalVisible={showModal} closeModal={onCloseModal} />}
         </ScrollView>
     );
 };

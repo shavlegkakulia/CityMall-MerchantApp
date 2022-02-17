@@ -7,7 +7,7 @@ import FullScreenLoader from '../Components/FullScreenLoader';
 import { AppContext } from '../services/ContextService';
 
 const Dashboard = (props: any) => {
-    const {setMerchantname} = useContext(AppContext);
+    const { setMerchantname } = useContext(AppContext);
 
 
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -37,7 +37,7 @@ const Dashboard = (props: any) => {
             setTerminalInfo(res.data);
             setMerchantname(res.data.merchantName);
         })
-        .catch(e => {
+            .catch(e => {
                 setIsInit(true)
                 Alert.alert(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
             });
@@ -121,41 +121,41 @@ const Dashboard = (props: any) => {
 
     return (
         !isInit ?
-        <FullScreenLoader />
-        :
-        <View style={styles.container}>
-            {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
-            <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
-                <Image style={styles.merchantLogo} source={require('../assets/images/city-mall-icon.png')} />
-            </View>
-            <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
-                    <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
-                </TouchableOpacity>
-            </View>
-            {
-                terminalInfo?.canSpend ?
-                    <View style={styles.gridRow}>
-                        <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
-                            <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
-                        </TouchableOpacity>
-                    </View>
-                    : null
-            }
-            <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionIndex')}>
-                    <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.gridRow}>
-                <TouchableOpacity style={[styles.service, styles.useVoucher]} onPress={() => props.navigation.navigate('UseVoucher')} >
-                    <Text style={styles.serviceLabel}>ვაუჩერების განაღდება</Text>
-                </TouchableOpacity>
-            </View>
-            
+            <FullScreenLoader />
+            :
+            <View style={styles.container}>
+                {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
+                <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
+                    <Image style={styles.merchantLogo} source={require('../assets/images/city-mall-icon.png')} />
+                </View>
+                <View style={styles.gridRow}>
+                    <TouchableOpacity style={[styles.service, styles.collectPoints]} onPress={() => props.navigation.navigate('CollectPoints', { type: 'Collect' })}>
+                        <Text style={styles.serviceLabel}>ქულების დაგროვება</Text>
+                    </TouchableOpacity>
+                </View>
+                {
+                    terminalInfo?.canSpend ?
+                        <View style={styles.gridRow}>
+                            <TouchableOpacity style={[styles.service, styles.payWithPoints]} onPress={() => props.navigation.navigate('PayWithPoints', { type: 'Pay' })}>
+                                <Text style={styles.serviceLabel}>ქულებით გადახდა</Text>
+                            </TouchableOpacity>
+                        </View>
+                        : null
+                }
+                <View style={styles.gridRow}>
+                    <TouchableOpacity style={[styles.service, styles.useVoucher]} onPress={() => props.navigation.navigate('UseVoucher')} >
+                        <Text style={styles.serviceLabel}>ვაუჩერების განაღდება</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.gridRow}>
+                    <TouchableOpacity style={[styles.service, styles.transactionHistory]} onPress={() => props.navigation.navigate('TransactionIndex')}>
+                        <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
+                    </TouchableOpacity>
+                </View>
 
-            <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
-        </View>
+
+                <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
+            </View>
     );
 };
 

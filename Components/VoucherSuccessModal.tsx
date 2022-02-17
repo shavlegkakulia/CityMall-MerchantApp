@@ -6,7 +6,7 @@ import AppButton from './AppButton';
 
 
 const VoucherSuccessModal = (props: any) => {
-    const { modalVisible, closeModal, data, isLoading } = props;
+    const { modalVisible, closeModal, isLoading } = props;
 
     return (
         <View >
@@ -24,7 +24,7 @@ const VoucherSuccessModal = (props: any) => {
                             }>ვაუჩერის განაღდება</Text>
                         </View>
                         <View style={styles.modalContent}>
-                            <Text>ოპერაცია წარმატებით დასრულდა</Text>
+                            <Text style={{marginBottom: 20}}>ოპერაცია წარმატებით დასრულდა</Text>
                             <Image source={require('../assets/images/success_mark.png')} style={{width: 70, height: 70}} />
                         </View>
                         <View style={styles.buttons}>
@@ -47,13 +47,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#000000a3',
+        // backgroundColor: '#000000a3',
     },
 
     modalView: {
         width: '90%',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
         backgroundColor: "white",
         borderRadius: 7,
         shadowColor: "#000",
@@ -69,6 +71,8 @@ const styles = StyleSheet.create({
 
     modalContent: {
         padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     button: {
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
         width: '90%',
         flexDirection: 'row',
         alignSelf: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'center'
         
     }
 });
