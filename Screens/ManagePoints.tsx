@@ -107,7 +107,8 @@ const ManagePoints = (props: any) => {
                     initials: userInfo.initials,
                     clientStatus: userInfo.clientStatus,
                     bonus: res.data.data?.accumulatedBonus,
-                    availableBonus: res.data.data?.availableScore
+                    availableBonus: res.data.data?.availableScore,
+                    spendRate: userInfo.spendRate
                 });
                 setShowModal(true);
             } else {
@@ -158,7 +159,8 @@ const ManagePoints = (props: any) => {
                 setErrorMessage(res.data.error?.errorDesc)
             };
             setBtnLoading(false);
-        });
+        })
+        ;
     };
 
     const onCloseModal = () => {
