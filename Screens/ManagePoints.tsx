@@ -92,7 +92,7 @@ const ManagePoints = (props: any) => {
 
     const collectPoints = () => {
         setErrorMessage('');
-        if (!scannedCode || !amount || amount === '0' || scannedCode.length < 16) return;
+        if (!scannedCode || !amount || amount === '0' || (scannedCode.length < 16 && scannedCode.length !== 11)) return;
         Keyboard.dismiss();
         setBtnLoading(true);
         let data = {
