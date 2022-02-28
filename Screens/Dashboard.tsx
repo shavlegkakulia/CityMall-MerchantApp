@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
-import { getTransactions, clearTransactions } from '../services/TransactionService';
-import CloseDayModal from '../Components/CloseDayModal';
+import {Image, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import Bonus, { ITerminalInfo } from '../services/Bonus';
 import FullScreenLoader from '../Components/FullScreenLoader';
 import { AppContext } from '../services/ContextService';
@@ -9,9 +7,6 @@ import { AppContext } from '../services/ContextService';
 const Dashboard = (props: any) => {
     const { setMerchantname } = useContext(AppContext);
 
-
-    const [showModal, setShowModal] = useState<boolean>(false);
-    const [btnLoading, setBtonLoading] = useState<boolean>(false);
     const [terminalInfo, setTerminalInfo] = useState<ITerminalInfo>();
     const [isInit, setIsInit] = useState<boolean>(false);
     const [closeDayData, setCloseDayData] = useState({
@@ -39,92 +34,15 @@ const Dashboard = (props: any) => {
         })
             .catch(e => {
                 setIsInit(true)
-                Alert.alert(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
+               console.log(JSON.stringify(e.response), JSON.parse(JSON.stringify(e.response)).data.error)
             });
     };
-    console.log('terminalInfo', terminalInfo)
-    const startCloseDay = () => {
-        getTransactions().then(data => {
-            let AccumulationCount: string[] = [];
-            let Accumulation: number = 0;
-            let AccumulationReversal: number = 0;
-            let PaymentCount: string[] = []
-            let Payment: number = 0;
-            let PaymentReversal: number = 0;
-
-            data.forEach((e: any) => {
-                if (e.tranType === 'Payment') {
-                    PaymentCount.push(e)
-                    if (e.reversed === true) {
-                        PaymentReversal += e.tranAmount;
-                    } else {
-                        Payment += e.tranAmount;
-                    }
-                } else {
-                    AccumulationCount.push(e)
-                    if (e.reversed === true) {
-                        AccumulationReversal += e.tranAmount;
-                    } else {
-                        Accumulation += e.tranAmount;
-                    }
-                }
-            });
-            setCloseDayData((prevState: any) => {
-                return {
-                    ...prevState,
-                    paymentCount: PaymentCount,
-                    accumulationSum: Accumulation,
-                    accumulationReversalSum: AccumulationReversal,
-                    accumulationCount: AccumulationCount,
-                    paymentSum: Payment,
-                    paymentReversalSum: PaymentReversal,
-                };
-            });
-            setShowModal(true);
-        });
-    };
-
-
-    const CloseDay = () => {
-        setBtonLoading(true);
-        let data = {
-            batchId: '1',
-            accumulateTranCount: closeDayData.accumulationCount.length,
-            accumulateAmount: closeDayData.accumulationSum,
-            accumulateAmountRevers: closeDayData.accumulationReversalSum,
-            payTranCount: closeDayData.paymentCount.length,
-            payAmount: closeDayData.paymentSum,
-            payAmountRevers: closeDayData.paymentReversalSum,
-        };
-        Bonus.CloseDay(data).then(res => {
-            if (res.data.success) {
-                setBtonLoading(false);
-                setShowModal(false);
-                Alert.alert(
-                    'დღის დახურვა',
-                    'დღის დახურვა წარმატებულია',
-                );
-                clearTransactions();
-            } else {
-                setBtonLoading(false);
-                Alert.alert(
-                    'დღის დახურვა',
-                    'დაფიქსირდა შეცდომა'
-                );
-            };
-        }).catch(e => { console.log(e); setBtonLoading(false) });
-    };
-
-
-
-
-
+    
     return (
         !isInit ?
             <FullScreenLoader />
             :
             <View style={styles.container}>
-                {showModal && <CloseDayModal modalVisible={showModal} closeModal={() => { setShowModal(false); setBtonLoading(false) }} data={closeDayData} isLoading={btnLoading} onCloseDay={CloseDay} />}
                 <View style={{ flex: 4, alignItems: 'center', marginVertical: 15 }}>
                     <Image style={styles.merchantLogo} source={require('../assets/images/city-mall-icon.png')} />
                 </View>
@@ -152,8 +70,6 @@ const Dashboard = (props: any) => {
                         <Text style={styles.serviceLabel}>ოპერაციების ისტორია</Text>
                     </TouchableOpacity>
                 </View>
-
-
                 <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
             </View>
     );

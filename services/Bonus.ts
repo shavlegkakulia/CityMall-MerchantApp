@@ -267,10 +267,7 @@ class Bonus {
     ReverseTransaction = async (type: number, data: IReverseTransactionRequest) => {
         return await axios.post<IReverseTransactionResponse>(`${env.API_URL}/api/Bonus/ReverseTransaction?transactionType=${type}`, data);
     }
-    CloseDay = async (data: ICloseDayRequest) => {
-        return await axios.post<ICloseDayResponse>(`${env.API_URL}/api/Bonus/CloseDay`, data);
-    }
-
+  
     GetAccountInfo = async (card: string) => {
         return await axios.get<IGetAccountInfoResponse>(`${env.API_URL}/api/Bonus/GetAccountInfo?Card=${card}`);
     }
