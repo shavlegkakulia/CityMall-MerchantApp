@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">"City Mall Merchant</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">Fktfxzlaq3XtpZccq1xgsSNnnNMywNSCSBDYS</string>
 </resources>
