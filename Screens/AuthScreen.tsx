@@ -8,6 +8,7 @@ import AppInput from '../Components/AppInput';
 import { ScrollView } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
 import { setItem, getItem } from '../services/StorageService';
+const pck = require('./../package.json')
 
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -139,7 +140,7 @@ const AuthScreen = (props: any) => {
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomLeft.png')} />
                 <Image style={styles.image} source={require('../assets/images/Arrow-bottomRight.png')} />
             </View>
-            <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD</Text>
+            <Text style={{ textAlign: 'right', fontWeight: '700', fontSize: 12, marginRight: 10 }}>Powerd By UNICARD. Version {pck.version}</Text>
         </ScrollView>
     )
 
